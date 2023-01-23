@@ -1,22 +1,40 @@
 {
-  "name": "journal-observatory-web",
-  "version": "1.0.0",
-  "private": true,
-  "dependencies": {
-    "react": "18.2.0",
-    "react-dom": "18.2.0",
-    "react-scripts": "^5.0.1"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject"
-  },
-  "browserslist": [
-    ">0.2%",
-    "not dead",
-    "not ie <= 11",
-    "not op_mini all"
-  ]
+    "name": "journal-observatory-web",
+    "version": "1.0.0",
+    "private": true,
+    "dependencies": {
+        "@comunica/query-sparql": "^2.5.2",
+        "jsonld": "^8.1.0",
+        "n3": "^1.16.3",
+        "react": "^18.2.0",
+        "react-dom": "18.2.0",
+        "react-scripts": "^5.0.1"
+    },
+    "scripts": {
+        "start": "react-scripts start",
+        "build": "react-scripts build",
+        "test": "react-scripts test --env=jsdom",
+        "eject": "react-scripts eject"
+    },
+    "browserslist": [
+        ">0.2%",
+        "not dead",
+        "not ie <= 11",
+        "not op_mini all"
+    ],
+    "devDependencies": {
+        "@types/jsonld": "^1.5.8",
+        "@types/n3": "^1.10.4",
+        "@types/react": "^18.0.27",
+        "@typescript-eslint/eslint-plugin": "^5.48.2",
+        "@typescript-eslint/parser": "^5.48.2",
+        "eslint": "^8.32.0",
+        "eslint-plugin-react": "^7.32.1",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "typescript-eslint-language-service": "^5.0.0"
+    },
+    "prettier": {
+        "tabWidth": 4,
+        "singleQuote": false
+    }
 }

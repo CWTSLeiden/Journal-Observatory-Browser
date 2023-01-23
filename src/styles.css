@@ -1,4 +1,19 @@
 .App {
-  font-family: sans-serif;
-  text-align: center;
+    font-family: monospace;
 }
+
+body { padding: 1em; font-family: monospace; font-size: 1.3em; }
+section { border-radius: 1em; padding: 1em 2em; margin-bottom: 1em; }
+title { display: block; font-size: 2em; text-align: center; padding-bottom: 1em}
+h2 { font-size: 1em; font-weight: normal; text-decoration: underline }
+dt { display: inline-block; width: 15em; font-weight: bold; overflow: hidden; text-overflow: ellipsis; position: absolute}
+dd { display: inline; margin-left: 15em; }
+.src { float: right; opacity: 0.5; font-style: italic; }
+.src:before { content: "[" }
+.src:after { content: "]" }
+.src-long { display: none }
+.src-short { display: inline }
+li:hover .src-long { display: inline }
+li:hover .src-short { display: none }
+
+#metadata { background-color: #eee }

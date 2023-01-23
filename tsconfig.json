@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+        "target": "es2016",
+        "plugins": [
+            {"name": "typescript-eslint-language-service"},
+            {"name": "react-hooks"}
+        ],
+        "jsx": "react",
+        "esModuleInterop": true,
+        "moduleResolution": "node"
+    }
+}
