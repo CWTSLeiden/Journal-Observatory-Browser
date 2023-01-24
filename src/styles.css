@@ -1,7 +1,3 @@
-.App {
-    font-family: monospace;
-}
-
 body { padding: 1em; font-family: monospace; font-size: 1.3em; }
 section { border-radius: 1em; padding: 1em 2em; margin-bottom: 1em; }
 title { display: block; font-size: 2em; text-align: center; padding-bottom: 1em}
@@ -15,5 +11,12 @@ dd { display: inline; margin-left: 15em; }
 .src-short { display: inline }
 li:hover .src-long { display: inline }
 li:hover .src-short { display: none }
+.id, .value { display: inline }
+label { text-decoration: underline; color: blue; cursor: pointer }
 
 #metadata { background-color: #eee }
+
+#doc { border: #aaa solid 1px; padding: 0 2em; font-size: 0.8em; }
+#docinput { display: none }
+#doc { display: none; height: 40em; overflow: scroll }
+#docinput:checked + #doc { display: block; transition: .5s ease; }
