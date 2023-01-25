@@ -5,6 +5,17 @@ function urlize(thing: ReactNode): ReactElement {
     return <LinkItUrl>{thing}</LinkItUrl>;
 }
 
+function normalize_graph(graph: Array<object> | object): Array<object> {
+    if (graph["@graph"]) {
+        graph = graph["@graph"];
+    }
+    if (Array.isArray(graph)) {
+        return graph;
+    }
+    return Array(graph);
+}
+
+
 function src_to_div(src?: Array<object> | object): ReactElement {
     if (!src) {
         return undefined;
@@ -88,14 +99,18 @@ function graph_to_react(obj: object | string, crumb?: string): ReactElement {
     );
 }
 
-function normalize_graph(graph: Array<object> | object): Array<object> {
-    if (graph["@graph"]) {
-        graph = graph["@graph"];
+function graph_to_ul(graph: Array<object> | object): ReactElement {
+    if (!graph) {
+        return <div>Loading...</div>;
     }
-    if (Array.isArray(graph)) {
-        return graph;
-    }
-    return Array(graph);
+    const pgraph = normalize_graph(graph);
+    return (
+        <ol>
+            {pgraph.map((g) => {
+                return <li key={g["@id"]}>{graph_to_react(g, g["@id"])}</li>;
+            })}
+        </ol>
+    );
 }
 
 function property_to_li(
@@ -162,20 +177,6 @@ function pgraph_to_ul(
     }
     const li = pgraph.map((g) => pgraph_to_li(g, param));
     return <ul>{li}</ul>;
-}
-
-function graph_to_ul(graph: Array<object> | object): ReactElement {
-    if (!graph) {
-        return <div>Loading...</div>;
-    }
-    const pgraph = normalize_graph(graph);
-    return (
-        <ol>
-            {pgraph.map((g) => {
-                return <li key={g["@id"]}>{graph_to_react(g, g["@id"])}</li>;
-            })}
-        </ol>
-    );
 }
 
 export { graph_to_ul, pgraph_to_ul };

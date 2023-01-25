@@ -44,17 +44,17 @@ function App() {
             <section>
                 <title>{pad_name}</title>
                 <ul>
-                <li id="pad_id">
-                    Pad ID: <LinkItUrl>{pad_id}</LinkItUrl>
-                </li>
-                <li id="pad_doc">
-                    <label htmlFor="docinput">JSON</label>
-                </li>
+                    <li id="pad_id">
+                        Pad ID: <LinkItUrl>{pad_id}</LinkItUrl>
+                    </li>
+                    <li id="pad_doc">
+                        <label htmlFor="docinput">JSON</label>
+                    </li>
                 </ul>
-            <input id="docinput" type="checkbox" />
-            <section id="doc">
-                <pre>{doc}</pre>
-            </section>
+                <input id="docinput" type="checkbox" />
+                <section id="doc">
+                    <pre>{doc}</pre>
+                </section>
             </section>
             <MetadataComponent pad_id={pad_id} />
         </div>
