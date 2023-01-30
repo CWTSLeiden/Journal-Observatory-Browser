@@ -5,6 +5,9 @@ import {
     IdView,
     DefListView,
     ListView,
+    UnorderedListView,
+    OrderedListView,
+    LoadingView,
 } from "../components/pad";
 
 function normalize_graph(graph: Array<object> | object): Array<object> {
@@ -24,84 +27,77 @@ function src_to_div(src?: Array<object> | object): ReactElement {
     if (Array.isArray(src)) {
         return <SrcView sources={src.map((s: object) => s["@id"])} />;
     }
-    <SrcView sources={Array(src["@id"])} />;
+    return <SrcView sources={Array(src["@id"])} />;
 }
 
 function graph_to_react(obj: object | string, crumb?: string): ReactElement {
-    const src = src_to_div(obj["ppo:_src"]);
+    const srcView = src_to_div(obj["ppo:_src"]);
     if (obj["@value"]) {
         return (
             <ValueView
+                key={`${crumb}.${obj["@value"]}`}
                 value={obj["@value"]}
-                crumb={`${crumb}.${obj["@value"]}`}
-                src={src}
+                src={srcView}
             />
         );
     }
     if (obj["@id"] && Object.entries(obj).length == 1) {
         return (
             <IdView
+                key={`${crumb}.${obj["@id"]}`}
                 id={obj["@id"]}
-                crumb={`${crumb}.${obj["@id"]}`}
-                src={src}
+                src={srcView}
             />
         );
     }
     if (obj["@id"]) {
+        const key = `${crumb}.${obj["@id"]}`;
         const sub = Object.entries(obj)
+            .filter(([k,]) => !["@id", "@context", "ppo:_src"].includes(k))
             .map(([k, v]) => {
-                if (!["@id", "@context", "ppo:_src"].includes(k)) {
-                    const c = `${crumb}.${obj["@id"]}.${k}`;
-                    return (
-                        <li key={c}>
-                            <dt>{k}</dt>
-                            <dd>{graph_to_react(v, c)}</dd>
-                        </li>
-                    );
-                }
+                return (
+                    <DefListView
+                        key={`${key}.${k}`}
+                        title={k}
+                        value={graph_to_react(v, `${key}.${k}`)}
+                    />
+                );
             })
-            .filter((s) => s);
+        const content = <UnorderedListView items={sub}/>
         return (
-            <div>
-                <div className="id">{obj["@id"]}</div>
-                {src}
-                <ul>{sub}</ul>
-            </div>
+            <IdView
+                key={key}
+                id={obj["@id"]}
+                src={srcView}
+                content={content}
+            />
         );
     }
     if (Array.isArray(obj) && obj.length > 0) {
         const sub = obj.map((o, i) => {
             const c = `${crumb}.${i}`;
-            return <li key={c}>{graph_to_react(o, c)}</li>;
+            return <ListView key={c} value={graph_to_react(o, c)} />;
         });
-        return (
-            <ul>
-                {src}
-                {sub}
-            </ul>
-        );
+        return <UnorderedListView items={sub} src={srcView} />;
     }
     return (
         <ValueView
+            key={`${crumb}.${String(obj)}`}
             value={String(obj)}
-            crumb={`${crumb}.${String(obj)}`}
-            src={src}
+            src={srcView}
         />
     );
 }
 
 function graph_to_ul(graph: Array<object> | object): ReactElement {
     if (!graph) {
-        return <div>Loading...</div>;
+        return <LoadingView />;
     }
     const pgraph = normalize_graph(graph);
-    return (
-        <ol>
-            {pgraph.map((g) => {
-                return <li key={g["@id"]}>{graph_to_react(g, g["@id"])}</li>;
-            })}
-        </ol>
-    );
+    const sub = pgraph.map((g) => {
+        return <ListView key={g["@id"]} value={graph_to_react(g, g["@id"])} />;
+    });
+    return <OrderedListView items={sub} />;
 }
 
 function property_to_li(
@@ -111,14 +107,13 @@ function property_to_li(
     crumb?: string
 ) {
     const value = graph_to_react(thing, crumb);
-    const str = thing["@id"] || thing["@value"] || String(thing)
-    const key = [crumb, dt, str].filter(Boolean).join(".")
+    const str = thing["@id"] || thing["@value"] || String(thing);
+    const key = [crumb, dt, str].filter(Boolean).join(".");
     const srcView = src_to_div(src);
-    console.log(key)
     if (dt) {
-        return <DefListView title={dt} value={value} crumb={key} src={srcView} />;
+        return <DefListView key={key} title={dt} value={value} src={srcView} />;
     }
-    return <ListView value={value} key={key} src={srcView} />;
+    return <ListView key={key} value={value} src={srcView} />;
 }
 
 function pgraph_to_li(graph: object, param?: string) {
@@ -149,7 +144,7 @@ function pgraph_to_ul(
     param?: string
 ): ReactElement {
     if (!graph) {
-        return <div>Loading...</div>;
+        return <LoadingView />;
     }
     let pgraph = normalize_graph(graph);
     if (param) {
@@ -158,7 +153,7 @@ function pgraph_to_ul(
         });
     }
     const li = pgraph.map((g) => pgraph_to_li(g, param));
-    return <ul>{li}</ul>;
+    return <UnorderedListView items={li} />;
 }
 
 export { graph_to_ul, pgraph_to_ul };

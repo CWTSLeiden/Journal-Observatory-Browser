@@ -6,6 +6,10 @@ function urlize(thing: ReactNode): ReactElement {
     return <LinkItUrl>{thing}</LinkItUrl>;
 }
 
+const LoadingView = () => (
+    <div>Loading</div>
+)
+
 const SrcView = ({ sources }) => (
     <div className="src">
         <div className="src-short">{sources.length}</div>
@@ -14,44 +18,65 @@ const SrcView = ({ sources }) => (
 );
 SrcView.propTypes = { sources: PropTypes.arrayOf(PropTypes.string).isRequired };
 
-const ValueView = ({ value, crumb, src }) => (
-    <div key={crumb} className="value">
+const ValueView = ({ value, src }) => (
+    <div className="value">
         {urlize(value)}
         {src}
     </div>
 );
 ValueView.propTypes = {
     value: PropTypes.string.isRequired,
-    crumb: PropTypes.string,
     src: PropTypes.node,
 };
 
-const IdView = ({ id, crumb, src }) => (
-    <div key={crumb} className="id">
+const IdView = ({ id, content, src }) => (
+    <div className="id">
         {urlize(id)}
         {src}
+        {content}
     </div>
 );
 IdView.propTypes = {
     id: PropTypes.string.isRequired,
-    crumb: PropTypes.string,
+    content: PropTypes.any,
     src: PropTypes.node,
 };
 
-const ListView = ({ value, crumb, src }) => (
-    <li key={crumb}>
+const ListView = ({ value, src }) => (
+    <li>
         {value}
         {src}
     </li>
 );
 ListView.propTypes = {
     value: PropTypes.any.isRequired,
-    crumb: PropTypes.string,
     src: PropTypes.node,
 };
 
-const DefListView = ({ title, value, crumb, src }) => (
-    <li key={crumb}>
+const UnorderedListView = ({ items, src }) => (
+    <ul>
+        {items}
+        {src}
+    </ul>
+);
+UnorderedListView.propTypes = {
+    items: PropTypes.arrayOf(PropTypes.node).isRequired,
+    src: PropTypes.node,
+};
+
+const OrderedListView = ({ items, src }) => (
+    <ol>
+        {items}
+        {src}
+    </ol>
+);
+OrderedListView.propTypes = {
+    items: PropTypes.arrayOf(PropTypes.node).isRequired,
+    src: PropTypes.node,
+};
+
+const DefListView = ({ title, value, src }) => (
+    <li>
         <dt>{title}</dt>
         <dd>{value}</dd>
         {src}
@@ -60,8 +85,16 @@ const DefListView = ({ title, value, crumb, src }) => (
 DefListView.propTypes = {
     title: PropTypes.string.isRequired,
     value: PropTypes.any.isRequired,
-    crumb: PropTypes.string,
     src: PropTypes.node,
 };
 
-export { SrcView, ValueView, IdView, DefListView, ListView };
+export {
+    LoadingView,
+    SrcView,
+    ValueView,
+    IdView,
+    DefListView,
+    ListView,
+    UnorderedListView,
+    OrderedListView,
+};
