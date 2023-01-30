@@ -1,9 +1,11 @@
 import React, { ReactElement, ReactNode } from "react";
-import { LinkItUrl } from "react-linkify-it";
-
-function urlize(thing: ReactNode): ReactElement {
-    return <LinkItUrl>{thing}</LinkItUrl>;
-}
+import {
+    SrcView,
+    ValueView,
+    IdView,
+    DefListView,
+    ListView,
+} from "../components/pad";
 
 function normalize_graph(graph: Array<object> | object): Array<object> {
     if (graph["@graph"]) {
@@ -15,46 +17,34 @@ function normalize_graph(graph: Array<object> | object): Array<object> {
     return Array(graph);
 }
 
-
 function src_to_div(src?: Array<object> | object): ReactElement {
     if (!src) {
         return undefined;
     }
-    let number_of_sources = 0;
-    let sources = "";
-    if (Array.isArray(src) && src.length > 0) {
-        number_of_sources = src.length;
-        sources = src.map((s) => s["@id"]).join(", ");
-    } else if (src["@id"]) {
-        number_of_sources = 1;
-        sources = src["@id"];
+    if (Array.isArray(src)) {
+        return <SrcView sources={src.map((s: object) => s["@id"])} />;
     }
-    return (
-        <div className="src">
-            <div className="src-short">{number_of_sources}</div>
-            <div className="src-long">{urlize(sources)}</div>
-        </div>
-    );
+    <SrcView sources={Array(src["@id"])} />;
 }
 
 function graph_to_react(obj: object | string, crumb?: string): ReactElement {
     const src = src_to_div(obj["ppo:_src"]);
     if (obj["@value"]) {
-        const c = `${crumb}.${obj["@value"]}`;
         return (
-            <div key={c} className="value">
-                {urlize(obj["@value"])}
-                {src}
-            </div>
+            <ValueView
+                value={obj["@value"]}
+                crumb={`${crumb}.${obj["@value"]}`}
+                src={src}
+            />
         );
     }
     if (obj["@id"] && Object.entries(obj).length == 1) {
-        const c = `${crumb}.${obj["@id"]}`;
         return (
-            <div key={c} className="id">
-                {urlize(obj["@id"])}
-                {src}
-            </div>
+            <IdView
+                id={obj["@id"]}
+                crumb={`${crumb}.${obj["@id"]}`}
+                src={src}
+            />
         );
     }
     if (obj["@id"]) {
@@ -92,10 +82,11 @@ function graph_to_react(obj: object | string, crumb?: string): ReactElement {
         );
     }
     return (
-        <div className="value">
-            {urlize(String(obj))}
-            {src}
-        </div>
+        <ValueView
+            value={String(obj)}
+            crumb={`${crumb}.${String(obj)}`}
+            src={src}
+        />
     );
 }
 
@@ -119,24 +110,15 @@ function property_to_li(
     src?: Array<object> | object,
     crumb?: string
 ) {
-    const str = graph_to_react(thing, crumb);
+    const value = graph_to_react(thing, crumb);
+    const str = thing["@id"] || thing["@value"] || String(thing)
+    const key = [crumb, dt, str].filter(Boolean).join(".")
+    const srcView = src_to_div(src);
+    console.log(key)
     if (dt) {
-        const k = `${crumb}.${dt}`;
-        return (
-            <li key={k}>
-                <dt>{dt}</dt>
-                <dd>{str}</dd>
-                {src_to_div(src)}
-            </li>
-        );
+        return <DefListView title={dt} value={value} crumb={key} src={srcView} />;
     }
-    const k = `${crumb}.${thing["@id"] || thing["@value"] || String(thing)}`;
-    return (
-        <li key={k}>
-            {str}
-            {src_to_div(src)}
-        </li>
-    );
+    return <ListView value={value} key={key} src={srcView} />;
 }
 
 function pgraph_to_li(graph: object, param?: string) {

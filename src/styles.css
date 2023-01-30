@@ -20,3 +20,7 @@ label { text-decoration: underline; color: blue; cursor: pointer }
 #docinput { display: none }
 #doc { display: none; height: 40em; overflow: scroll }
 #docinput:checked + #doc { display: block; transition: .5s ease; }
+
+#padnext { float: right }
+#padprev { float: left }
+#padnext, #padprev { display: block }

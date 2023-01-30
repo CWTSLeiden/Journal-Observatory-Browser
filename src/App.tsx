@@ -9,17 +9,21 @@ import MetadataComponent from "./components/metadata";
 window.Buffer = Buffer;
 
 function App() {
+    const [n, setN] = useState(0);
     const [pad_id, setPadId] = useState(undefined);
     const [pad_name, setPadName] = useState("loading...");
     const [doc, setDoc] = useState("loading...");
     const sparqlEngine = new QueryEngine();
 
+    const previousPad = () => {setN(Math.max(0, n - 1))}
+    const nextPad = () => {setN(n + 1)}
+
     useEffect(() => {
         async function render() {
-            setPadId(await pad_single(0, sparqlEngine));
+            setPadId(await pad_single(n, sparqlEngine));
         }
         render();
-    }, []);
+    }, [n]);
 
     useEffect(() => {
         async function render() {
@@ -42,6 +46,8 @@ function App() {
     return (
         <div className="App">
             <section>
+                <button id="padprev" onClick={previousPad}>previous</button>
+                <button id="padnext" onClick={nextPad}>next</button>
                 <title>{pad_name}</title>
                 <ul>
                     <li id="pad_id">

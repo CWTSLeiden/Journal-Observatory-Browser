@@ -44,7 +44,6 @@ function MetadataComponent(props: MetadataComponentProps) {
 
     return (
         <section id="metadata">
-            <pre>{JSON.stringify(meta_org, null, 2)}</pre>
             <h1>Metadata</h1>
             <div className="subsection"><h2>Names</h2>{names}</div>
             <div className="subsection"><h2>Urls</h2>{urls}</div>
