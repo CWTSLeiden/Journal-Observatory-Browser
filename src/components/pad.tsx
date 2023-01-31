@@ -10,7 +10,8 @@ const LoadingView = () => (
     <div>Loading</div>
 )
 
-const SrcView = ({ sources }) => (
+type SrcViewProps = { sources: Array<string> }
+const SrcView = ({ sources }: SrcViewProps) => (
     <div className="src">
         <div className="src-short">{sources.length}</div>
         <div className="src-long">{urlize(sources.join(", "))}</div>
@@ -18,7 +19,8 @@ const SrcView = ({ sources }) => (
 );
 SrcView.propTypes = { sources: PropTypes.arrayOf(PropTypes.string).isRequired };
 
-const ValueView = ({ value, src }) => (
+type ValueViewProps = { value: string, src?: ReactNode }
+const ValueView = ({ value, src }: ValueViewProps) => (
     <div className="value">
         {urlize(value)}
         {src}
@@ -29,11 +31,12 @@ ValueView.propTypes = {
     src: PropTypes.node,
 };
 
-const IdView = ({ id, content, src }) => (
+type IdViewProps = { id: string, children?: ReactNode, src?: ReactNode }
+const IdView = ({ id, children, src }: IdViewProps) => (
     <div className="id">
         {urlize(id)}
         {src}
-        {content}
+        {children}
     </div>
 );
 IdView.propTypes = {
@@ -42,7 +45,8 @@ IdView.propTypes = {
     src: PropTypes.node,
 };
 
-const ListView = ({ value, src }) => (
+type ListViewProps = { value: string | ReactNode, src?: ReactNode }
+const ListView = ({ value, src }: ListViewProps) => (
     <li>
         {value}
         {src}
@@ -53,10 +57,11 @@ ListView.propTypes = {
     src: PropTypes.node,
 };
 
-const UnorderedListView = ({ items, src }) => (
+type UnorderedListViewProps = { children?: ReactNode, src?: ReactNode }
+const UnorderedListView = ({ children, src }: UnorderedListViewProps) => (
     <ul>
-        {items}
         {src}
+        {children}
     </ul>
 );
 UnorderedListView.propTypes = {
@@ -64,10 +69,11 @@ UnorderedListView.propTypes = {
     src: PropTypes.node,
 };
 
-const OrderedListView = ({ items, src }) => (
+type OrderedListViewProps = { children?: ReactNode, src?: ReactNode }
+const OrderedListView = ({ children, src }: OrderedListViewProps) => (
     <ol>
-        {items}
         {src}
+        {children}
     </ol>
 );
 OrderedListView.propTypes = {
@@ -75,7 +81,8 @@ OrderedListView.propTypes = {
     src: PropTypes.node,
 };
 
-const DefListView = ({ title, value, src }) => (
+type DefListViewProps = { title: string, value: string | ReactNode, src?: ReactNode }
+const DefListView = ({ title, value, src }: DefListViewProps) => (
     <li>
         <dt>{title}</dt>
         <dd>{value}</dd>

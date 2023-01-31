@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode } from "react";
+import React, { ReactElement } from "react";
 import {
     SrcView,
     ValueView,
@@ -17,7 +17,10 @@ function normalize_graph(graph: Array<object> | object): Array<object> {
     if (Array.isArray(graph)) {
         return graph;
     }
-    return Array(graph);
+    if (graph["@id"]) {
+        return Array(graph);
+    }
+    return []
 }
 
 function src_to_div(src?: Array<object> | object): ReactElement {
@@ -53,7 +56,7 @@ function graph_to_react(obj: object | string, crumb?: string): ReactElement {
     if (obj["@id"]) {
         const key = `${crumb}.${obj["@id"]}`;
         const sub = Object.entries(obj)
-            .filter(([k,]) => !["@id", "@context", "ppo:_src"].includes(k))
+            .filter(([k]) => !["@id", "@context", "ppo:_src"].includes(k))
             .map(([k, v]) => {
                 return (
                     <DefListView
@@ -62,15 +65,11 @@ function graph_to_react(obj: object | string, crumb?: string): ReactElement {
                         value={graph_to_react(v, `${key}.${k}`)}
                     />
                 );
-            })
-        const content = <UnorderedListView items={sub}/>
+            });
         return (
-            <IdView
-                key={key}
-                id={obj["@id"]}
-                src={srcView}
-                content={content}
-            />
+            <IdView key={key} id={obj["@id"]} src={srcView}>
+                <UnorderedListView>{sub}</UnorderedListView>
+            </IdView>
         );
     }
     if (Array.isArray(obj) && obj.length > 0) {
@@ -78,7 +77,10 @@ function graph_to_react(obj: object | string, crumb?: string): ReactElement {
             const c = `${crumb}.${i}`;
             return <ListView key={c} value={graph_to_react(o, c)} />;
         });
-        return <UnorderedListView items={sub} src={srcView} />;
+        return (<UnorderedListView src={srcView}>{sub}</UnorderedListView>);
+    }
+    if (Array.isArray(obj) && obj.length == 0) {
+        return null
     }
     return (
         <ValueView
@@ -97,7 +99,7 @@ function graph_to_ul(graph: Array<object> | object): ReactElement {
     const sub = pgraph.map((g) => {
         return <ListView key={g["@id"]} value={graph_to_react(g, g["@id"])} />;
     });
-    return <OrderedListView items={sub} />;
+    return <OrderedListView>{sub}</OrderedListView>;
 }
 
 function property_to_li(
@@ -153,7 +155,7 @@ function pgraph_to_ul(
         });
     }
     const li = pgraph.map((g) => pgraph_to_li(g, param));
-    return <UnorderedListView items={li} />;
+    return <UnorderedListView>{li}</UnorderedListView>;
 }
 
 export { graph_to_ul, pgraph_to_ul };
