@@ -28,6 +28,7 @@ function App() {
     useEffect(() => {
         async function render() {
             if (pad_id) {
+                setPadName(pad_id.replace(/.*\/pad\//i, ""))
                 setPadName(await platform_name_single(pad_id, sparqlEngine));
             }
         }
