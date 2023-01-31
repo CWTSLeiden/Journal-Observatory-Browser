@@ -1,6 +1,8 @@
 const endpoint = {
-    type: 'sparql',
-    value: "http://localhost:7200/repositories/job"
+    type: "sparql",
+    // value: "http://localhost:7200/repositories/job"
+    // value: "https://sparql.boomen.net/repositories/job"
+    value: "http://188.166.16.172:7200/repositories/job"
 };
 
 const context = {
