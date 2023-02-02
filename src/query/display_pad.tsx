@@ -9,19 +9,7 @@ import {
     OrderedListView,
     LoadingView,
 } from "../components/pad";
-
-function normalize_graph(graph: Array<object> | object): Array<object> {
-    if (graph["@graph"]) {
-        graph = graph["@graph"];
-    }
-    if (Array.isArray(graph)) {
-        return graph;
-    }
-    if (graph["@id"]) {
-        return Array(graph);
-    }
-    return []
-}
+import { normalize_graph } from "./query";
 
 function src_to_div(src?: Array<object> | object): ReactElement {
     if (!src) {

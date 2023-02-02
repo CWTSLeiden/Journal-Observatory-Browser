@@ -1,26 +1,157 @@
-body { padding: 1em; font-family: monospace; font-size: 1.3em; }
-section { border-radius: 1em; padding: 1em 2em; margin-bottom: 1em; }
-title { display: block; font-size: 2em; text-align: center; padding-bottom: 1em}
-h2 { font-size: 1em; font-weight: normal; text-decoration: underline }
-dt { display: inline-block; width: 15em; font-weight: bold; overflow: hidden; text-overflow: ellipsis; position: absolute}
-dd { display: inline; margin-left: 15em; }
-.src { float: right; opacity: 0.5; font-style: italic; }
-.src:before { content: "[" }
-.src:after { content: "]" }
-.src-long { display: none }
-.src-short { display: inline }
-li:hover .src-long { display: inline }
-li:hover .src-short { display: none }
-.id, .value { display: inline }
-label { text-decoration: underline; color: blue; cursor: pointer }
+body {
+    font-family: monospace;
+    font-size: 1.3em;
+}
+section {
+    border-radius: 1em;
+    padding: 1em 2em;
+    margin-bottom: 1em;
+}
+title {
+    display: block;
+    font-size: 2em;
+    text-align: center;
+    padding-bottom: 1em;
+}
+h2 {
+    font-size: 1em;
+    font-weight: normal;
+    text-decoration: underline;
+}
+dt {
+    display: inline-block;
+    width: 15em;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+}
+dd {
+    display: inline;
+    margin-left: 15em;
+}
+.src {
+    float: right;
+    opacity: 0.5;
+    font-style: italic;
+}
+.src:before {
+    content: "[";
+}
+.src:after {
+    content: "]";
+}
+.src-long {
+    display: none;
+}
+.src-short {
+    display: inline;
+}
+li:hover .src-long {
+    display: inline;
+}
+li:hover .src-short {
+    display: none;
+}
+.id,
+.value {
+    display: inline;
+}
+label {
+    text-decoration: underline;
+    color: blue;
+    cursor: pointer;
+}
 
-#metadata { background-color: #eee }
+#metadata {
+    background-color: #eee;
+}
 
-#doc { border: #aaa solid 1px; padding: 0 2em; font-size: 0.8em; }
-#docinput { display: none }
-#doc { display: none; height: 40em; overflow: scroll }
-#docinput:checked + #doc { display: block; transition: .5s ease; }
+#doc {
+    border: #aaa solid 1px;
+    padding: 0 2em;
+    font-size: 0.8em;
+}
+#docinput {
+    display: none;
+}
+#doc {
+    display: none;
+    height: 40em;
+    overflow: scroll;
+}
+#docinput:checked + #doc {
+    display: block;
+    transition: 0.5s ease;
+}
 
-#padnext { float: right }
-#padprev { float: left }
-#padnext, #padprev { display: block }
+.Search {
+    position: absolute;
+    display: grid;
+    grid-template-rows: auto auto minmax( 0, 1fr );
+    gap: 1em;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: 1em;
+}
+
+#searchbar, header {
+    padding: 1em 2em;
+    background-color: #eee;
+    border-radius: 1em;
+}
+
+#searchbar {
+    display: grid;
+    grid-template-columns: auto 5fr 1fr 1fr;
+    gap: 1em;
+    align-items: center;
+}
+
+#main {
+    display: grid;
+    grid-template-columns: 1fr 3fr;
+    column-gap: 1em;
+}
+
+#filterbar {
+    overflow: scroll;
+    padding: 1em;
+    background-color: #eee;
+    border-radius: 1em;
+}
+
+.filter {
+    display: grid;
+    grid-template-columns: auto 3fr 1fr;
+}
+
+#results {
+    display: grid;
+    grid-template-rows: auto 1fr;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: #eee;
+    overflow: auto;
+}
+
+.table-head {
+    border-bottom: black solid 2px;
+}
+tr:hover {
+    background-color: #ddd;
+}
+tr {
+    display: grid;
+    grid-template-columns: 3fr 2fr 2fr;
+    justify-content: stretch;
+    align-items: center;
+    border-bottom: black solid 1px;
+}
+
+label {
+    color: unset;
+    text-decoration: unset;
+}
