@@ -1,8 +1,10 @@
+const pagesize = 100
+
 const endpoint = {
     type: "sparql",
     // value: "http://localhost:7200/repositories/job"
-    // value: "https://sparql.boomen.net/repositories/job"
-    value: "http://188.166.16.172:7200/repositories/job"
+    value: "https://sparql.boomen.net/repositories/job"
+    // value: "http://188.166.16.172:7200/repositories/job"
 };
 
 const context = {
@@ -53,4 +55,4 @@ const context = {
     "wikibase": "http://wikiba.se/ontology#"
 };
 
-export { context, endpoint };
+export { context, endpoint, pagesize };

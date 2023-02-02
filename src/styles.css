@@ -117,7 +117,8 @@ label {
 }
 
 #filterbar {
-    overflow: scroll;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
     padding: 1em;
     background-color: #eee;
     border-radius: 1em;
@@ -154,4 +155,24 @@ tr {
 label {
     color: unset;
     text-decoration: unset;
+}
+
+.paging {
+    position: fixed;
+    display: grid;
+    grid-template-columns: auto auto auto;
+    align-items: center;
+    justify-content: center;
+    right: 2em;
+    bottom: 2em;
+    padding: 1em;
+    border-radius: 1em;
+    background-color: #f32;
+    color: #fff;
+}
+
+.paging button {
+    border: 0;
+    background-color: unset;
+    color: #fff
 }

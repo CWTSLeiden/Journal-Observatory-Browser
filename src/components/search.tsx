@@ -1,15 +1,15 @@
 import React, { ChangeEvent } from "react";
 
-type SearchRange = {
-    filter?: boolean;
-    number?: number;
-};
 type SearchState = {
     searchstring?: string;
-    embargo?: SearchRange;
+    embargo?: boolean;
+    embargoduration?: number;
     pubpolicy?: boolean;
     paywall?: boolean;
+    pagesize?: number;
+    page?: number;
 };
+
 type SearchBarProps = {
     search: SearchState;
     setSearch: (search: SearchState) => void;
@@ -35,7 +35,7 @@ const SearchBar = ({ search, setSearch, handleSubmit }: SearchBarProps) => (
         <button onClick={handleSubmit}>Search</button>
         <button
             onMouseDown={() => {
-                setSearch({ ...search, searchstring: "" });
+                setSearch({ searchstring: "" });
             }}
             onMouseUp={handleSubmit}
         >
@@ -44,4 +44,4 @@ const SearchBar = ({ search, setSearch, handleSubmit }: SearchBarProps) => (
     </div>
 );
 
-export { SearchState, SearchRange, SearchBar }
+export { SearchState, SearchBar }
