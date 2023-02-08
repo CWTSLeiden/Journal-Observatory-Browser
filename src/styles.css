@@ -2,22 +2,26 @@ body {
     font-family: monospace;
     font-size: 1.3em;
 }
+
 section {
     border-radius: 1em;
     padding: 1em 2em;
     margin-bottom: 1em;
 }
+
 title {
     display: block;
     font-size: 2em;
     text-align: center;
     padding-bottom: 1em;
 }
+
 h2 {
     font-size: 1em;
     font-weight: normal;
     text-decoration: underline;
 }
+
 dt {
     display: inline-block;
     width: 15em;
@@ -26,37 +30,47 @@ dt {
     text-overflow: ellipsis;
     position: absolute;
 }
+
 dd {
     display: inline;
     margin-left: 15em;
 }
+
 .src {
     float: right;
     opacity: 0.5;
     font-style: italic;
 }
+
 .src:before {
     content: "[";
 }
+
 .src:after {
     content: "]";
 }
+
 .src-long {
     display: none;
 }
+
 .src-short {
     display: inline;
 }
+
 li:hover .src-long {
     display: inline;
 }
+
 li:hover .src-short {
     display: none;
 }
+
 .id,
 .value {
     display: inline;
 }
+
 label {
     text-decoration: underline;
     color: blue;
@@ -72,14 +86,17 @@ label {
     padding: 0 2em;
     font-size: 0.8em;
 }
+
 #docinput {
     display: none;
 }
+
 #doc {
     display: none;
     height: 40em;
     overflow: scroll;
 }
+
 #docinput:checked + #doc {
     display: block;
     transition: 0.5s ease;
@@ -88,7 +105,7 @@ label {
 .Search {
     position: absolute;
     display: grid;
-    grid-template-rows: auto auto minmax( 0, 1fr );
+    grid-template-rows: auto auto minmax(0, 1fr);
     gap: 1em;
     top: 0;
     bottom: 0;
@@ -97,7 +114,8 @@ label {
     margin: 1em;
 }
 
-#searchbar, header {
+#searchbar,
+header {
     padding: 1em 2em;
     background-color: #eee;
     border-radius: 1em;
@@ -141,9 +159,11 @@ label {
 .table-head {
     border-bottom: black solid 2px;
 }
-.tr:hover, tr:hover {
+
+tr:hover {
     background-color: #ddd;
 }
+
 tr {
     display: grid;
     grid-template-columns: 3fr 2fr 2fr;
@@ -153,7 +173,7 @@ tr {
 }
 
 .padrow {
-    cursor: pointer
+    cursor: pointer;
 }
 
 label {
@@ -174,4 +194,5 @@ label {
     border: none;
     background-color: #f32;
     color: #fff;
+    cursor: pointer;
 }
