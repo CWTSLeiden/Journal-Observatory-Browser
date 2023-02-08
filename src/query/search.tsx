@@ -75,6 +75,10 @@ async function pad_list(engine: QueryEngine, search: SearchState) {
                 select ?pad ?platform where {
                     ?pad a pad:PAD ; pad:hasAssertion ?assertion .
                     graph ?assertion { ?platform a ppo:Platform . }
+                    ${searchfilter(search.searchstring)}
+                    ${pubpolicyfilter(search.pubpolicy)}
+                    ${paywallfilter(search.paywall)}
+                    ${embargofilter(search.embargo, search.embargoduration)}
                 }
                 ${limit(search.page, search.pagesize)}
             }
@@ -83,16 +87,12 @@ async function pad_list(engine: QueryEngine, search: SearchState) {
             optional { ?platform ppo:hasKeyword ?keyword . }
             optional { ?platform ppo:hasPolicy ?policy . ?policy a ?policytype . }
             optional { ?policy ppo:hasPaywall ?paywall . }
-            ${searchfilter(search.searchstring)}
-            ${pubpolicyfilter(search.pubpolicy)}
-            ${paywallfilter(search.paywall)}
-            ${embargofilter(search.embargo, search.embargoduration)}
         }
+        order by asc(?name)
     `;
     const padlist = normalize_graph(await query_jsonld(query, engine));
     const num = Number(await query_single(nquery, engine))
-    console.log(query);
-    console.log(padlist);
+    // console.log(query, padlist);
     return { padlist, num };
 }
 

@@ -141,7 +141,7 @@ label {
 .table-head {
     border-bottom: black solid 2px;
 }
-tr:hover {
+.tr:hover, tr:hover {
     background-color: #ddd;
 }
 tr {
@@ -150,6 +150,10 @@ tr {
     justify-content: stretch;
     align-items: center;
     border-bottom: black solid 1px;
+}
+
+.padrow {
+    cursor: pointer
 }
 
 label {
@@ -167,12 +171,7 @@ label {
     bottom: 2em;
     padding: 1em;
     border-radius: 1em;
+    border: none;
     background-color: #f32;
     color: #fff;
-}
-
-.paging button {
-    border: 0;
-    background-color: unset;
-    color: #fff
 }

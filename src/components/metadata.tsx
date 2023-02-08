@@ -1,32 +1,32 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, ReactNode } from "react";
 import { QueryEngine } from "@comunica/query-sparql";
 import { query_jsonld } from "../query/query";
 import { graph_to_ul, pgraph_to_ul } from "../query/display_pad";
+import { pad_id_norm } from "../query/pad";
 
 
 type MetadataComponentProps = { pad_id: string };
 function MetadataComponent(props: MetadataComponentProps) {
+    const pad_id = pad_id_norm(props.pad_id)
     const [meta, setMeta] = useState(undefined);
     const [meta_id, setMetaId] = useState(undefined);
     const [meta_org, setMetaOrg] = useState(undefined);
-    const [names, setNames] = useState(<div className="subsection"></div>);
-    const [urls, setUrls] = useState(<div className="subsection"></div>);
-    const [keywords, setKeywords] = useState(<div className="subsection"></div>);
-    const [identifiers, setIdentifiers] = useState(<div className="subsection"></div>);
-    const [organizations, setOrganizations] = useState(
-        <div className="subsection"></div>
-    );
+    const [names, setNames] = useState(undefined);
+    const [urls, setUrls] = useState(undefined);
+    const [keywords, setKeywords] = useState(undefined);
+    const [identifiers, setIdentifiers] = useState(undefined);
+    const [organizations, setOrganizations] = useState(undefined);
     const sparqlEngine = new QueryEngine();
     useEffect(() => {
         async function render() {
-            if (props.pad_id) {
-                setMeta(await pad_metadata(props.pad_id, sparqlEngine))
-                setMetaId(await pad_metadata_identifiers(props.pad_id, sparqlEngine))
-                setMetaOrg(await pad_metadata_organizations(props.pad_id, sparqlEngine))
+            if (pad_id) {
+                setMeta(await pad_metadata(pad_id, sparqlEngine))
+                setMetaId(await pad_metadata_identifiers(pad_id, sparqlEngine))
+                setMetaOrg(await pad_metadata_organizations(pad_id, sparqlEngine))
             }
         }
         render();
-    }, [props.pad_id]);
+    }, [pad_id]);
 
     useEffect(() => {
         setNames(pgraph_to_ul(meta, "schema:name"));
@@ -45,13 +45,20 @@ function MetadataComponent(props: MetadataComponentProps) {
     return (
         <section id="metadata">
             <h1>Metadata</h1>
-            <div className="subsection"><h2>Names</h2>{names}</div>
-            <div className="subsection"><h2>Urls</h2>{urls}</div>
-            <div className="subsection"><h2>Keywords</h2>{keywords}</div>
-            <div className="subsection"><h2>Identifiers</h2>{identifiers}</div>
-            <div className="subsection"><h2>Organizations</h2>{organizations}</div>
+            <MetadataSection title={"Names"}>{names}</MetadataSection>
+            <MetadataSection title={"Urls"}>{urls}</MetadataSection>
+            <MetadataSection title={"Keywords"}>{keywords}</MetadataSection>
+            <MetadataSection title={"Identifiers"}>{identifiers}</MetadataSection>
+            <MetadataSection title={"Organizations"}>{organizations}</MetadataSection>
         </section>
     );
+}
+
+type MetadataSectionProps = { title: string, children: Array<ReactNode> }
+const MetadataSection = ({ title, children }: MetadataSectionProps ) => {
+    if (children) {
+        return <div className="subsection"><h2>{title}</h2>{children}</div>
+    }
 }
 
 async function pad_metadata(pad_id: string, engine: QueryEngine) {
@@ -71,7 +78,7 @@ async function pad_metadata(pad_id: string, engine: QueryEngine) {
             bind(bnode() as ?b)
             filter(?p in (schema:name, schema:url, ppo:hasKeyword))
         }
-        values (?pad) {(<${pad_id}>)}
+        values (?pad) {(pad:${pad_id})}
     `;
     return await query_jsonld(query, engine);
 }
@@ -98,7 +105,7 @@ async function pad_metadata_identifiers(pad_id: string, engine: QueryEngine) {
                 ?g dcterms:creator ?creator
             } .
         }
-        values (?pad) {(<${pad_id}>)}
+        values (?pad) {(pad:${pad_id})}
     `
     return await query_jsonld(query, engine);
 }
@@ -123,7 +130,7 @@ async function pad_metadata_organizations(pad_id: string, engine: QueryEngine) {
                 ?g dcterms:creator ?creator
             } .
         }
-        values (?pad) {(<${pad_id}>)}
+        values (?pad) {(pad:${pad_id})}
     `
     return await query_jsonld(query, engine);
 }

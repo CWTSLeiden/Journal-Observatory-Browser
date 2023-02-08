@@ -1,10 +1,9 @@
 import React from "react";
+import { Link, redirect, useNavigate } from "react-router-dom";
+import { pad_id_norm } from "../query/pad";
 
-type PadTableProps = {
-    padlist: Array<object>;
-    handleClick: (id: string) => void;
-};
-const PadTable = ({ padlist, handleClick }: PadTableProps) => (
+type PadTableProps = { padlist: Array<object> };
+const PadTable = ({ padlist }: PadTableProps) => (
     <table id="results">
         <thead>
             <tr className="table-head">
@@ -15,29 +14,37 @@ const PadTable = ({ padlist, handleClick }: PadTableProps) => (
         </thead>
         <tbody>
             {padlist.map((pad) => (
-                <PadRow key={pad["@id"]} pad={pad} handleClick={handleClick} />
+                <PadRow key={pad["@id"]} pad={pad} />
             ))}
         </tbody>
     </table>
 );
 
-type PadRowProps = { pad: object; handleClick: (id: string) => void };
-const PadRow = ({ pad, handleClick }: PadRowProps) => (
-    <tr onClick={() => handleClick(pad["@id"])}>
-        <td>
-            {pad["schema:name"] ? pad["schema:name"].find(Boolean) : "<null>"}
-        </td>
-        <td>
-            {pad["dcterms:identifier"]
-                ? pad["dcterms:identifier"].join(", ")
-                : "<null>"}
-        </td>
-        <td>
-            {pad["ppo:hasKeyword"]
-                ? pad["ppo:hasKeyword"].join(", ")
-                : "<null>"}
-        </td>
-    </tr>
-);
+function prop_str(prop: string | object) {
+    return prop["@id"] || prop["@value"] || String(prop);
+}
+
+type RowProps = { prop: Array<string> | Array<object> };
+const FirstRow = ({ prop }: RowProps) => {
+    const pr = prop ? prop.map((p) => prop_str(p)) : ["<null>"];
+    return <td>{pr.find(Boolean)}</td>;
+};
+const JoinRow = ({ prop }: RowProps) => {
+    const pr = prop ? prop.map((p) => prop_str(p)) : ["<null>"];
+    return <td>{pr.join(", ")}</td>;
+};
+
+type PadRowProps = { pad: object };
+const PadRow = ({ pad }: PadRowProps) => {
+    const pad_id = pad_id_norm(pad["@id"])
+    const navigate = useNavigate()
+    return (
+        <tr className="padrow" key={pad_id} onClick={() => navigate(`/pad/${pad_id}`)}>
+            <FirstRow prop={pad["schema:name"]} />
+            <JoinRow prop={pad["dcterms:identifier"]} />
+            <JoinRow prop={pad["ppo:hasKeyword"]} />
+        </tr>
+    )
+};
 
 export { PadTable };

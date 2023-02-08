@@ -57,19 +57,16 @@ ListView.propTypes = {
     src: PropTypes.node,
 };
 
-type UnorderedListViewProps = { children?: ReactNode, src?: ReactNode }
+type UnorderedListViewProps = { children: Array<ReactNode>, src?: ReactNode }
 const UnorderedListView = ({ children, src }: UnorderedListViewProps) => (
-    <ul>
-        {src}
-        {children}
-    </ul>
+    <ul>{src}{children}</ul>
 );
 UnorderedListView.propTypes = {
-    items: PropTypes.arrayOf(PropTypes.node).isRequired,
+    children: PropTypes.arrayOf(PropTypes.node).isRequired,
     src: PropTypes.node,
 };
 
-type OrderedListViewProps = { children?: ReactNode, src?: ReactNode }
+type OrderedListViewProps = { children: ReactNode, src?: ReactNode }
 const OrderedListView = ({ children, src }: OrderedListViewProps) => (
     <ol>
         {src}
@@ -77,7 +74,7 @@ const OrderedListView = ({ children, src }: OrderedListViewProps) => (
     </ol>
 );
 OrderedListView.propTypes = {
-    items: PropTypes.arrayOf(PropTypes.node).isRequired,
+    children: PropTypes.arrayOf(PropTypes.node).isRequired,
     src: PropTypes.node,
 };
 

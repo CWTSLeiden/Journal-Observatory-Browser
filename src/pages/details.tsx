@@ -1,41 +1,33 @@
 import React, { useState, useEffect } from "react";
-import { LinkItUrl } from "react-linkify-it";
+import { useParams, Link } from "react-router-dom";
 import { QueryEngine } from "@comunica/query-sparql";
 import { pad_doc, platform_name_single } from "../query/pad";
 import MetadataComponent from "../components/metadata";
 
-type DetailsComponentProps = { pad_id: string };
-function DetailsComponent(props: DetailsComponentProps) {
+function DetailsComponent() {
+    const pad_id = useParams().id
     const [pad_name, setPadName] = useState("loading...");
     const [doc, setDoc] = useState("loading...");
     const sparqlEngine = new QueryEngine();
 
     useEffect(() => {
         async function render() {
-            if (props.pad_id) {
-                setPadName(props.pad_id.replace(/.*\/pad\//i, ""))
-                setPadName(await platform_name_single(props.pad_id, sparqlEngine));
+            if (pad_id) {
+                setPadName(pad_id.replace(/.*\/pad\//i, ""))
+                setPadName(await platform_name_single(pad_id, sparqlEngine));
+                setDoc(await pad_doc(pad_id, sparqlEngine));
             }
         }
         render();
-    }, [props.pad_id]);
-
-    useEffect(() => {
-        async function render() {
-            if (props.pad_id) {
-                setDoc(await pad_doc(props.pad_id, sparqlEngine));
-            }
-        }
-        render();
-    }, [props.pad_id]);
+    }, []);
 
     return (
         <div className="App">
             <section>
                 <title>{pad_name}</title>
                 <ul>
-                    <li id="props.pad_id">
-                        Pad ID: <LinkItUrl>{props.pad_id}</LinkItUrl>
+                    <li id="pad_id">
+                        Pad ID: <Link to={`/pad/${pad_id}`}>{pad_id}</Link>
                     </li>
                     <li id="pad_doc">
                         <label htmlFor="docinput">JSON</label>
@@ -46,7 +38,7 @@ function DetailsComponent(props: DetailsComponentProps) {
                     <pre>{doc}</pre>
                 </section>
             </section>
-            <MetadataComponent pad_id={props.pad_id} />
+            <MetadataComponent pad_id={pad_id} />
         </div>
     );
 }

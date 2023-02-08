@@ -1,4 +1,4 @@
-const pagesize = 100
+const pagesize = 20
 
 const endpoint = {
     type: "sparql",

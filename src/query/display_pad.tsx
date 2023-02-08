@@ -54,11 +54,9 @@ function graph_to_react(obj: object | string, crumb?: string): ReactElement {
                     />
                 );
             });
-        return (
-            <IdView key={key} id={obj["@id"]} src={srcView}>
-                <UnorderedListView>{sub}</UnorderedListView>
-            </IdView>
-        );
+        const ul = sub.length > 0 ? <UnorderedListView>{sub}</UnorderedListView> : null
+        return <IdView key={key} id={obj["@id"]} src={srcView}>{ul}</IdView>
+;
     }
     if (Array.isArray(obj) && obj.length > 0) {
         const sub = obj.map((o, i) => {
@@ -87,7 +85,7 @@ function graph_to_ul(graph: Array<object> | object): ReactElement {
     const sub = pgraph.map((g) => {
         return <ListView key={g["@id"]} value={graph_to_react(g, g["@id"])} />;
     });
-    return <OrderedListView>{sub}</OrderedListView>;
+    return sub.length > 0 ? <OrderedListView>{sub}</OrderedListView> : null;
 }
 
 function property_to_li(
@@ -143,7 +141,7 @@ function pgraph_to_ul(
         });
     }
     const li = pgraph.map((g) => pgraph_to_li(g, param));
-    return <UnorderedListView>{li}</UnorderedListView>;
+    return li.length > 0 ? <UnorderedListView>{li}</UnorderedListView> : null ;
 }
 
 export { graph_to_ul, pgraph_to_ul };
