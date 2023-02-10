@@ -46,7 +46,9 @@ function SearchComponent() {
     }
 
     useEffect(() => {
-        doSearch();
+        if (pads.length == 0) {
+            doSearch();
+        }
     }, []);
 
     return (
