@@ -89,6 +89,7 @@ async function pad_list(engine: QueryEngine, store: SearchStore, offset=0) {
         }
         order by asc(?name)
     `;
+    console.log("Perform query")
     const padlist = normalize_graph(await query_jsonld(query, engine));
     const num = Number(await query_single(nquery, engine))
     // console.log(query, padlist);
