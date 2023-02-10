@@ -22,7 +22,8 @@ async function platform_name_single(pad_id: string, engine: QueryEngine) {
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_single(query, engine);
+    const name = await query_single(query, engine)
+    return name || pad_id
 }
 
 async function pad_doc(pad_id: string, engine: QueryEngine) {

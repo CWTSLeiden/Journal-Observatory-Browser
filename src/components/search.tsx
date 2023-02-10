@@ -1,47 +1,35 @@
-import React, { ChangeEvent } from "react";
-
-type SearchState = {
-    searchstring?: string;
-    embargo?: boolean;
-    embargoduration?: number;
-    pubpolicy?: boolean;
-    paywall?: boolean;
-    pagesize?: number;
-    page?: number;
-};
+import React from "react";
+import { useAppSelector, useAppDispatch } from "../store";
+import * as searchActions from "../actions/search";
+import { ButtonGroup, Button, TextField } from "@mui/material";
+import { Stack } from "@mui/system";
 
 type SearchBarProps = {
-    search: SearchState;
-    setSearch: (search: SearchState) => void;
-    handleSubmit: React.UIEventHandler;
+    handleSubmit: () => void;
 };
-const SearchBar = ({ search, setSearch, handleSubmit }: SearchBarProps) => (
-    <div id="searchbar">
-        <label htmlFor="search">Search</label>
-        <input
-            value={search.searchstring || ""}
-            type="text"
-            id="search"
-            name="search"
-            onInput={(e: ChangeEvent<HTMLInputElement>) =>
-                setSearch({ ...search, searchstring: e.target.value })
-            }
-            onKeyUp={(e) => {
-                if (e.key == "Enter") {
-                    handleSubmit(e);
-                }
-            }}
-        />
-        <button onClick={handleSubmit}>Search</button>
-        <button
-            onMouseDown={() => {
-                setSearch({ searchstring: "" });
-            }}
-            onMouseUp={handleSubmit}
-        >
-            Clear
-        </button>
-    </div>
-);
+const SearchBar = ({ handleSubmit }: SearchBarProps) => {
+    const state = useAppSelector(state => state.search.searchstring)
+    const dispatch = useAppDispatch();
+    return (
+        <Stack direction="row" id="searchbar" spacing={2}>
+            <TextField
+                label="Search"
+                value={state}
+                size="small"
+                onChange={(e) => dispatch(searchActions.set_search(e.target.value))}
+                onKeyDown={(e) => (e.key == 'Enter') ? handleSubmit() : null}
+                fullWidth
+            />
+            <ButtonGroup>
+                <Button onClick={handleSubmit} variant="contained">Search</Button>
+                <Button
+                    variant="outlined"
+                    onMouseDown={() => dispatch(searchActions.clear())}
+                    onMouseUp={handleSubmit}
+                >Clear</Button>
+            </ButtonGroup>
+        </Stack>
+    );
+};
 
-export { SearchState, SearchBar }
+export { SearchBar };

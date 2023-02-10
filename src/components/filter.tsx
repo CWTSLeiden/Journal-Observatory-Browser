@@ -1,92 +1,95 @@
-import React, { ReactNode } from "react";
-import { SearchState } from "./search";
+import React, { ReactElement } from "react";
+import { useAppSelector, useAppDispatch, SearchStore } from "../store";
+import * as searchActions from "../actions/search";
+import { Checkbox, FormControlLabel, FormGroup, Slider } from "@mui/material";
+import { Box } from "@mui/system";
+
+type CheckBoxFilterParams = {
+    state: (s: SearchStore) => boolean;
+    action: () => searchActions.searchAction;
+    label: string;
+    children?: Array<ReactElement> | ReactElement;
+};
+const CheckBoxFilter = ({
+    state,
+    action,
+    label,
+    children,
+}: CheckBoxFilterParams) => {
+    const checked = useAppSelector(state);
+    const dispatch = useAppDispatch();
+    const checkbox = (
+        <Checkbox
+            checked={Boolean(checked)}
+            onChange={() => dispatch(action())}
+        />
+    );
+    return (
+        <div className="filter">
+            <FormControlLabel control={checkbox} label={label} />
+            {children ? <Box sx={{ ml: 4, mr: 4 }}>{children}</Box> : ""}
+        </div>
+    );
+};
+
+const PubPolicyFilter = () => (
+    <CheckBoxFilter
+        state={(store) => store.search.pubpolicy}
+        action={searchActions.toggle_pubpolicy}
+        label="hasPubPolicy"
+    />
+);
+
+const PaywallFilter = () => (
+    <CheckBoxFilter
+        state={(store) => store.search.paywall}
+        action={searchActions.toggle_paywall}
+        label="hasPaywall"
+    />
+);
+
+const EmbargoFilter = () => {
+    const state = useAppSelector((s) => s.search.embargo);
+    const value = useAppSelector((s) => s.search.embargoduration);
+    const dispatch = useAppDispatch();
+    return (
+        <CheckBoxFilter
+            state={(store) => store.search.embargo}
+            action={searchActions.toggle_embargo}
+            label="hasEmbargo"
+        >
+            <Slider
+                disabled={!state}
+                value={Number(value)}
+                onChange={(_, n: number) =>
+                    dispatch(searchActions.set_embargo(n))
+                }
+                max={24}
+                valueLabelDisplay="auto"
+                marks={[0, 6, 12, 18, 24].map((n) => ({
+                    value: n,
+                    label: `${n}M`,
+                }))}
+            />
+        </CheckBoxFilter>
+    );
+};
 
 type FilterBarProps = {
-    search: SearchState;
-    setSearch: (search: SearchState) => void;
-    handleSubmit: React.UIEventHandler;
+    handleSubmit: React.UIEventHandler
 };
-const FilterBar = ({ search, setSearch, handleSubmit }: FilterBarProps) => (
-    <div id="filterbar">
-        <h2>Publication Policy</h2>
-        <div id="filters">
-            <CheckboxFilter
-                id="pubpolicy"
-                filterProp={search.pubpolicy}
-                setFilterProp={(b: boolean) =>
-                    setSearch({ ...search, pubpolicy: b })
-                }
-                label="hasPolicy: PublicationPolicy"
-            />
-            <CheckboxFilter
-                id="paywall"
-                filterProp={search.paywall}
-                setFilterProp={(b: boolean) =>
-                    setSearch({ ...search, paywall: b })
-                }
-                label="hasPaywall"
-            />
-            <SliderFilter
-                id="embargo"
-                filterProp1={search.embargo}
-                setFilterProp1={(b: boolean) =>
-                    setSearch({ ...search, embargo: b })
-                }
-                filterProp2={search.embargoduration}
-                setFilterProp2={(n: number) =>
-                    setSearch({ ...search, embargoduration: n })
-                }
-                label="hasEmbargo"
-            />
+const FilterBar = ({ handleSubmit }: FilterBarProps) => {
+    return (
+        <div id="filterbar">
+            <h2>Publication Policy</h2>
+            <FormGroup>
+                <PubPolicyFilter />
+                <PaywallFilter />
+                <EmbargoFilter />
+            </FormGroup>
+            <button onClick={handleSubmit}>Filter</button>
         </div>
-        <button onClick={handleSubmit}>Filter</button>
-    </div>
-);
-
-type CheckboxFilterProps = {
-    id: string;
-    filterProp: boolean;
-    setFilterProp: (b: boolean) => void;
-    label: string;
-    children?: Array<ReactNode> | ReactNode;
+    );
 };
-const CheckboxFilter = (props: CheckboxFilterProps) => (
-    <div id={props.id} className="filter filter-toggle">
-        <input
-            id={`${props.id}-toggle`}
-            type="checkbox"
-            checked={Boolean(props.filterProp)}
-            onChange={() => props.setFilterProp(!props.filterProp)}
-        />
-        <label htmlFor={`${props.id}-toggle`}>{props.label}</label>
-        {props.children}
-    </div>
-);
-
-type SliderFilterProps = {
-    id: string;
-    filterProp1: boolean;
-    filterProp2: number;
-    setFilterProp1: (b: boolean) => void;
-    setFilterProp2: (n: number) => void;
-    label: string;
-};
-const SliderFilter = (props: SliderFilterProps) => (
-    <CheckboxFilter
-        id={props.id}
-        filterProp={props.filterProp1}
-        setFilterProp={props.setFilterProp1}
-        label={props.label}
-    >
-        <input
-            id={`${props.id}-slider`}
-            type="range"
-            min="0"
-            max="100"
-            value={props.filterProp2 || 0}
-            onChange={(e) => props.setFilterProp2(Number(e.target.value))}
-        />
-    </CheckboxFilter>
-);
 
 export { FilterBar };

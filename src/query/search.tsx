@@ -1,9 +1,10 @@
 import { QueryEngine } from "@comunica/query-sparql";
 import { normalize_graph, query_jsonld, query_single } from "../query/query";
-import { SearchState } from "../components/search";
 import { pagesize } from "../config";
+import { SearchStore } from "../store";
 
-async function pad_list(engine: QueryEngine, search: SearchState) {
+async function pad_list(engine: QueryEngine, store: SearchStore, offset=0) {
+    const search = store.search
     const searchfilter = (s?: string) => {
         const q = `
             filter exists {
@@ -47,10 +48,8 @@ async function pad_list(engine: QueryEngine, search: SearchState) {
         return b ? q : "";
     };
 
-    const limit = (p: number, ps: number) => {
-        const limit = ps || pagesize
-        const offset = limit * (p || 0)
-        return `limit ${limit} offset ${offset}`;
+    const limit = (ps: number = pagesize) => {
+        return `limit ${ps} offset ${offset}`;
     };
     const nquery = `
         select (count(distinct ?pad) as ?count) where {
@@ -80,7 +79,7 @@ async function pad_list(engine: QueryEngine, search: SearchState) {
                     ${paywallfilter(search.paywall)}
                     ${embargofilter(search.embargo, search.embargoduration)}
                 }
-                ${limit(search.page, search.pagesize)}
+                ${limit(search.pagesize)}
             }
             optional { ?platform schema:name ?name . }
             optional { ?platform dcterms:identifier ?id . bind(str(?id) as ?sid) . }
