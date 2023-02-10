@@ -57,7 +57,7 @@ function SearchComponent() {
             <SearchBar handleSubmit={doSearch} />
             <div id="main">
                 <FilterBar handleSubmit={doSearch} />
-                <PadTable padlist={pads} />
+                <PadTable />
             </div>
             <PagingComponent handleClick={nextPage} />
         </div>
