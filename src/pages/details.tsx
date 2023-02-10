@@ -3,7 +3,7 @@ import "../details.css"
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { QueryEngine } from "@comunica/query-sparql";
-import { pad_doc, platform_name_single } from "../query/pad";
+import { pad_doc, pad_id_norm, platform_name_single } from "../query/pad";
 import MetadataComponent from "../components/metadata";
 
 function DetailsComponent() {
@@ -12,15 +12,20 @@ function DetailsComponent() {
     const [doc, setDoc] = useState("loading...");
     const sparqlEngine = new QueryEngine();
 
-    useEffect(() => {
-        async function render() {
-            if (pad_id) {
-                setPadName(pad_id.replace(/.*\/pad\//i, ""))
-                setPadName(await platform_name_single(pad_id, sparqlEngine));
-                setDoc(await pad_doc(pad_id, sparqlEngine));
-            }
+    async function setName() {
+        if (pad_id) {
+            setPadName(await platform_name_single(pad_id, sparqlEngine));
         }
-        render();
+    }
+    async function setRaw() {
+        if (pad_id) {
+            setDoc(await pad_doc(pad_id, sparqlEngine));
+        }
+    }
+
+    useEffect(() => {
+        setName();
+        setRaw();
     }, []);
 
     return (
