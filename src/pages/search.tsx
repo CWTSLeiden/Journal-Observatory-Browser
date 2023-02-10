@@ -1,97 +1,63 @@
 import React, { useState, useEffect } from "react";
 import { QueryEngine } from "@comunica/query-sparql";
 import { FilterBar } from "../components/filter";
-import { SearchState, SearchBar } from "../components/search";
+import { SearchBar } from "../components/search";
 import { PadTable } from "../components/padtable";
 import { pad_list } from "../query/search";
+import store, { useAppSelector, useAppDispatch } from "../store";
+import * as padsActions from "../actions/pads";
 
-type PagingComponentProps = {
-    num: number;
-    total: number;
-    handlePaging: () => void;
+type PagingComponentProps = { handleClick: () => void };
+const PagingComponent = ({ handleClick }: PagingComponentProps) => {
+    const num = useAppSelector((s) => s.pads.pads.length);
+    const total = useAppSelector((s) => s.pads.total);
+    return (
+        <button onClick={handleClick} className="paging">
+            <div>
+                {num == total ? `${num}` : `${num}/${total}`}
+                {num < total ? "+" : ""}
+            </div>
+        </button>
+    );
 };
-const PagingComponent = ({
-    num,
-    total,
-    handlePaging,
-}: PagingComponentProps) => (
-    <button onClick={handlePaging} className="paging">
-        <div>
-            {num == total ? `${num}` : `${num}/${total}`}
-            {num < total ? "+" : ""}
-        </div>
-    </button>
-);
 
 function SearchComponent() {
-    const newsearch: SearchState = {};
-    const [padlist, setPadlist] = useState([]);
-    const [padnum, setPadNum] = useState(0);
-    const [search, setSearch] = useState(newsearch);
-    const [doSearch, setDoSearch] = useState(search);
+    const pads = useAppSelector((s) => s.pads.pads);
+    const dispatch = useAppDispatch();
     const sparqlEngine = new QueryEngine();
 
-    useEffect(() => {
-        async function render() {
-            const { padlist, num } = await pad_list(sparqlEngine, {
-                ...doSearch,
-                page: 0,
-            });
-            setSearch({ ...doSearch, page: 0 });
-            setPadlist(padlist);
-            setPadNum(num);
-        }
-        render();
-    }, [doSearch]);
+    async function doSearch() {
+        const { padlist, num } = await pad_list(
+            sparqlEngine,
+            store.getState()
+        );
+        dispatch(padsActions.set_pads(padlist));
+        dispatch(padsActions.set_total(num));
+    }
+
+    async function nextPage() {
+        const { padlist, num } = await pad_list(
+            sparqlEngine,
+            store.getState(),
+            pads.length
+        );
+        dispatch(padsActions.add_pads(padlist));
+        dispatch(padsActions.set_total(num));
+    }
 
     useEffect(() => {
-        async function render() {
-            const { padlist: padlist_page, num } = await pad_list(
-                sparqlEngine,
-                { ...doSearch, page: search.page }
-            );
-            setPadlist(padlist.concat(padlist_page));
-            setPadNum(num);
-        }
-        if (search.page > 0 && padlist.length < padnum) {
-            render();
-        }
-    }, [search.page]);
-
-    useEffect(() => {
-        // console.log(search);
-    }, [search, doSearch]);
-
-    const handleSearchSubmit = (e) => {
-        setDoSearch(search);
-        e.preventDefault();
-    };
-
-    const handlePaging = () => {
-        setSearch({ ...search, page: search.page ? search.page + 1 : 1 });
-    };
+        doSearch();
+    }, []);
 
     return (
         <div className="Search">
             <header>Header</header>
-            <SearchBar
-                search={search}
-                setSearch={setSearch}
-                handleSubmit={handleSearchSubmit}
-            />
+            <SearchBar handleSubmit={doSearch} />
             <div id="main">
-                <FilterBar
-                    search={search}
-                    setSearch={setSearch}
-                    handleSubmit={handleSearchSubmit}
-                />
-                <PadTable padlist={padlist} />
+                <FilterBar handleSubmit={doSearch} />
+                <PadTable padlist={pads} />
             </div>
-            <PagingComponent
-                num={padlist.length}
-                total={padnum}
-                handlePaging={handlePaging}
-            />
+            <PagingComponent handleClick={nextPage} />
         </div>
     );
 }
