@@ -1,0 +1,76 @@
+title {
+    display: block;
+    font-size: 2em;
+    text-align: center;
+    padding-bottom: 1em;
+}
+
+dt {
+    display: inline-block;
+    width: 15em;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+}
+
+dd {
+    display: inline;
+    margin-left: 15em;
+}
+
+.src {
+    float: right;
+    opacity: 0.5;
+    font-style: italic;
+}
+
+.src:before {
+    content: "[";
+}
+
+.src:after {
+    content: "]";
+}
+
+.src-long {
+    display: none;
+}
+
+.src-short {
+    display: inline;
+}
+
+li:hover .src-long {
+    display: inline;
+}
+
+li:hover .src-short {
+    display: none;
+}
+
+.id,
+.value {
+    display: inline;
+}
+
+#metadata {
+    background-color: #eee;
+}
+
+#doc {
+    border: #aaa solid 1px;
+    padding: 0 2em;
+    font-size: 0.8em;
+    display: none;
+    height: 40em;
+    overflow: scroll;
+}
+
+#docinput {
+    display: none;
+}
+#docinput:checked + #doc {
+    display: block;
+    transition: 0.5s ease;
+}

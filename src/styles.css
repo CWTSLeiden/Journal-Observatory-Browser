@@ -9,97 +9,10 @@ section {
     margin-bottom: 1em;
 }
 
-title {
-    display: block;
-    font-size: 2em;
-    text-align: center;
-    padding-bottom: 1em;
-}
-
 h2 {
     font-size: 1em;
     font-weight: normal;
     text-decoration: underline;
-}
-
-dt {
-    display: inline-block;
-    width: 15em;
-    font-weight: bold;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    position: absolute;
-}
-
-dd {
-    display: inline;
-    margin-left: 15em;
-}
-
-.src {
-    float: right;
-    opacity: 0.5;
-    font-style: italic;
-}
-
-.src:before {
-    content: "[";
-}
-
-.src:after {
-    content: "]";
-}
-
-.src-long {
-    display: none;
-}
-
-.src-short {
-    display: inline;
-}
-
-li:hover .src-long {
-    display: inline;
-}
-
-li:hover .src-short {
-    display: none;
-}
-
-.id,
-.value {
-    display: inline;
-}
-
-label {
-    text-decoration: underline;
-    color: blue;
-    cursor: pointer;
-}
-
-#metadata {
-    background-color: #eee;
-}
-
-#doc {
-    border: #aaa solid 1px;
-    padding: 0 2em;
-    font-size: 0.8em;
-}
-
-#docinput {
-    display: none;
-}
-
-#doc {
-    display: none;
-    height: 40em;
-    overflow: scroll;
-}
-
-#docinput:checked + #doc {
-    display: block;
-    transition: 0.5s ease;
 }
 
 .Search {
@@ -121,13 +34,6 @@ header {
     border-radius: 1em;
 }
 
-#searchbar {
-    display: grid;
-    grid-template-columns: auto 5fr 1fr 1fr;
-    gap: 1em;
-    align-items: center;
-}
-
 #main {
     display: grid;
     grid-template-columns: 1fr 3fr;
@@ -140,11 +46,6 @@ header {
     padding: 1em;
     background-color: #eee;
     border-radius: 1em;
-}
-
-.filter {
-    display: grid;
-    grid-template-columns: auto 3fr 1fr;
 }
 
 #results {
