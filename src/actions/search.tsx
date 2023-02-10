@@ -9,11 +9,36 @@ type searchActionPayload = {
 export const CLEAR = "clear";
 export const SET_EMBARGO = "setEmbargo";
 export const SET_PAGESIZE = "setPagesize";
+export const SET_PAGE = "setPage";
+export const DECREMENT_PAGE = "decrementPage";
+export const INCREMENT_PAGE = "incrementPage";
+export const RESET_PAGE = "resetPage";
 export const SET_SEARCH = "setSearch";
 export const TOGGLE_EMBARGO = "toggleEmbargo";
 export const TOGGLE_PAYWALL = "togglePaywall";
 export const TOGGLE_PUBPOLICY = "togglePubpolicy";
 
+export const decrementPage = (): searchAction => ({
+    type: DECREMENT_PAGE,
+});
+export const incrementPage = (): searchAction => ({
+    type: INCREMENT_PAGE,
+});
+export const setPage = (n: number): searchAction => ({
+    type: SET_PAGE,
+    payload: {
+        value: n,
+    },
+});
+export const setPagesize = (n: number): searchAction => ({
+    type: SET_PAGESIZE,
+    payload: {
+        value: n,
+    },
+});
+export const resetPage = (): searchAction => ({
+    type: RESET_PAGE
+});
 export const clear = (): searchAction => ({
     type: CLEAR,
 });
