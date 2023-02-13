@@ -1,8 +1,8 @@
 import React, { ReactElement } from "react";
 import { useAppSelector, useAppDispatch, SearchStore } from "../store";
 import * as searchActions from "../actions/search";
-import { Checkbox, FormControlLabel, FormGroup, Slider } from "@mui/material";
-import { Box } from "@mui/system";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Checkbox, FormControlLabel, FormGroup, Slider, Stack, Typography } from "@mui/material";
+import { ExpandMore } from '@mui/icons-material';
 
 type CheckBoxFilterParams = {
     state: (s: SearchStore) => boolean;
@@ -80,15 +80,24 @@ type FilterBarProps = {
 };
 const FilterBar = ({ handleSubmit }: FilterBarProps) => {
     return (
-        <div id="filterbar">
-            <h2>Publication Policy</h2>
-            <FormGroup>
-                <PubPolicyFilter />
-                <PaywallFilter />
-                <EmbargoFilter />
-            </FormGroup>
-            <button onClick={handleSubmit}>Filter</button>
-        </div>
+        <Stack id="filter-bar" spacing={2}>
+            <Accordion defaultExpanded={true}>
+                <AccordionSummary
+                    id="filter-panel-publication-policy"
+                    expandIcon={<ExpandMore />}
+                >
+                    <Typography sx={{ fontWeight: 600 }}>Publication Policy</Typography>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <FormGroup>
+                        <PubPolicyFilter />
+                        <PaywallFilter />
+                        <EmbargoFilter />
+                    </FormGroup>
+                </AccordionDetails>
+            </Accordion>
+            <Button variant="outlined" onClick={handleSubmit}>Filter</Button>
+        </Stack>
     );
 };
 
