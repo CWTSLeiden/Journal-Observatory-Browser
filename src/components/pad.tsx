@@ -6,11 +6,9 @@ function urlize(thing: ReactNode): ReactElement {
     return <LinkItUrl>{thing}</LinkItUrl>;
 }
 
-const LoadingView = () => (
-    <div>Loading</div>
-)
+const LoadingView = () => <div>Loading</div>;
 
-type SrcViewProps = { sources: Array<string> }
+type SrcViewProps = { sources: Array<string> };
 const SrcView = ({ sources }: SrcViewProps) => (
     <div className="src">
         <div className="src-short">{sources.length}</div>
@@ -19,7 +17,7 @@ const SrcView = ({ sources }: SrcViewProps) => (
 );
 SrcView.propTypes = { sources: PropTypes.arrayOf(PropTypes.string).isRequired };
 
-type ValueViewProps = { value: string, src?: ReactNode }
+type ValueViewProps = { value: string; src?: ReactNode };
 const ValueView = ({ value, src }: ValueViewProps) => (
     <div className="value">
         {urlize(value)}
@@ -31,7 +29,7 @@ ValueView.propTypes = {
     src: PropTypes.node,
 };
 
-type IdViewProps = { id: string, children?: ReactNode, src?: ReactNode }
+type IdViewProps = { id: string; children?: ReactNode; src?: ReactNode };
 const IdView = ({ id, children, src }: IdViewProps) => (
     <div className="id">
         {urlize(id)}
@@ -45,7 +43,7 @@ IdView.propTypes = {
     src: PropTypes.node,
 };
 
-type ListViewProps = { value: string | ReactNode, src?: ReactNode }
+type ListViewProps = { value: string | ReactNode; src?: ReactNode };
 const ListView = ({ value, src }: ListViewProps) => (
     <li>
         {value}

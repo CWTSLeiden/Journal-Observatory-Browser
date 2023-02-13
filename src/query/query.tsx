@@ -17,20 +17,7 @@ async function query_jsonld(query: string, engine: QueryEngine) {
     const quads = await response.toArray();
     const document = await fromRDF(quads);
     const document_compact = await compact(document, context, {compactArrays: false});
-    return document_compact;
-}
-
-function normalize_graph(graph: Array<object> | object): Array<object> {
-    if (graph["@graph"]) {
-        graph = graph["@graph"];
-    }
-    if (Array.isArray(graph)) {
-        return graph;
-    }
-    if (graph["@id"]) {
-        return Array(graph);
-    }
-    return []
+    return document_compact["@graph"];
 }
 
 async function query_select(query: string, engine: QueryEngine) {
@@ -51,4 +38,4 @@ async function query_single(query: string, engine: QueryEngine) {
     }
 }
 
-export { query_single, query_jsonld, query_select, normalize_graph };
+export { query_single, query_jsonld, query_select };

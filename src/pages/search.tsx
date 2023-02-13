@@ -12,7 +12,6 @@ import { Stack } from "@mui/system";
 
 function SearchComponent() {
     const searchState = useAppSelector((s) => s.search);
-    const pads = useAppSelector((s) => s.pads.pads);
     const page = useAppSelector((s) => s.search.page);
     const pagesize = useAppSelector((s) => s.search.pagesize);
     const dispatch = useAppDispatch();
@@ -36,12 +35,6 @@ function SearchComponent() {
     useEffect(() => {
         loadPads();
     }, [page, pagesize]);
-
-    useEffect(() => {
-        if (pads.length == 0) {
-            doSearch();
-        }
-    }, []);
 
     return (
         <Grid container direction="column" spacing={2} id="search">

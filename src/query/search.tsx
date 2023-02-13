@@ -1,5 +1,5 @@
 import { QueryEngine } from "@comunica/query-sparql";
-import { normalize_graph, query_jsonld, query_single } from "../query/query";
+import { query_jsonld, query_single } from "../query/query";
 import { pagesize } from "../config";
 import { SearchState } from "../reducers/search";
 
@@ -88,9 +88,10 @@ async function pad_list(engine: QueryEngine, search: SearchState, offset=0) {
         }
         order by asc(?name)
     `;
-    console.log("Perform query")
-    const padlist = normalize_graph(await query_jsonld(query, engine));
+    console.log("Perform query", Date.now())
+    const result = await query_jsonld(query, engine)
     const num = Number(await query_single(nquery, engine))
+    const padlist = Array.isArray(result) ? result : []
     // console.log(query, padlist);
     return { padlist, num };
 }

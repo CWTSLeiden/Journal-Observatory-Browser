@@ -9,16 +9,12 @@ import {
     OrderedListView,
     LoadingView,
 } from "../components/pad";
-import { normalize_graph } from "./query";
 
-function src_to_div(src?: Array<object> | object): ReactElement {
+function src_to_div(src?: Array<object>): ReactElement {
     if (!src) {
         return undefined;
     }
-    if (Array.isArray(src)) {
-        return <SrcView sources={src.map((s: object) => s["@id"])} />;
-    }
-    return <SrcView sources={Array(src["@id"])} />;
+    return <SrcView sources={src.map((s: object) => s["@id"])} />;
 }
 
 function graph_to_react(obj: object | string, crumb?: string): ReactElement {
@@ -77,12 +73,11 @@ function graph_to_react(obj: object | string, crumb?: string): ReactElement {
     );
 }
 
-function graph_to_ul(graph: Array<object> | object): ReactElement {
+function graph_to_ul(graph: Array<object>): ReactElement {
     if (!graph) {
         return <LoadingView />;
     }
-    const pgraph = normalize_graph(graph);
-    const sub = pgraph.map((g) => {
+    const sub = graph.map((g) => {
         return <ListView key={g["@id"]} value={graph_to_react(g, g["@id"])} />;
     });
     return sub.length > 0 ? <OrderedListView>{sub}</OrderedListView> : null;
@@ -90,16 +85,16 @@ function graph_to_ul(graph: Array<object> | object): ReactElement {
 
 function property_to_li(
     thing: object | string,
-    dt?: string,
-    src?: Array<object> | object,
+    title?: string,
+    src?: Array<object>,
     crumb?: string
 ) {
     const value = graph_to_react(thing, crumb);
     const str = thing["@id"] || thing["@value"] || String(thing);
-    const key = [crumb, dt, str].filter(Boolean).join(".");
+    const key = [crumb, title, str].filter(Boolean).join(".");
     const srcView = src_to_div(src);
-    if (dt) {
-        return <DefListView key={key} title={dt} value={value} src={srcView} />;
+    if (title) {
+        return <DefListView key={key} title={title} value={value} src={srcView} />;
     }
     return <ListView key={key} value={value} src={srcView} />;
 }
@@ -128,18 +123,13 @@ function pgraph_to_li(graph: object, param?: string) {
 }
 
 function pgraph_to_ul(
-    graph: Array<object> | object,
+    graph?: Array<object>,
     param?: string
 ): ReactElement {
     if (!graph) {
         return <LoadingView />;
     }
-    let pgraph = normalize_graph(graph);
-    if (param) {
-        pgraph = pgraph.filter((g) => {
-            return g[param];
-        });
-    }
+    const pgraph = param ? graph.filter(g => g[param]) : graph;
     const li = pgraph.map((g) => pgraph_to_li(g, param));
     return li.length > 0 ? <UnorderedListView>{li}</UnorderedListView> : null ;
 }
