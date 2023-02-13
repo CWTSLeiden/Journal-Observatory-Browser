@@ -1,3 +1,17 @@
+section {
+    font-size: 1.3em;
+    font-family: monospace;
+    margin: 2em;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+h2 {
+    font-size: 1.1em;
+}
+
 title {
     display: block;
     font-size: 2em;
@@ -52,10 +66,6 @@ li:hover .src-short {
 .id,
 .value {
     display: inline;
-}
-
-#metadata {
-    background-color: #eee;
 }
 
 #doc {

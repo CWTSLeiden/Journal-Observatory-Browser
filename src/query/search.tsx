@@ -1,10 +1,9 @@
 import { QueryEngine } from "@comunica/query-sparql";
 import { normalize_graph, query_jsonld, query_single } from "../query/query";
 import { pagesize } from "../config";
-import { SearchStore } from "../store";
+import { SearchState } from "../reducers/search";
 
-async function pad_list(engine: QueryEngine, store: SearchStore, offset=0) {
-    const search = store.search
+async function pad_list(engine: QueryEngine, search: SearchState, offset=0) {
     const searchfilter = (s?: string) => {
         const q = `
             filter exists {
@@ -89,6 +88,7 @@ async function pad_list(engine: QueryEngine, store: SearchStore, offset=0) {
         }
         order by asc(?name)
     `;
+    console.log("Perform query")
     const padlist = normalize_graph(await query_jsonld(query, engine));
     const num = Number(await query_single(nquery, engine))
     // console.log(query, padlist);

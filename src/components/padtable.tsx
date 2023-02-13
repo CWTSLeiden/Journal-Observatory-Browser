@@ -1,57 +1,96 @@
+import {
+    Paper,
+    Table,
+    TableBody,
+    TableCell,
+    TableContainer,
+    TableHead,
+    TablePagination,
+    TableRow,
+} from "@mui/material";
+import { ArrowForward } from "@mui/icons-material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
+import * as actions from "../actions/search";
 import { pad_id_norm } from "../query/pad";
-import { useAppSelector } from "../store";
+import { useAppDispatch, useAppSelector } from "../store";
 
 const PadTable = () => {
-    const pads = useAppSelector((store) => store.pads.pads)
+    const pads = useAppSelector((store) => store.pads.pads);
     return (
-        <table id="results">
-            <thead>
-                <tr className="table-head">
-                    <th>Names</th>
-                    <th>Identifiers</th>
-                    <th>Keywords</th>
-                </tr>
-            </thead>
-            <tbody>
-                {pads.map((pad) => (
-                    <PadRow key={pad["@id"]} pad={pad} />
-                ))}
-            </tbody>
-        </table>
+        <TableContainer component={Paper}>
+            <Table stickyHeader>
+                <TableHead>
+                    <TableRow>
+                        <TableCell sx={{ fontWeight: 800 }}>Names</TableCell>
+                        <TableCell sx={{ fontWeight: 800 }}> Identifiers</TableCell>
+                        <TableCell sx={{ fontWeight: 800 }}>Keywords</TableCell>
+                        <TableCell></TableCell>
+                    </TableRow>
+                </TableHead>
+                <TableBody>
+                    {pads.map((pad) => (
+                        <PadRow key={pad["@id"]} pad={pad} />
+                    ))}
+                    {pads.length < 1 ? <NoResultsRow /> : ""}
+                </TableBody>
+            </Table>
+        </TableContainer>
     );
 };
 
-function prop_str(prop: string | object) {
-    return prop["@id"] || prop["@value"] || String(prop);
-}
+const NoResultsRow = () => (
+    <TableRow><TableCell>No Results</TableCell></TableRow>
+)
 
-type RowProps = { prop: Array<string> | Array<object> };
-const FirstRow = ({ prop }: RowProps) => {
-    const pr = prop ? prop.map((p) => prop_str(p)) : ["<null>"];
-    return <td>{pr.find(Boolean)}</td>;
+const PadTablePagination = () => {
+    const total = useAppSelector((store) => store.pads.total);
+    const pagesize = useAppSelector((store) => store.search.pagesize);
+    const page = useAppSelector((store) => store.search.page);
+    const dispatch = useAppDispatch();
+    return (
+        <TablePagination
+            component={Paper}
+            page={page}
+            rowsPerPage={pagesize}
+            rowsPerPageOptions={[20, 50, 100]}
+            onRowsPerPageChange={(e) => {
+                dispatch(actions.setPagesize(Number(e.target.value)));
+            }}
+            onPageChange={(_, n) => {
+                dispatch(actions.setPage(n));
+            }}
+            count={total}
+            colSpan={4}
+        />
+    );
 };
-const JoinRow = ({ prop }: RowProps) => {
-    const pr = prop ? prop.map((p) => prop_str(p)) : ["<null>"];
-    return <td>{pr.join(", ")}</td>;
+
+const propToString = (
+    prop: Array<string> | Array<object> = ["<null>"],
+    short = false
+): string => {
+    const prop_str = (p: string | object): string =>
+        p["@id"] || p["@value"] || String(p);
+    prop = prop.map((p: string | object) => prop_str(p));
+    return short ? prop.find(Boolean) : prop.join(", ");
 };
 
 type PadRowProps = { pad: object };
 const PadRow = ({ pad }: PadRowProps) => {
     const pad_id = pad_id_norm(pad["@id"]);
     const navigate = useNavigate();
+    const handleClick = () => navigate(`/pad/${pad_id}`);
     return (
-        <tr
-            className="padrow"
-            key={pad_id}
-            onClick={() => navigate(`/pad/${pad_id}`)}
-        >
-            <FirstRow prop={pad["schema:name"]} />
-            <JoinRow prop={pad["dcterms:identifier"]} />
-            <JoinRow prop={pad["ppo:hasKeyword"]} />
-        </tr>
+        <TableRow hover key={pad_id} onClick={handleClick} sx={{cursor: "pointer"}}>
+            <TableCell>{propToString(pad["schema:name"], true)}</TableCell>
+            <TableCell>{propToString(pad["dcterms:identifier"])}</TableCell>
+            <TableCell>{propToString(pad["ppo:hasKeyword"])}</TableCell>
+            <TableCell>
+                <ArrowForward fontSize="small"/>
+            </TableCell>
+        </TableRow>
     );
 };
 
-export { PadTable };
+export { PadTable, PadTablePagination };
