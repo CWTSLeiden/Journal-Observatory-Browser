@@ -57,28 +57,46 @@ ListView.propTypes = {
     src: PropTypes.node,
 };
 
-type UnorderedListViewProps = { children: Array<ReactNode>, src?: ReactNode }
-const UnorderedListView = ({ children, src }: UnorderedListViewProps) => (
-    <ul>{src}{children}</ul>
-);
+type SortProps = { children: Array<ReactNode>; by?: string };
+const Sort = ({ children, by }: SortProps) => {
+    const compare = (a: ReactNode, b: ReactNode) => (a[by] > b[by] ? 1 : -1);
+    if (by) {
+        return <>{React.Children.toArray(children).sort(compare)}</>;
+    }
+    return <>{children}</>;
+};
+
+type UnorderedListViewProps = { children: Array<ReactNode>; sortBy?: string; src?: ReactNode };
+const UnorderedListView = ({ children, sortBy, src }: UnorderedListViewProps) => (
+        <ul>
+            {src}
+            <Sort by={sortBy || "key"}>{children}</Sort>
+        </ul>
+    );
 UnorderedListView.propTypes = {
     children: PropTypes.arrayOf(PropTypes.node).isRequired,
+    sortBy: PropTypes.string,
     src: PropTypes.node,
 };
 
-type OrderedListViewProps = { children: ReactNode, src?: ReactNode }
-const OrderedListView = ({ children, src }: OrderedListViewProps) => (
+type OrderedListViewProps = { children: Array<ReactNode>; sortBy?: string; src?: ReactNode };
+const OrderedListView = ({ children, sortBy, src }: OrderedListViewProps) => (
     <ol>
         {src}
-        {children}
+        <Sort by={sortBy || "key"}>{children}</Sort>
     </ol>
 );
 OrderedListView.propTypes = {
     children: PropTypes.arrayOf(PropTypes.node).isRequired,
+    sortBy: PropTypes.string,
     src: PropTypes.node,
 };
 
-type DefListViewProps = { title: string, value: string | ReactNode, src?: ReactNode }
+type DefListViewProps = {
+    title: string;
+    value: string | ReactNode;
+    src?: ReactNode;
+};
 const DefListView = ({ title, value, src }: DefListViewProps) => (
     <li>
         <dt>{title}</dt>
