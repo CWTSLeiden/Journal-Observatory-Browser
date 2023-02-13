@@ -1,11 +1,9 @@
 import {
-    Button,
     Paper,
     Table,
     TableBody,
     TableCell,
     TableContainer,
-    TableFooter,
     TableHead,
     TablePagination,
     TableRow,
@@ -34,11 +32,16 @@ const PadTable = () => {
                     {pads.map((pad) => (
                         <PadRow key={pad["@id"]} pad={pad} />
                     ))}
+                    {pads.length < 1 ? <NoResultsRow /> : ""}
                 </TableBody>
             </Table>
         </TableContainer>
     );
 };
+
+const NoResultsRow = () => (
+    <TableRow><TableCell>No Results</TableCell></TableRow>
+)
 
 const PadTablePagination = () => {
     const total = useAppSelector((store) => store.pads.total);

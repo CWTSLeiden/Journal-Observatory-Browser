@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { QueryEngine } from "@comunica/query-sparql";
 import { FilterBar } from "../components/filter";
 import { SearchBar } from "../components/search";
@@ -11,29 +11,30 @@ import { Grid, Paper } from "@mui/material";
 import { Stack, Box } from "@mui/system";
 
 function SearchComponent() {
+    const searchState = useAppSelector((s) => s.search);
     const pads = useAppSelector((s) => s.pads.pads);
     const page = useAppSelector((s) => s.search.page);
     const pagesize = useAppSelector((s) => s.search.pagesize);
     const dispatch = useAppDispatch();
     const sparqlEngine = new QueryEngine();
 
-    async function doSearch() {
-        dispatch(searchActions.resetPage());
-        loadPage(0);
-    }
-
-    async function loadPage(p: number) {
+    async function loadPads() {
         const { padlist, num } = await pad_list(
             sparqlEngine,
-            store.getState(),
-            pagesize * p
+            searchState,
+            pagesize * page
         );
         dispatch(padsActions.set_pads(padlist));
         dispatch(padsActions.set_total(num));
     }
 
+    async function doSearch() {
+        dispatch(searchActions.resetPage());
+        loadPads();
+    }
+
     useEffect(() => {
-        loadPage(page);
+        loadPads();
     }, [page, pagesize]);
 
     useEffect(() => {
@@ -43,20 +44,20 @@ function SearchComponent() {
     }, []);
 
     return (
-        <Grid container direction="column" spacing={2} id="search">
-            <Grid item xs={1}>
+        <Grid container direction="column" spacing={1} id="search">
+            <Grid item>
                 <Box component={Paper} sx={{ padding: 2 }}>
                     <SearchBar handleSubmit={doSearch} />
                 </Box>
             </Grid>
-            <Grid container direction="row" item xs={11} spacing={2}>
-                <Grid item xs={3} id="filter">
+            <Grid container direction="row" item spacing={1}>
+                <Grid item xs={12} sm={12} md={3} id="filter">
                     <Box component={Paper} sx={{ padding: 2 }}>
                         <FilterBar handleSubmit={doSearch} />
                     </Box>
                 </Grid>
-                <Grid item xs={9} container id="results">
-                    <Stack direction="column" spacing={1}>
+                <Grid item xs={12} sm={12} md={9} container id="results">
+                    <Stack direction="column" spacing={1} sx={{width: "100%"}}>
                         <PadTablePagination />
                         <PadTable />
                         <PadTablePagination />
