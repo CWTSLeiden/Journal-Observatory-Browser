@@ -9,9 +9,7 @@ import {
     OrderedListView,
     LoadingView,
 } from "../components/pad";
-
-const ld_to_str = (obj: string | object): string =>
-    obj["@id"] || obj["@value"] || String(obj);
+import { ld_to_str } from "./pad";
 
 const src_to_div = (src?: Array<object>): ReactElement =>
     src ? <SrcView sources={src.map(ld_to_str)} /> : null;
@@ -137,4 +135,4 @@ function pgraph_to_ul(graph?: Array<object>, param?: string): ReactElement {
     return li.length > 0 ? <UnorderedListView>{li}</UnorderedListView> : null;
 }
 
-export { graph_to_ul, pgraph_to_ul, ld_to_str };
+export { graph_to_ul, pgraph_to_ul };

@@ -10,14 +10,14 @@ function format_query(query: string) {
     return `${prefix}\n${query}`;
 }
 
-async function query_jsonld(query: string, engine: QueryEngine) {
+async function query_jsonld(query: string, engine: QueryEngine): Promise<Array<object>> {
     const response = await engine.queryQuads(format_query(query), {
         sources: [endpoint],
     });
     const quads = await response.toArray();
     const document = await fromRDF(quads);
     const document_compact = await compact(document, context, {compactArrays: false});
-    return document_compact["@graph"];
+    return Array.isArray(document_compact["@graph"]) ? document_compact["@graph"] : [];
 }
 
 async function query_select(query: string, engine: QueryEngine) {

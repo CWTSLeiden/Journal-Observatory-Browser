@@ -1,6 +1,10 @@
 import { QueryEngine } from "@comunica/query-sparql";
 import { query_single, query_jsonld } from "./query";
 
+const ld_to_str = (obj: string | object | Array<object> | Array<string>): string => {
+    const to_str = o => o["@id"] || o["@value"] || String(o);
+    return Array.isArray(obj) ? obj.map(to_str).join(", ") : to_str(obj)
+}
 
 function pad_id_norm(pad_id: string) {
     const regex = /([A-Za-z0-9-]+)$/i
@@ -43,4 +47,4 @@ async function pad_doc(pad_id: string, engine: QueryEngine) {
     return JSON.stringify(graph, null, 2)
 }
 
-export { pad_id_norm, pad_single, platform_name_single, pad_doc };
+export { pad_id_norm, pad_single, platform_name_single, pad_doc, ld_to_str };
