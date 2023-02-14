@@ -1,26 +1,20 @@
-import "./styles.css";
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Buffer } from "buffer";
-import DetailsComponent from "./pages/details";
-import SearchComponent from "./pages/search";
-import DetailsJsonComponent from "./components/pad_json";
-import { Provider } from "react-redux";
-import store from "./store";
+import { Container, Stack } from "@mui/material";
+import "./styles.css";
+import AppHeader from "./components/header";
+import AppRouter from "./AppRouter";
 
 window.Buffer = Buffer;
 
 function App() {
     return (
-        <Provider store={store}>
-            <BrowserRouter>
-                <Routes>
-                    <Route path="/" element={<SearchComponent />} />
-                    <Route path="/pad/:id" element={<DetailsComponent />} />
-                    <Route path="/raw/:id" element={<DetailsJsonComponent />} />
-                </Routes>
-            </BrowserRouter>
-        </Provider>
+        <Stack spacing={2}>
+            <AppHeader />
+            <Container id="content-container">
+                <AppRouter />
+            </Container>
+        </Stack>
     );
 }
 
