@@ -46,9 +46,7 @@ function SearchComponent() {
     return (
         <Grid container direction="column" spacing={1} id="search">
             <Grid item>
-                <Box component={Paper} sx={{ padding: 2 }}>
-                    <SearchBar handleSubmit={doSearch} />
-                </Box>
+                <SearchBar handleSubmit={doSearch} />
             </Grid>
             <Grid container direction="row" item spacing={1}>
                 <Grid item xs={12} sm={12} md={3} id="filter">
