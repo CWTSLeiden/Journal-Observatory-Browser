@@ -1,6 +1,18 @@
-import React, { ReactElement, ReactNode } from "react";
+import React, { ReactElement, ReactNode, useState } from "react";
 import { LinkItUrl } from "react-linkify-it";
 import PropTypes from "prop-types";
+import { useAppSelector } from "../store";
+import {
+    Button,
+    Card,
+    CardContent,
+    Chip,
+    Dialog,
+    DialogTitle,
+} from "@mui/material";
+import { ld_to_str } from "../query/pad";
+import { graph_to_ul } from "../query/display_pad";
+import { creators } from "../config";
 
 function urlize(thing: ReactNode): ReactElement {
     return <LinkItUrl>{thing}</LinkItUrl>;
@@ -9,13 +21,39 @@ function urlize(thing: ReactNode): ReactElement {
 const LoadingView = () => <div>Loading</div>;
 
 type SrcViewProps = { sources: Array<string> };
-const SrcView = ({ sources }: SrcViewProps) => (
-    <div className="src">
-        <div className="src-short">{sources.length}</div>
-        <div className="src-long">{urlize(sources.join(", "))}</div>
-    </div>
-);
+const SrcView = ({ sources }: SrcViewProps) => {
+    return (
+        <div className="src">
+            {sources.map((s) => (
+                <SrcViewPop key={s} id={s} />
+            ))}
+        </div>
+    );
+};
 SrcView.propTypes = { sources: PropTypes.arrayOf(PropTypes.string).isRequired };
+
+const SrcViewPop = ({ id }: { id?: string }) => {
+    const [open, setOpen] = useState(false);
+    const sources = useAppSelector((store) => store.details.sources);
+    const source = sources.find((s) => s["@id"] == id) || {"@id": id};
+    const creator = ld_to_str(source["dcterms:creator"]);
+    const name = creators[creator] || creator || "undefined";
+    const content = source ? graph_to_ul([source]) : id;
+    return (
+        <>
+            <Chip
+                size="small"
+                label={name}
+                onClick={() => setOpen(!open)}
+            ></Chip>
+            <Dialog open={open} onClose={() => setOpen(false)}>
+                <Card>
+                    <CardContent>{content}</CardContent>
+                </Card>
+            </Dialog>
+        </>
+    );
+};
 
 type ValueViewProps = { value: string; src?: ReactNode };
 const ValueView = ({ value, src }: ValueViewProps) => (
@@ -64,20 +102,32 @@ const Sort = ({ children, by }: SortProps) => {
     return <>{children}</>;
 };
 
-type UnorderedListViewProps = { children: Array<ReactNode>; sortBy?: string; src?: ReactNode };
-const UnorderedListView = ({ children, sortBy, src }: UnorderedListViewProps) => (
-        <ul>
-            {src}
-            <Sort by={sortBy || "key"}>{children}</Sort>
-        </ul>
-    );
+type UnorderedListViewProps = {
+    children: Array<ReactNode>;
+    sortBy?: string;
+    src?: ReactNode;
+};
+const UnorderedListView = ({
+    children,
+    sortBy,
+    src,
+}: UnorderedListViewProps) => (
+    <ul>
+        {src}
+        <Sort by={sortBy || "key"}>{children}</Sort>
+    </ul>
+);
 UnorderedListView.propTypes = {
     children: PropTypes.arrayOf(PropTypes.node).isRequired,
     sortBy: PropTypes.string,
     src: PropTypes.node,
 };
 
-type OrderedListViewProps = { children: Array<ReactNode>; sortBy?: string; src?: ReactNode };
+type OrderedListViewProps = {
+    children: Array<ReactNode>;
+    sortBy?: string;
+    src?: ReactNode;
+};
 const OrderedListView = ({ children, sortBy, src }: OrderedListViewProps) => (
     <ol>
         {src}

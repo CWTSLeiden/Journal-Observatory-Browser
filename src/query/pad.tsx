@@ -2,7 +2,7 @@ import { QueryEngine } from "@comunica/query-sparql";
 import { query_single, query_jsonld } from "./query";
 
 const ld_to_str = (obj: string | object | Array<object> | Array<string>): string => {
-    const to_str = o => o["@id"] || o["@value"] || String(o);
+    const to_str = (o: string | object) => o ? o["@id"] || o["@value"] || String(o) : "";
     return Array.isArray(obj) ? obj.map(to_str).join(", ") : to_str(obj)
 }
 

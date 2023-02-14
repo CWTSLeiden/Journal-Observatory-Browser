@@ -77,7 +77,7 @@ async function pad_metadata_identifiers(pad_id: string, engine: QueryEngine) {
     const query = `
         construct {
             ?b ?p ?o .
-            ?b ppo:_src ?creator .
+            ?b ppo:_src ?g .
         }
         where {
             ?pad a pad:PAD ;
@@ -96,7 +96,7 @@ async function pad_metadata_identifiers(pad_id: string, engine: QueryEngine) {
             } .
         }
         values (?pad) {(pad:${pad_id})}
-    `
+    `;
     return await query_jsonld(query, engine);
 }
 
@@ -104,7 +104,7 @@ async function pad_metadata_organizations(pad_id: string, engine: QueryEngine) {
     const query = `
         construct {
             ?org ?p ?o .
-            ?org ppo:_src ?creator .
+            ?org ppo:_src ?g .
         }
         where {
             ?pad a pad:PAD ;
@@ -121,7 +121,7 @@ async function pad_metadata_organizations(pad_id: string, engine: QueryEngine) {
             } .
         }
         values (?pad) {(pad:${pad_id})}
-    `
+    `;
     return await query_jsonld(query, engine);
 }
 
