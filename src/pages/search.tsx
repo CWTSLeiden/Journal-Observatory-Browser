@@ -52,9 +52,7 @@ function SearchComponent() {
             </Grid>
             <Grid container direction="row" item spacing={1}>
                 <Grid item xs={12} sm={12} md={3} id="filter">
-                    <Box component={Paper} sx={{ padding: 2 }}>
-                        <FilterBar handleSubmit={doSearch} />
-                    </Box>
+                    <FilterBar handleSubmit={doSearch} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={9} container id="results">
                     <Stack direction="column" spacing={1} sx={{width: "100%"}}>
