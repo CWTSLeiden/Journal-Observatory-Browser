@@ -4,11 +4,11 @@ import { FilterBar } from "../components/filter";
 import { SearchBar } from "../components/search";
 import { PadTable, PadTablePagination } from "../components/padtable";
 import { pad_list } from "../query/search";
-import store, { useAppSelector, useAppDispatch } from "../store";
+import { useAppSelector, useAppDispatch } from "../store";
 import * as padsActions from "../actions/pads";
 import * as searchActions from "../actions/search";
-import { Grid, Paper } from "@mui/material";
-import { Stack, Box } from "@mui/system";
+import { Grid } from "@mui/material";
+import { Stack } from "@mui/system";
 
 function SearchComponent() {
     const searchState = useAppSelector((s) => s.search);
@@ -44,13 +44,11 @@ function SearchComponent() {
     }, []);
 
     return (
-        <Grid container direction="column" spacing={1} id="search">
+        <Grid container direction="column" spacing={2} id="search">
             <Grid item>
-                <Box component={Paper} sx={{ padding: 2 }}>
-                    <SearchBar handleSubmit={doSearch} />
-                </Box>
+                <SearchBar handleSubmit={doSearch} />
             </Grid>
-            <Grid container direction="row" item spacing={1}>
+            <Grid container direction="row" item spacing={2}>
                 <Grid item xs={12} sm={12} md={3} id="filter">
                     <FilterBar handleSubmit={doSearch} />
                 </Grid>
