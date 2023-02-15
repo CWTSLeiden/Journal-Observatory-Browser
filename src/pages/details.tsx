@@ -5,7 +5,7 @@ import { useParams, Link } from "react-router-dom";
 import { QueryEngine } from "@comunica/query-sparql";
 import { pad_doc, pad_id_norm, platform_name_single } from "../query/pad";
 import MetadataComponent from "../components/metadata";
-import PubPolicyComponent from "../components/publishing_policy";
+import PubPolicyComponent from "../components/policy";
 import { query_jsonld, query_select } from "../query/query";
 import * as detailsActions from "../actions/details"
 import { useAppSelector, useAppDispatch } from "../store";
