@@ -55,15 +55,17 @@ async function pad_metadata(pad_id: string, engine: QueryEngine) {
     const query = `
         construct {
             ?b ?p ?o .
-            ?b ppo:_src ?g .
+            ?b ppo:_src ?source .
         }
         where {
             ?pad a pad:PAD ;
                 pad:hasAssertion ?assertion .
             graph ?assertion { ?s a ppo:Platform ; ?p ?o } .
             optional { 
-                graph ?g { ?s a ppo:Platform ; ?p ?o } .
-                ?g dcterms:creator ?creator
+                ?assertion pad:hasSourceAssertion ?source
+                service <repository:pad> {
+                    graph ?source { [] a ppo:Platform ; ?p ?o } .
+                }
             } .
             bind(bnode() as ?b)
             filter(?p in (schema:name, schema:url, ppo:hasKeyword))
@@ -77,7 +79,7 @@ async function pad_metadata_identifiers(pad_id: string, engine: QueryEngine) {
     const query = `
         construct {
             ?b ?p ?o .
-            ?b ppo:_src ?g .
+            ?b ppo:_src ?source .
         }
         where {
             ?pad a pad:PAD ;
@@ -91,8 +93,10 @@ async function pad_metadata_identifiers(pad_id: string, engine: QueryEngine) {
                 }
             }
             optional { 
-                graph ?g { ?s a ppo:Platform ; ?p ?o } .
-                ?g dcterms:creator ?creator
+                ?assertion pad:hasSourceAssertion ?source
+                service <repository:pad> {
+                    graph ?source { [] a ppo:Platform ; ?p ?o } .
+                }
             } .
         }
         values (?pad) {(pad:${pad_id})}
@@ -104,7 +108,7 @@ async function pad_metadata_organizations(pad_id: string, engine: QueryEngine) {
     const query = `
         construct {
             ?org ?p ?o .
-            ?org ppo:_src ?g .
+            ?org ppo:_src ?source .
         }
         where {
             ?pad a pad:PAD ;
@@ -114,10 +118,10 @@ async function pad_metadata_organizations(pad_id: string, engine: QueryEngine) {
                 ?org ?p ?o .
             } .
             optional { 
-                graph ?g {
-                    ?platform a ppo:Platform ; ppo:hasOrganization ?org .
+                ?assertion pad:hasSourceAssertion ?source
+                service <repository:pad> {
+                    graph ?source { [] a ppo:Platform ; ppo:hasOrganization ?org } .
                 }
-                ?g dcterms:creator ?creator
             } .
         }
         values (?pad) {(pad:${pad_id})}
