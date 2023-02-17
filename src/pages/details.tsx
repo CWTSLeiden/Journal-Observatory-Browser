@@ -9,12 +9,12 @@ import PubPolicyComponent from "../components/policy";
 import { query_jsonld, query_select } from "../query/query";
 import * as detailsActions from "../actions/details"
 import { useAppSelector, useAppDispatch } from "../store";
+import { compact_id, expand_id } from "../config";
 
 function DetailsComponent() {
     const pad_id = pad_id_norm(useParams().id)
     const [pad_name, setPadName] = useState("loading...");
     const [doc, setDoc] = useState("loading...");
-    const sources = useAppSelector(store => store.details.sources)
     const dispatch = useAppDispatch();
     const sparqlEngine = new QueryEngine();
 
@@ -28,8 +28,18 @@ function DetailsComponent() {
         const src = await pad_sources(pad_id, sparqlEngine)
         dispatch(detailsActions.set_sources(src))
     }
+    async function setLabels() {
+        const labels = await pad_labels(sparqlEngine)
+        const labels_dict = {}
+        labels.map((l) => {
+            labels_dict[compact_id(l.get("property").value)] = l.get("label").value 
+            labels_dict[expand_id(l.get("property").value)] = l.get("label").value
+        })
+        dispatch(detailsActions.set_labels(labels_dict))
+    }
 
     useEffect(() => {
+        setLabels();
         setName();
         setRaw();
         setSrc();
@@ -63,15 +73,25 @@ async function pad_sources(pad_id: string, engine: QueryEngine) {
         construct { ?s ?p ?o }
         where { 
             ?pad a pad:PAD ; pad:hasProvenance ?provenance .
-            graph ?provenance { ?assertion pad:hasSourcePAD ?source } .
+            graph ?provenance { ?assertion pad:hasSourceAssertion ?source } .
             service <repository:pad> {
-                ?source pad:hasProvenance ?sprovenance
+                ?sourcepad pad:hasAssertion ?source ; pad:hasProvenance ?sprovenance
                 graph ?sprovenance { ?s ?p ?o }
             }    
         }
         values (?pad) {(pad:${pad_id})}
     `;
     return await query_jsonld(query, engine);
+}
+
+async function pad_labels(engine: QueryEngine) {
+    const query = `
+        select ?property ?label where { 
+            graph ppo:ontology { ?property rdfs:label ?label }
+            filter(str(?label) != "")
+        }
+    `;
+    return await query_select(query, engine);
 }
 
 export default DetailsComponent;

@@ -36,7 +36,6 @@ function PubPolicyComponent({ pad_id }: PubPolicyComponentProps) {
 
     useEffect(() => {
         async function render() {
-            console.log(queryResult)
             const pubPolicyFilter = (g : object) => publicationPolicyTypes.includes(g["@type"])
             const evalPolicyFilter = (g : object) => evaluationPolicyTypes.includes(g["@type"])
             const elsePolicyFilter = (g : object) =>  elsewherePolicyTypes.includes(g["@type"])

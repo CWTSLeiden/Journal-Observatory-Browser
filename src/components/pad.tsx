@@ -3,16 +3,19 @@ import { LinkItUrl } from "react-linkify-it";
 import PropTypes from "prop-types";
 import { useAppSelector } from "../store";
 import {
-    Button,
     Card,
     CardContent,
     Chip,
     Dialog,
-    DialogTitle,
 } from "@mui/material";
 import { ld_to_str } from "../query/pad";
 import { graph_to_ul } from "../query/display_pad";
-import { creators } from "../config";
+import { creators, mapping } from "../config";
+
+function labelize(value: string): string {
+    const labels = useAppSelector((s) => s.details.labels)
+    return mapping[value] || labels[value] || value
+}
 
 function urlize(thing: ReactNode): ReactElement {
     return <LinkItUrl>{thing}</LinkItUrl>;
@@ -58,7 +61,7 @@ const SrcViewPop = ({ id }: { id?: string }) => {
 type ValueViewProps = { value: string; src?: ReactNode };
 const ValueView = ({ value, src }: ValueViewProps) => (
     <div className="value">
-        {urlize(value)}
+        {urlize(labelize(value))}
         {src}
     </div>
 );
@@ -70,7 +73,7 @@ ValueView.propTypes = {
 type IdViewProps = { id: string; children?: ReactNode; src?: ReactNode };
 const IdView = ({ id, children, src }: IdViewProps) => (
     <div className="id">
-        {urlize(id)}
+        {urlize(labelize(id))}
         {src}
         {children}
     </div>
@@ -84,7 +87,7 @@ IdView.propTypes = {
 type ListViewProps = { value: string | ReactNode; src?: ReactNode };
 const ListView = ({ value, src }: ListViewProps) => (
     <li>
-        {value}
+        {typeof(value) == "string" ? labelize(value): value}
         {src}
     </li>
 );
@@ -147,7 +150,7 @@ type DefListViewProps = {
 };
 const DefListView = ({ title, value, src }: DefListViewProps) => (
     <li>
-        <dt>{title}</dt>
+        <dt>{labelize(title)}</dt>
         <dd>{value}</dd>
         {src}
     </li>

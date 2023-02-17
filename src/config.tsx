@@ -12,6 +12,11 @@ export const endpoint = {
     // value: "http://188.166.16.172:7200/repositories/job"
 };
 
+export const mapping = {
+    "@id": "Identifier",
+    "@type": "Type",
+}
+
 export const context = {
     "brick": "https://brickschema.org/schema/Brick#",
     "csvw": "http://www.w3.org/ns/csvw#",
@@ -59,3 +64,21 @@ export const context = {
     "wdt": "http://www.wikidata.org/prop/direct/",
     "wikibase": "http://wikiba.se/ontology#"
 };
+
+export const compact_id = (id: string) => {
+    for (const [k, v] of Object.entries(context)) {
+        if (id.indexOf(v) == 0) {
+            return id.replace(v, `${k}:`)
+        }
+    }
+    return id
+}
+
+export const expand_id = (id: string) =>  {
+    for (const [k, v] of Object.entries(context)) {
+        if (id.indexOf(`${k}:`) == 0) {
+            return id.replace(`${k}:`, v)
+        }
+    }
+    return id
+}

@@ -2,6 +2,7 @@ import * as actions from "../actions/details";
 
 export type DetailsState = {
     sources: Array<object>
+    labels: object
     meta?: object;
     meta_id?: object;
     meta_org?: object;
@@ -9,13 +10,16 @@ export type DetailsState = {
 }
 
 const initDetails: DetailsState = {
-    sources: []
+    sources: [],
+    labels: {}
 }
 
 const DetailsReducer = (state = initDetails, action : actions.detailsAction) => {
     switch (action.type) {
         case actions.SET_SOURCES:
-            return {...state, sources: Array.isArray(action.payload.value) ? action.payload.value : Array(action.payload.value)}
+            return {...state, sources: action.payload.list}
+        case actions.SET_LABELS:
+            return {...state, labels: action.payload.value}
         default:
             return state;
     }
