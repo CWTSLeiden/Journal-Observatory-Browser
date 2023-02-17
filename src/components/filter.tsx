@@ -1,8 +1,20 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch, SearchStore } from "../store";
 import * as searchActions from "../actions/search";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Checkbox, FormControlLabel, FormGroup, Slider, Stack, Typography } from "@mui/material";
-import { ExpandMore } from '@mui/icons-material';
+import {
+    Accordion,
+    AccordionDetails,
+    AccordionSummary,
+    Box,
+    Button,
+    Checkbox,
+    FormControlLabel,
+    FormGroup,
+    Slider,
+    Stack,
+    Typography,
+} from "@mui/material";
+import { ExpandMore } from "@mui/icons-material";
 
 type CheckBoxFilterParams = {
     state: (s: SearchStore) => boolean;
@@ -51,6 +63,8 @@ const PaywallFilter = () => (
 const EmbargoFilter = () => {
     const state = useAppSelector((s) => s.search.embargo);
     const value = useAppSelector((s) => s.search.embargoduration);
+    const [number, setNumber] = useState(value);
+    useEffect(() => setNumber(value), [value]);
     const dispatch = useAppDispatch();
     return (
         <CheckBoxFilter
@@ -60,8 +74,9 @@ const EmbargoFilter = () => {
         >
             <Slider
                 disabled={!state}
-                value={Number(value)}
-                onChange={(_, n: number) =>
+                value={number}
+                onChange={(_, n: number) => setNumber(n)}
+                onChangeCommitted={(_, n: number) =>
                     dispatch(searchActions.set_embargo(n))
                 }
                 max={24}
@@ -76,7 +91,7 @@ const EmbargoFilter = () => {
 };
 
 type FilterBarProps = {
-    handleSubmit: React.UIEventHandler
+    handleSubmit: React.UIEventHandler;
 };
 const FilterBar = ({ handleSubmit }: FilterBarProps) => {
     return (
@@ -86,7 +101,9 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
                     id="filter-panel-publication-policy"
                     expandIcon={<ExpandMore />}
                 >
-                    <Typography sx={{ fontWeight: 600 }}>Publication Policy</Typography>
+                    <Typography sx={{ fontWeight: 600 }}>
+                        Publication Policy
+                    </Typography>
                 </AccordionSummary>
                 <AccordionDetails>
                     <FormGroup>
@@ -96,7 +113,9 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
                     </FormGroup>
                 </AccordionDetails>
             </Accordion>
-            <Button variant="outlined" onClick={handleSubmit}>Filter</Button>
+            <Button variant="outlined" onClick={handleSubmit}>
+                Filter
+            </Button>
         </Stack>
     );
 };
