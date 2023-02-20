@@ -1,9 +1,10 @@
-import React, { useEffect, useState, ReactNode } from "react";
-import { QueryEngine } from "@comunica/query-sparql";
-import { query_jsonld } from "../query/query";
+import React, { useEffect, useState, ReactNode, useContext } from "react";
+import { query_jsonld, Sources } from "../query/query";
 import { graph_to_ul } from "../query/display_pad";
 import { pad_id_norm } from "../query/pad";
 import { fold_graph } from "../query/fold";
+import { AppContext, PadContext } from "../context";
+import { QueryEngine } from "@comunica/query-sparql-rdfjs";
 
 const publicationPolicyTypes = [
     "ppo:PublicationPolicy"
@@ -11,28 +12,35 @@ const publicationPolicyTypes = [
 const elsewherePolicyTypes = [
     "ppo:PublicationElsewherePolicy",
     "ppo:PublicationElsewhereAllowedPolicy",
-    "ppo:PublicationElsewhereProhibitedPolicy"
+    "ppo:PublicationElsewhereProhibitedPolicy",
+    "ppo:PublicationElsewhereAllowed",
+    "ppo:PublicationElsewhereProhibited"
 ]
 const evaluationPolicyTypes = [
     "ppo:EvaluationPolicy"
 ]
 
-type PubPolicyComponentProps = { pad_id: string };
-function PubPolicyComponent({ pad_id }: PubPolicyComponentProps) {
+type PolicyComponentProps = { pad_id: string };
+function PolicyComponent({ pad_id }: PolicyComponentProps) {
     pad_id = pad_id_norm(pad_id);
+    // const sparqlEngine = useContext(AppContext).sparqlEngine
+    const sparqlEngine = new QueryEngine()
+    const padStore = useContext(PadContext)
     const [queryResult, setQueryResult] = useState([]);
     const [publicationPolicies, setPublicationPolicies] = useState([]);
     const [evaluationPolicies, setEvaluationPolicies] = useState([]);
     const [elsewherePolicies, setElsewherePolicies] = useState([]);
-    const sparqlEngine = new QueryEngine();
 
     useEffect(() => {
-        async function render() {
-            const result = await pad_pubpolicy(pad_id, sparqlEngine)
+        const render = async () => {
+            console.log("start")
+            console.log(padStore.size)
+            const result = await pad_policy(pad_id, sparqlEngine, [padStore])
+            console.log(result)
             setQueryResult(fold_graph(result, 2))
         }
-        render();
-    }, [pad_id]);
+        (pad_id && padStore) ? render() : null
+    }, [pad_id, padStore]);
 
     useEffect(() => {
         async function render() {
@@ -62,11 +70,11 @@ function PubPolicyComponent({ pad_id }: PubPolicyComponentProps) {
     );
 }
 
-type PubPolicySectionProps = {
+type PolicySectionProps = {
     title: string;
     children: Array<ReactNode> | ReactNode;
 };
-const PolicySection = ({ title, children }: PubPolicySectionProps) =>
+const PolicySection = ({ title, children }: PolicySectionProps) =>
     children ? (
         <div className="subsection">
             <h2>{title}</h2>
@@ -74,12 +82,11 @@ const PolicySection = ({ title, children }: PubPolicySectionProps) =>
         </div>
     ) : null;
 
-async function pad_pubpolicy(pad_id: string, engine: QueryEngine) {
+async function pad_policy(pad_id: string, engine: QueryEngine, sources: Sources) {
     const query = `
         construct {
             ?policy ?p1 ?o1 .
             ?o1 ?p2 ?o2 .
-            ?o2 ?p3 ?o3 .
             ?policy ppo:_src ?source .
         }
         where { 
@@ -89,18 +96,15 @@ async function pad_pubpolicy(pad_id: string, engine: QueryEngine) {
                     ppo:hasPolicy ?policy .
                 optional { ?policy ?p1 ?o1 } .
                 optional { ?o1 ?p2 ?o2 } .
-                optional { ?o2 ?p3 ?o3 } .
             }
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
-                service <repository:pad> {
-                    graph ?source { [] a ppo:Platform ; ppo:hasPolicy ?policy } .
-                }
+                graph ?source { [] a ppo:Platform ; ppo:hasPolicy ?policy } .
             } .
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine);
+    return await query_jsonld(query, engine, sources);
 }
 
-export default PubPolicyComponent;
+export default PolicyComponent;

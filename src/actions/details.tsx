@@ -22,3 +22,4 @@ export const set_labels = (labels: object): detailsAction => ({
         value: labels
     }
 })
+

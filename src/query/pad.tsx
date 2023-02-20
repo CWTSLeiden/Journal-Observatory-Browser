@@ -1,5 +1,5 @@
 import { QueryEngine } from "@comunica/query-sparql";
-import { query_single, query_jsonld } from "./query";
+import { Sources, query_single, query_jsonld } from "./query";
 
 const ld_to_str = (obj: string | object | Array<object> | Array<string>): string => {
     const to_str = (o: string | object) => o ? o["@id"] || o["@value"] || String(o) : "";
@@ -17,7 +17,7 @@ async function pad_single(num: number, engine: QueryEngine) {
     return await query_single(query, engine);
 }
 
-async function platform_name_single(pad_id: string, engine: QueryEngine) {
+async function platform_name_single(pad_id: string, engine: QueryEngine, sources? : Sources) {
     const query = `
         select ?name where {
             ?pad a pad:PAD ;
@@ -26,11 +26,11 @@ async function platform_name_single(pad_id: string, engine: QueryEngine) {
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    const name = await query_single(query, engine)
+    const name = await query_single(query, engine, sources)
     return name || pad_id
 }
 
-async function pad_doc(pad_id: string, engine: QueryEngine) {
+async function pad_doc(pad_id: string, engine: QueryEngine, sources?: Sources) {
     const query = `
         construct {
             ?s ?p ?o .
@@ -42,7 +42,7 @@ async function pad_doc(pad_id: string, engine: QueryEngine) {
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    const graph = await query_jsonld(query, engine);
+    const graph = await query_jsonld(query, engine, sources);
     delete graph["@context"]
     return JSON.stringify(graph, null, 2)
 }

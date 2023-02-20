@@ -1,36 +1,68 @@
-import React, { useEffect, useState, ReactNode } from "react";
+import React, { useEffect, useState, ReactNode, useContext } from "react";
 import { QueryEngine } from "@comunica/query-sparql";
-import { query_jsonld } from "../query/query";
+import { query_jsonld, Sources } from "../query/query";
 import { graph_to_ul, pgraph_to_ul } from "../query/display_pad";
 import { pad_id_norm } from "../query/pad";
+import { AppContext, PadContext } from "../context";
 
 type MetadataComponentProps = { pad_id: string };
 function MetadataComponent({ pad_id }: MetadataComponentProps) {
-    pad_id = pad_id_norm(pad_id);
-    const [meta, setMeta] = useState(undefined);
+    pad_id = pad_id_norm(pad_id)
+    const sparqlEngine = useContext(AppContext).sparqlEngine
+    const ontologyStore = useContext(AppContext).ontologyStore
+    const padStore = useContext(PadContext)
+    const [meta_name, setMetaName] = useState(undefined);
+    const [meta_url, setMetaUrl] = useState(undefined);
+    const [meta_keywords, setMetaKeyword] = useState(undefined);
     const [meta_id, setMetaId] = useState(undefined);
     const [meta_org, setMetaOrg] = useState(undefined);
-    const sparqlEngine = new QueryEngine();
+
     useEffect(() => {
         async function render() {
-            setMeta(await pad_metadata(pad_id, sparqlEngine));
-            setMetaId(await pad_metadata_identifiers(pad_id, sparqlEngine));
-            setMetaOrg(await pad_metadata_organizations(pad_id, sparqlEngine));
+            setMetaName(await pad_metadata_name(pad_id, sparqlEngine, [padStore]));
         }
-        render();
-    }, [pad_id]);
+        padStore ? render() : null;
+    }, [padStore])
+
+    useEffect(() => {
+        async function render() {
+            setMetaUrl(await pad_metadata_url(pad_id, sparqlEngine, [padStore]));
+        }
+        padStore ? render() : null;
+    }, [padStore])
+
+    useEffect(() => {
+        async function render() {
+            setMetaKeyword(await pad_metadata_keyword(pad_id, sparqlEngine, [padStore]));
+        }
+        padStore ? render() : null;
+    }, [padStore])
+
+    useEffect(() => {
+        async function render() {
+            setMetaId(await pad_metadata_identifiers(pad_id, sparqlEngine, [padStore, ontologyStore]));
+        }
+        padStore && ontologyStore ? render() : null;
+    }, [padStore, ontologyStore]);
+
+    useEffect(() => {
+        async function render() {
+            setMetaOrg(await pad_metadata_organizations(pad_id, sparqlEngine, [padStore]));
+        }
+        padStore ? render() : null;
+    }, [padStore])
 
     return (
         <section id="metadata">
             <h1>Metadata</h1>
             <MetadataSection title={"Names"}>
-                {pgraph_to_ul(meta, "schema:name")}
+                {pgraph_to_ul(meta_name, "schema:name")}
             </MetadataSection>
             <MetadataSection title={"Urls"}>
-                {pgraph_to_ul(meta, "schema:url")}
+                {pgraph_to_ul(meta_url, "schema:url")}
             </MetadataSection>
             <MetadataSection title={"Keywords"}>
-                {pgraph_to_ul(meta, "ppo:hasKeyword")}
+                {pgraph_to_ul(meta_keywords, "ppo:hasKeyword")}
             </MetadataSection>
             <MetadataSection title={"Identifiers"}>
                 {pgraph_to_ul(meta_id)}
@@ -51,82 +83,104 @@ const MetadataSection = ({ title, children }: MetadataSectionProps) =>
         </div>
     ) : null;
 
-async function pad_metadata(pad_id: string, engine: QueryEngine) {
+async function pad_metadata_name(pad_id: string, engine: QueryEngine, sources?: Sources) {
     const query = `
         construct {
-            ?b ?p ?o .
-            ?b ppo:_src ?source .
+            ?s schema:name ?o .
+            ?s ppo:_src ?source .
         }
         where {
-            ?pad a pad:PAD ;
-                pad:hasAssertion ?assertion .
-            graph ?assertion { ?s a ppo:Platform ; ?p ?o } .
-            optional { 
-                ?assertion pad:hasSourceAssertion ?source
-                service <repository:pad> {
-                    graph ?source { [] a ppo:Platform ; ?p ?o } .
-                }
-            } .
-            bind(bnode() as ?b)
-            filter(?p in (schema:name, schema:url, ppo:hasKeyword))
-        }
-        values (?pad) {(pad:${pad_id})}
-    `;
-    return await query_jsonld(query, engine);
-}
-
-async function pad_metadata_identifiers(pad_id: string, engine: QueryEngine) {
-    const query = `
-        construct {
-            ?b ?p ?o .
-            ?b ppo:_src ?source .
-        }
-        where {
-            ?pad a pad:PAD ;
-                pad:hasAssertion ?assertion .
-            graph ?assertion { ?s a ppo:Platform ; ?p ?o } .
-            { 
-                select distinct ?b ?p ?o where {
-                    ?p rdfs:subPropertyOf ?type.
-                    filter(?type in (dcterms:identifier))
-                    bind(bnode() as ?b)
-                }
+            ?pad pad:hasAssertion ?a . 
+            graph ?a { ?s a ppo:Platform ; schema:name ?o . }
+            optional {
+                ?a pad:hasSourceAssertion ?source
+                graph ?source { ?_ schema:name ?o }
             }
+        }
+        values (?pad) {(pad:${pad_id})}
+    `;
+    return await query_jsonld(query, engine, sources);
+}
+
+async function pad_metadata_url(pad_id: string, engine: QueryEngine, sources?: Sources) {
+    const query = `
+        construct {
+            ?s schema:url ?o .
+            ?s ppo:_src ?source .
+        }
+        where {
+            ?pad pad:hasAssertion ?a . 
+            graph ?a { ?s a ppo:Platform ; schema:url ?o . }
+            optional {
+                ?a pad:hasSourceAssertion ?source
+                graph ?source { ?_ schema:url ?o }
+            }
+        }
+        values (?pad) {(pad:${pad_id})}
+    `;
+    return await query_jsonld(query, engine, sources);
+}
+
+async function pad_metadata_keyword(pad_id: string, engine: QueryEngine, sources?: Sources) {
+    const query = `
+        construct {
+            ?s ppo:hasKeyword ?o .
+            ?s ppo:_src ?source .
+        }
+        where {
+            ?pad pad:hasAssertion ?a . 
+            graph ?a { ?s a ppo:Platform ; ppo:hasKeyword ?o . }
+            optional {
+                ?a pad:hasSourceAssertion ?source
+                graph ?source { ?_ ppo:hasKeyword ?o }
+            }
+        }
+        values (?pad) {(pad:${pad_id})}
+    `;
+    return await query_jsonld(query, engine, sources);
+}
+
+async function pad_metadata_identifiers(pad_id: string, engine: QueryEngine, sources?: Sources) {
+    const query = `
+        construct {
+            ?b ?p ?o .
+            ?b ppo:_src ?source .
+        }
+        where {
+            ?pad pad:hasAssertion ?a .
+            graph ?a { ?s a ppo:Platform ; ?p ?o } .
+            ?p rdfs:subPropertyOf dcterms:identifier.
+            bind(uuid() as ?b)
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
-                service <repository:pad> {
-                    graph ?source { [] a ppo:Platform ; ?p ?o } .
-                }
+                graph ?source { [] a ppo:Platform ; ?p ?o } .
             } .
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine);
+    return await query_jsonld(query, engine, sources);
 }
 
-async function pad_metadata_organizations(pad_id: string, engine: QueryEngine) {
+async function pad_metadata_organizations(pad_id: string, engine: QueryEngine, sources?: Sources) {
     const query = `
         construct {
             ?org ?p ?o .
             ?org ppo:_src ?source .
         }
         where {
-            ?pad a pad:PAD ;
-                pad:hasAssertion ?assertion .
-            graph ?assertion {
-                ?platform a ppo:Platform ; ppo:hasOrganization ?org .
+            ?pad pad:hasAssertion ?a .
+            graph ?a {
+                ?s a ppo:Platform ; ppo:hasOrganization ?org .
                 ?org ?p ?o .
             } .
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
-                service <repository:pad> {
-                    graph ?source { [] a ppo:Platform ; ppo:hasOrganization ?org } .
-                }
+                graph ?source { [] a ppo:Platform ; ppo:hasOrganization ?org } .
             } .
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine);
+    return await query_jsonld(query, engine, sources);
 }
 
 export default MetadataComponent;

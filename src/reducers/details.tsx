@@ -1,17 +1,13 @@
 import * as actions from "../actions/details";
 
 export type DetailsState = {
-    sources: Array<object>
-    labels: object
-    meta?: object;
-    meta_id?: object;
-    meta_org?: object;
-    publishing_policies?: Array<object>;
+    sources: Array<object>;
+    labels: object;
 }
 
 const initDetails: DetailsState = {
     sources: [],
-    labels: {}
+    labels: {},
 }
 
 const DetailsReducer = (state = initDetails, action : actions.detailsAction) => {
