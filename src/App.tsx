@@ -8,7 +8,7 @@ import AppHeader from "./components/header";
 import AppRouter from "./AppRouter";
 import store from "./store";
 import { AppContext } from "./context";
-import { ontology_store } from "./query/query";
+import { ontology_store } from "./query/pad_store";
 import { QueryEngine } from "@comunica/query-sparql";
 
 window.Buffer = Buffer;

@@ -9,7 +9,8 @@ import MetadataComponent from "../components/metadata";
 import { AppContext, PadContext } from "../context";
 import { compact_id, expand_id } from "../config";
 import { pad_id_norm, platform_name_single } from "../query/pad";
-import { query_jsonld, query_select, pad_store, Sources } from "../query/query";
+import { query_jsonld, query_select, Sources } from "../query/query";
+import { pad_store } from "../query/pad_store"
 import { useAppDispatch } from "../store";
 import PolicyComponent from "../components/policy";
 
