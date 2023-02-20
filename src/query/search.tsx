@@ -92,7 +92,6 @@ async function pad_list(engine: QueryEngine, search: SearchState, offset=0) {
     const result = await query_jsonld(query, engine)
     const num = Number(await query_single(nquery, engine))
     const padlist = Array.isArray(result) ? result : []
-    // console.log(query, padlist);
     return { padlist, num };
 }
 

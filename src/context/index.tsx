@@ -1,10 +1,10 @@
 import { QueryEngine } from "@comunica/query-sparql";
-import { Store } from "n3";
+import { Quadstore } from "quadstore";
 import { createContext } from "react";
 
 export type AppContext = {
-    ontologyStore?: Store
-    sparqlEngine: QueryEngine
+    ontologyStore?: Quadstore;
+    sparqlEngine: QueryEngine;
 }
 
 const defaultAppContext: AppContext = {
@@ -14,6 +14,6 @@ const defaultAppContext: AppContext = {
 export const AppContext = createContext(defaultAppContext)
 
 
-const defaultPadContext: Store = undefined
+const defaultPadContext: Quadstore = undefined
 
 export const PadContext = createContext(defaultPadContext)

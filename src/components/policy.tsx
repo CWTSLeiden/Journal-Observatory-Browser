@@ -5,6 +5,7 @@ import { pad_id_norm } from "../query/pad";
 import { fold_graph } from "../query/fold";
 import { AppContext, PadContext } from "../context";
 import { QueryEngine } from "@comunica/query-sparql-rdfjs";
+import { Engine } from "quadstore-comunica"
 
 const publicationPolicyTypes = [
     "ppo:PublicationPolicy"
@@ -23,36 +24,41 @@ const evaluationPolicyTypes = [
 type PolicyComponentProps = { pad_id: string };
 function PolicyComponent({ pad_id }: PolicyComponentProps) {
     pad_id = pad_id_norm(pad_id);
-    // const sparqlEngine = useContext(AppContext).sparqlEngine
     const sparqlEngine = new QueryEngine()
     const padStore = useContext(PadContext)
-    const [queryResult, setQueryResult] = useState([]);
     const [publicationPolicies, setPublicationPolicies] = useState([]);
     const [evaluationPolicies, setEvaluationPolicies] = useState([]);
     const [elsewherePolicies, setElsewherePolicies] = useState([]);
 
     useEffect(() => {
         const render = async () => {
-            console.log("start")
-            console.log(padStore.size)
-            const result = await pad_policy(pad_id, sparqlEngine, [padStore])
-            console.log(result)
-            setQueryResult(fold_graph(result, 2))
+            let result = await pad_publication_policy(pad_id, sparqlEngine, [padStore])
+            result = fold_graph(result, 2)
+            const filter = (g : object) => publicationPolicyTypes.includes(g["@type"])
+            setPublicationPolicies(result.filter(filter))
         }
         (pad_id && padStore) ? render() : null
     }, [pad_id, padStore]);
 
     useEffect(() => {
-        async function render() {
-            const pubPolicyFilter = (g : object) => publicationPolicyTypes.includes(g["@type"])
-            const evalPolicyFilter = (g : object) => evaluationPolicyTypes.includes(g["@type"])
-            const elsePolicyFilter = (g : object) =>  elsewherePolicyTypes.includes(g["@type"])
-            setPublicationPolicies(queryResult.filter(pubPolicyFilter))
-            setEvaluationPolicies(queryResult.filter(evalPolicyFilter))
-            setElsewherePolicies(queryResult.filter(elsePolicyFilter))
+        const render = async () => {
+            let result = await pad_elsewhere_policy(pad_id, sparqlEngine, [padStore])
+            result = fold_graph(result, 2)
+            const filter = (g : object) =>  elsewherePolicyTypes.includes(g["@type"])
+            setElsewherePolicies(result.filter(filter))
         }
-        render();
-    }, [queryResult]);
+        (pad_id && padStore) ? render() : null
+    }, [pad_id, padStore]);
+
+    useEffect(() => {
+        const render = async () => {
+            let result = await pad_evaluation_policy(pad_id, sparqlEngine, [padStore])
+            result = fold_graph(result, 2)
+            const filter = (g : object) => evaluationPolicyTypes.includes(g["@type"])
+            setEvaluationPolicies(result.filter(filter))
+        }
+        (pad_id && padStore) ? render() : null
+    }, [pad_id, padStore]);
 
     return (
         <section id="metadata">
@@ -82,7 +88,7 @@ const PolicySection = ({ title, children }: PolicySectionProps) =>
         </div>
     ) : null;
 
-async function pad_policy(pad_id: string, engine: QueryEngine, sources: Sources) {
+async function pad_publication_policy(pad_id: string, engine: QueryEngine, sources: Sources) {
     const query = `
         construct {
             ?policy ?p1 ?o1 .
@@ -94,6 +100,60 @@ async function pad_policy(pad_id: string, engine: QueryEngine, sources: Sources)
             graph ?assertion {
                 ?platform a ppo:Platform ;
                     ppo:hasPolicy ?policy .
+                ?policy a ppo:PublicationPolicy .
+                optional { ?policy ?p1 ?o1 } .
+                optional { ?o1 ?p2 ?o2 } .
+            }
+            optional { 
+                ?assertion pad:hasSourceAssertion ?source
+                graph ?source { [] a ppo:Platform ; ppo:hasPolicy ?policy } .
+            } .
+        }
+        values (?pad) {(pad:${pad_id})}
+    `;
+    return await query_jsonld(query, engine, sources);
+}
+
+async function pad_elsewhere_policy(pad_id: string, engine: QueryEngine, sources: Sources) {
+    const query = `
+        construct {
+            ?policy ?p1 ?o1 .
+            ?o1 ?p2 ?o2 .
+            ?policy ppo:_src ?source .
+        }
+        where { 
+            ?pad pad:hasAssertion ?assertion .
+            graph ?assertion {
+                ?platform a ppo:Platform ;
+                    ppo:hasPolicy ?policy .
+                ?policy a ?policytype .
+                optional { ?policy ?p1 ?o1 } .
+                optional { ?o1 ?p2 ?o2 } .
+        filter(?policytype in (ppo:PublicationElsewherePolicy, ppo:PublicationElsewhereAllowed, ppo:PublicationElsewhereProhibited))
+            }
+            optional { 
+                ?assertion pad:hasSourceAssertion ?source
+                graph ?source { [] a ppo:Platform ; ppo:hasPolicy ?policy } .
+            } .
+        }
+        values (?pad) {(pad:${pad_id})}
+    `;
+    return await query_jsonld(query, engine, sources);
+}
+
+async function pad_evaluation_policy(pad_id: string, engine: QueryEngine, sources: Sources) {
+    const query = `
+        construct {
+            ?policy ?p1 ?o1 .
+            ?o1 ?p2 ?o2 .
+            ?policy ppo:_src ?source .
+        }
+        where { 
+            ?pad pad:hasAssertion ?assertion .
+            graph ?assertion {
+                ?platform a ppo:Platform ;
+                    ppo:hasPolicy ?policy .
+                ?policy a ppo:EvaluationPolicy .
                 optional { ?policy ?p1 ?o1 } .
                 optional { ?o1 ?p2 ?o2 } .
             }

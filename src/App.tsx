@@ -19,7 +19,6 @@ function App() {
     const [appContext, setAppContext] = useState(context)
     async function getStore() {
         if (!appContext.ontologyStore) {
-            console.log("Set ontologystore")
             const ontologyStore = await ontology_store(sparqlEngine)
             setAppContext({...appContext, ontologyStore})
         }

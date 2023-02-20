@@ -1,54 +1,65 @@
+import { MemoryLevel } from 'memory-level';
+import { BlankNode, DataFactory, DefaultGraph, Literal, NamedNode, Variable } from 'rdf-data-factory';
 import * as RDF from "@rdfjs/types"
 import { Bindings } from "@comunica/types";
-import { DataFactory, Quad, Quad_Graph, Quad_Object, Quad_Predicate, Quad_Subject, Store, Util } from "n3";
 import { QueryEngine } from "@comunica/query-sparql";
 import { query_quads, query_select } from "./query";
+import { Quad, Quadstore } from "quadstore";
 
-function Qsubject(t : RDF.Term): Quad_Subject | undefined {
-    if (Util.isNamedNode(t)) { return DataFactory.namedNode(t.value) }
-    if (Util.isBlankNode(t)) { return DataFactory.blankNode(t.value) }
-    if (Util.isVariable(t)) { return DataFactory.variable(t.value) }
+function Qsubject(df: DataFactory, t : RDF.Term): NamedNode | BlankNode | Variable | undefined {
+    if (t.termType == 'NamedNode') { return df.namedNode(t.value) }
+    if (t.termType == 'BlankNode') { return df.blankNode(t.value) }
+    if (t.termType == 'Variable') { return df.variable(t.value) }
 }
-function Qpredicate(t : RDF.Term): Quad_Predicate | undefined {
-    if (Util.isNamedNode(t)) { return DataFactory.namedNode(t.value) }
-    if (Util.isVariable(t)) { return DataFactory.variable(t.value) }
+function Qpredicate(df: DataFactory, t : RDF.Term): NamedNode | Variable | undefined {
+    if (t.termType == 'NamedNode') { return df.namedNode(t.value) }
+    if (t.termType == 'Variable') { return df.variable(t.value) }
 }
-function Qobject(t : RDF.Term): Quad_Object | undefined {
-    if (Util.isNamedNode(t)) { return DataFactory.namedNode(t.value) }
-    if (Util.isBlankNode(t)) { return DataFactory.blankNode(t.value) }
-    if (Util.isVariable(t)) { return DataFactory.variable(t.value) }
-    if (Util.isLiteral(t)) { return DataFactory.literal(t.value) }
+function Qobject(df: DataFactory, t : RDF.Term): NamedNode | BlankNode | Variable | Literal | undefined {
+    if (t.termType == 'NamedNode') { return df.namedNode(t.value) }
+    if (t.termType == 'BlankNode') { return df.blankNode(t.value) }
+    if (t.termType == 'Variable') { return df.variable(t.value) }
+    if (t.termType == 'Literal') { return df.literal(t.value) }
 }
-function Qgraph(t : RDF.Term): Quad_Graph {
-    if (Util.isNamedNode(t)) { return DataFactory.namedNode(t.value) }
-    if (Util.isBlankNode(t)) { return DataFactory.blankNode(t.value) }
-    if (Util.isVariable(t)) { return DataFactory.variable(t.value) }
-    return DataFactory.defaultGraph()
+function Qgraph(df: DataFactory, t : RDF.Term): NamedNode | BlankNode | Variable | DefaultGraph | undefined {
+    if (t.termType == 'NamedNode') { return df.namedNode(t.value) }
+    if (t.termType == 'BlankNode') { return df.blankNode(t.value) }
+    if (t.termType == 'Variable') { return df.variable(t.value) }
+    return df.defaultGraph()
 }
 
 function Qquad(s : RDF.Term, p : RDF.Term, o : RDF.Term, g : RDF.Term) : Quad | undefined {
-    const S = Qsubject(s)
-    const P = Qpredicate(p)
-    const O = Qobject(o)
-    const G = Qgraph(g)
+    const df = new DataFactory()
+    const S = Qsubject(df, s)
+    const P = Qpredicate(df, p)
+    const O = Qobject(df, o)
+    const G = Qgraph(df, g)
     if (S && P && O && G) {
-        return new Quad(S, P, O, G)
+        return df.quad(S, P, O, G)
     }
 }
 
-function binds2store(binds: Bindings[]): Store {
-    const store = new Store()
+async function binds2store(binds: Bindings[], store: Quadstore): Promise<Quadstore> {
     binds.map(bind => {
-        const q = Qquad(bind.get("s"),
+        const q = Qquad(
+            bind.get("s"),
             bind.get("p"),
             bind.get("o"),
             bind.get("g"))
-        q ? store.add(q) : null
+        q ? store.put(q) : null
     })
     return store
 }
 
-export async function pad_store(pad_id: string, engine: QueryEngine): Promise<Store> {
+async function createStore(): Promise<Quadstore> {
+    const backend = new MemoryLevel()
+    const df = new DataFactory()
+    const store = new Quadstore({backend, dataFactory: df})
+    await store.open();
+    return store
+}
+
+export async function pad_store(pad_id: string, engine: QueryEngine): Promise<Quadstore> {
     const query = `
         select ?s ?p ?o ?g 
         where {
@@ -85,10 +96,11 @@ export async function pad_store(pad_id: string, engine: QueryEngine): Promise<St
         values (?pad) {(pad:${pad_id})}
     `;
     const quads = await query_select(query, engine)
-    return binds2store(quads)
+    const store = await createStore()
+    return await binds2store(quads, store)
 }
 
-export async function ontology_store(engine: QueryEngine): Promise<Store> {
+export async function ontology_store(engine: QueryEngine): Promise<Quadstore> {
     const query = `
         construct { ?s ?p ?o }
         where {
@@ -98,8 +110,8 @@ export async function ontology_store(engine: QueryEngine): Promise<Store> {
         }
     `
     const quads = await query_quads(query, engine)
-    const store = new Store()
-    store.addQuads(quads)
+    const store = await createStore()
+    store.multiPut(quads)
     return store
 }
 
