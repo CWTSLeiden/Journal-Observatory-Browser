@@ -34,33 +34,11 @@ dd {
 }
 
 .src {
-    float: right;
     opacity: 0.5;
     font-style: italic;
 }
-
-.src:before {
-    content: "[";
-}
-
-.src:after {
-    content: "]";
-}
-
-.src-long {
-    display: none;
-}
-
-.src-short {
-    display: inline;
-}
-
-li:hover .src-long {
-    display: inline;
-}
-
-li:hover .src-short {
-    display: none;
+.src div {
+    margin-left: 1em
 }
 
 .id,

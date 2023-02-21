@@ -9,16 +9,19 @@ import {
     OrderedListView,
     LoadingView,
 } from "../components/pad";
-import { normalize_graph } from "./query";
 
-function src_to_div(src?: Array<object> | object): ReactElement {
-    if (!src) {
-        return undefined;
-    }
-    if (Array.isArray(src)) {
-        return <SrcView sources={src.map((s: object) => s["@id"])} />;
-    }
-    return <SrcView sources={Array(src["@id"])} />;
+const src_to_div = (src?: Array<object>): ReactElement =>
+    src ? <SrcView sources={src.map(ld_to_str)} /> : null;
+
+export const ld_to_str = (obj: string | object | Array<object> | Array<string>): string => {
+    const to_str = (o: string | object) => o ? o["@id"] || o["@value"] || String(o) : "";
+    return Array.isArray(obj) ? obj.map(to_str).join(", ") : to_str(obj)
+}
+
+export function pad_id_norm(pad_id: string) {
+    const regex = /([A-Za-z0-9-]+)$/i
+    const result = regex.exec(pad_id)
+    return (result && result[0]) || pad_id
 }
 
 function graph_to_react(obj: object | string, crumb?: string): ReactElement {
@@ -54,19 +57,25 @@ function graph_to_react(obj: object | string, crumb?: string): ReactElement {
                     />
                 );
             });
-        const ul = sub.length > 0 ? <UnorderedListView>{sub}</UnorderedListView> : null
-        return <IdView key={key} id={obj["@id"]} src={srcView}>{ul}</IdView>
-;
+        const ul =
+            sub.length > 0 ? (
+                <UnorderedListView>{sub}</UnorderedListView>
+            ) : null;
+        return (
+            <IdView key={key} id={obj["@id"]} src={srcView}>
+                {ul}
+            </IdView>
+        );
     }
     if (Array.isArray(obj) && obj.length > 0) {
         const sub = obj.map((o, i) => {
             const c = `${crumb}.${i}`;
             return <ListView key={c} value={graph_to_react(o, c)} />;
         });
-        return (<UnorderedListView src={srcView}>{sub}</UnorderedListView>);
+        return <UnorderedListView src={srcView}>{sub}</UnorderedListView>;
     }
     if (Array.isArray(obj) && obj.length == 0) {
-        return null
+        return null;
     }
     return (
         <ValueView
@@ -77,12 +86,11 @@ function graph_to_react(obj: object | string, crumb?: string): ReactElement {
     );
 }
 
-function graph_to_ul(graph: Array<object> | object): ReactElement {
+export function graph_to_ul(graph: Array<object>): ReactElement {
     if (!graph) {
         return <LoadingView />;
     }
-    const pgraph = normalize_graph(graph);
-    const sub = pgraph.map((g) => {
+    const sub = graph.map((g) => {
         return <ListView key={g["@id"]} value={graph_to_react(g, g["@id"])} />;
     });
     return sub.length > 0 ? <OrderedListView>{sub}</OrderedListView> : null;
@@ -90,16 +98,17 @@ function graph_to_ul(graph: Array<object> | object): ReactElement {
 
 function property_to_li(
     thing: object | string,
-    dt?: string,
-    src?: Array<object> | object,
+    title?: string,
+    src?: Array<object>,
     crumb?: string
 ) {
     const value = graph_to_react(thing, crumb);
-    const str = thing["@id"] || thing["@value"] || String(thing);
-    const key = [crumb, dt, str].filter(Boolean).join(".");
+    const key = [crumb, title, ld_to_str(thing)].filter(Boolean).join(".");
     const srcView = src_to_div(src);
-    if (dt) {
-        return <DefListView key={key} title={dt} value={value} src={srcView} />;
+    if (title) {
+        return (
+            <DefListView key={key} title={title} value={value} src={srcView} />
+        );
     }
     return <ListView key={key} value={value} src={srcView} />;
 }
@@ -127,21 +136,11 @@ function pgraph_to_li(graph: object, param?: string) {
     }
 }
 
-function pgraph_to_ul(
-    graph: Array<object> | object,
-    param?: string
-): ReactElement {
+export function pgraph_to_ul(graph?: Array<object>, param?: string): ReactElement {
     if (!graph) {
         return <LoadingView />;
     }
-    let pgraph = normalize_graph(graph);
-    if (param) {
-        pgraph = pgraph.filter((g) => {
-            return g[param];
-        });
-    }
+    const pgraph = param ? graph.filter((g) => g[param]) : graph;
     const li = pgraph.map((g) => pgraph_to_li(g, param));
-    return li.length > 0 ? <UnorderedListView>{li}</UnorderedListView> : null ;
+    return li.length > 0 ? <UnorderedListView>{li}</UnorderedListView> : null;
 }
-
-export { graph_to_ul, pgraph_to_ul };

@@ -20,7 +20,7 @@ const initSearch: SearchState = {
     page: 0,
 };
 
-const searchReducer = (state = initSearch, action: actions.searchAction) => {
+const SearchReducer = (state = initSearch, action: actions.searchAction) => {
     switch (action.type) {
         case actions.CLEAR:
             return initSearch
@@ -49,4 +49,4 @@ const searchReducer = (state = initSearch, action: actions.searchAction) => {
    }
 };
 
-export default searchReducer
+export default SearchReducer

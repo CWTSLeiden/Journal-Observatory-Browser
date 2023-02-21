@@ -1,138 +1,182 @@
-import React, { useEffect, useState, ReactNode } from "react";
-import { QueryEngine } from "@comunica/query-sparql";
-import { query_jsonld } from "../query/query";
+import React, { useEffect, useState, ReactNode, useContext } from "react";
+import { query_jsonld } from "../query/local";
 import { graph_to_ul, pgraph_to_ul } from "../query/display_pad";
-import { pad_id_norm } from "../query/pad";
-
+import { PadContext } from "../context";
+import { Quadstore } from "quadstore";
 
 type MetadataComponentProps = { pad_id: string };
-function MetadataComponent(props: MetadataComponentProps) {
-    const pad_id = pad_id_norm(props.pad_id)
-    const [meta, setMeta] = useState(undefined);
+function MetadataComponent({ pad_id }: MetadataComponentProps) {
+    const padStore = useContext(PadContext)
+    const [meta_name, setMetaName] = useState(undefined);
+    const [meta_url, setMetaUrl] = useState(undefined);
+    const [meta_keywords, setMetaKeyword] = useState(undefined);
     const [meta_id, setMetaId] = useState(undefined);
     const [meta_org, setMetaOrg] = useState(undefined);
-    const [names, setNames] = useState(undefined);
-    const [urls, setUrls] = useState(undefined);
-    const [keywords, setKeywords] = useState(undefined);
-    const [identifiers, setIdentifiers] = useState(undefined);
-    const [organizations, setOrganizations] = useState(undefined);
-    const sparqlEngine = new QueryEngine();
+
     useEffect(() => {
         async function render() {
-            if (pad_id) {
-                setMeta(await pad_metadata(pad_id, sparqlEngine))
-                setMetaId(await pad_metadata_identifiers(pad_id, sparqlEngine))
-                setMetaOrg(await pad_metadata_organizations(pad_id, sparqlEngine))
-            }
+            setMetaName(await pad_metadata_name(pad_id, padStore));
         }
-        render();
-    }, [pad_id]);
+        padStore ? render() : null;
+    }, [padStore])
 
     useEffect(() => {
-        setNames(pgraph_to_ul(meta, "schema:name"));
-        setUrls(pgraph_to_ul(meta, "schema:url"));
-        setKeywords(pgraph_to_ul(meta, "ppo:hasKeyword"));
-    }, [meta]);
+        async function render() {
+            setMetaUrl(await pad_metadata_url(pad_id, padStore));
+        }
+        padStore ? render() : null;
+    }, [padStore])
 
     useEffect(() => {
-        setIdentifiers(pgraph_to_ul(meta_id));
-    }, [meta_id]);
+        async function render() {
+            setMetaKeyword(await pad_metadata_keyword(pad_id, padStore));
+        }
+        padStore ? render() : null;
+    }, [padStore])
 
     useEffect(() => {
-        setOrganizations(graph_to_ul(meta_org));
-    }, [meta_org]);
+        async function render() {
+            setMetaId(await pad_metadata_identifiers(pad_id, padStore));
+        }
+        padStore ? render() : null;
+    }, [padStore]);
+
+    useEffect(() => {
+        async function render() {
+            setMetaOrg(await pad_metadata_organizations(pad_id, padStore));
+        }
+        padStore ? render() : null;
+    }, [padStore])
 
     return (
         <section id="metadata">
             <h1>Metadata</h1>
-            <MetadataSection title={"Names"}>{names}</MetadataSection>
-            <MetadataSection title={"Urls"}>{urls}</MetadataSection>
-            <MetadataSection title={"Keywords"}>{keywords}</MetadataSection>
-            <MetadataSection title={"Identifiers"}>{identifiers}</MetadataSection>
-            <MetadataSection title={"Organizations"}>{organizations}</MetadataSection>
+            <MetadataSection title={"Names"}>
+                {pgraph_to_ul(meta_name, "schema:name")}
+            </MetadataSection>
+            <MetadataSection title={"Urls"}>
+                {pgraph_to_ul(meta_url, "schema:url")}
+            </MetadataSection>
+            <MetadataSection title={"Keywords"}>
+                {pgraph_to_ul(meta_keywords, "ppo:hasKeyword")}
+            </MetadataSection>
+            <MetadataSection title={"Identifiers"}>
+                {pgraph_to_ul(meta_id)}
+            </MetadataSection>
+            <MetadataSection title={"Organizations"}>
+                {graph_to_ul(meta_org)}
+            </MetadataSection>
         </section>
     );
 }
 
-type MetadataSectionProps = { title: string, children: Array<ReactNode> }
-const MetadataSection = ({ title, children }: MetadataSectionProps ) => {
-    if (children) {
-        return <div className="subsection"><h2>{title}</h2>{children}</div>
-    }
-}
+type MetadataSectionProps = { title: string; children: ReactNode };
+const MetadataSection = ({ title, children }: MetadataSectionProps) =>
+    children ? (
+        <div className="subsection">
+            <h2>{title}</h2>
+            {children}
+        </div>
+    ) : null;
 
-async function pad_metadata(pad_id: string, engine: QueryEngine) {
+async function pad_metadata_name(pad_id: string, store: Quadstore) {
     const query = `
         construct {
-            ?b ?p ?o .
-            ?b ppo:_src ?creator .
+            ?s schema:name ?o .
+            ?s ppo:_src ?source .
         }
         where {
-            ?pad a pad:PAD ;
-                pad:hasAssertion ?assertion .
-            graph ?assertion { ?s a ppo:Platform ; ?p ?o } .
-            optional { 
-                graph ?g { ?s a ppo:Platform ; ?p ?o } .
-                ?g dcterms:creator ?creator
-            } .
-            bind(bnode() as ?b)
-            filter(?p in (schema:name, schema:url, ppo:hasKeyword))
+            ?pad pad:hasAssertion ?a . 
+            graph ?a { ?s a ppo:Platform ; schema:name ?o . }
+            optional {
+                ?a pad:hasSourceAssertion ?source
+                graph ?source { ?_ schema:name ?o }
+            }
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine);
+    return await query_jsonld(query, store);
 }
 
-async function pad_metadata_identifiers(pad_id: string, engine: QueryEngine) {
+async function pad_metadata_url(pad_id: string, store: Quadstore) {
+    const query = `
+        construct {
+            ?s schema:url ?o .
+            ?s ppo:_src ?source .
+        }
+        where {
+            ?pad pad:hasAssertion ?a . 
+            graph ?a { ?s a ppo:Platform ; schema:url ?o . }
+            optional {
+                ?a pad:hasSourceAssertion ?source
+                graph ?source { ?_ schema:url ?o }
+            }
+        }
+        values (?pad) {(pad:${pad_id})}
+    `;
+    return await query_jsonld(query, store);
+}
+
+async function pad_metadata_keyword(pad_id: string, store: Quadstore) {
+    const query = `
+        construct {
+            ?s ppo:hasKeyword ?o .
+            ?s ppo:_src ?source .
+        }
+        where {
+            ?pad pad:hasAssertion ?a . 
+            graph ?a { ?s a ppo:Platform ; ppo:hasKeyword ?o . }
+            optional {
+                ?a pad:hasSourceAssertion ?source
+                graph ?source { ?_ ppo:hasKeyword ?o }
+            }
+        }
+        values (?pad) {(pad:${pad_id})}
+    `;
+    return await query_jsonld(query, store);
+}
+
+async function pad_metadata_identifiers(pad_id: string, store: Quadstore) {
     const query = `
         construct {
             ?b ?p ?o .
-            ?b ppo:_src ?creator .
+            ?b ppo:_src ?source .
         }
         where {
-            ?pad a pad:PAD ;
-                pad:hasAssertion ?assertion .
-            graph ?assertion { ?s a ppo:Platform ; ?p ?o } .
-            { 
-                select distinct ?b ?p ?o where {
-                    ?p rdfs:subPropertyOf ?type.
-                    filter(?type in (dcterms:identifier))
-                    bind(bnode() as ?b)
-                }
-            }
+            ?pad pad:hasAssertion ?a .
+            graph ?a { ?s a ppo:Platform ; ?p ?o } .
+            ?p rdfs:subPropertyOf dcterms:identifier.
+            bind(uuid() as ?b)
             optional { 
-                graph ?g { ?s a ppo:Platform ; ?p ?o } .
-                ?g dcterms:creator ?creator
+                ?assertion pad:hasSourceAssertion ?source
+                graph ?source { [] a ppo:Platform ; ?p ?o } .
             } .
         }
         values (?pad) {(pad:${pad_id})}
-    `
-    return await query_jsonld(query, engine);
+    `;
+    return await query_jsonld(query, store);
 }
 
-async function pad_metadata_organizations(pad_id: string, engine: QueryEngine) {
+async function pad_metadata_organizations(pad_id: string, store: Quadstore) {
     const query = `
         construct {
             ?org ?p ?o .
-            ?org ppo:_src ?creator .
+            ?org ppo:_src ?source .
         }
         where {
-            ?pad a pad:PAD ;
-                pad:hasAssertion ?assertion .
-            graph ?assertion {
-                ?platform a ppo:Platform ; ppo:hasOrganization ?org .
+            ?pad pad:hasAssertion ?a .
+            graph ?a {
+                ?s a ppo:Platform ; ppo:hasOrganization ?org .
                 ?org ?p ?o .
             } .
             optional { 
-                graph ?g {
-                    ?platform a ppo:Platform ; ppo:hasOrganization ?org .
-                }
-                ?g dcterms:creator ?creator
+                ?assertion pad:hasSourceAssertion ?source
+                graph ?source { [] a ppo:Platform ; ppo:hasOrganization ?org } .
             } .
         }
         values (?pad) {(pad:${pad_id})}
-    `
-    return await query_jsonld(query, engine);
+    `;
+    return await query_jsonld(query, store);
 }
 
 export default MetadataComponent;

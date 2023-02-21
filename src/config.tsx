@@ -1,13 +1,23 @@
-const pagesize = 20
+export const pagesize = 20
 
-const endpoint = {
+export const creators = {
+    "https://doaj.org": "DOAJ",
+    "https://v2.sherpa.ac.uk/romeo": "Sherpa-Romeo"
+}
+
+export const endpoint = {
     type: "sparql",
     // value: "http://localhost:7200/repositories/job"
     value: "https://sparql.boomen.net/repositories/job"
     // value: "http://188.166.16.172:7200/repositories/job"
 };
 
-const context = {
+export const mapping = {
+    "@id": "Identifier",
+    "@type": "Type",
+}
+
+export const context = {
     "brick": "https://brickschema.org/schema/Brick#",
     "csvw": "http://www.w3.org/ns/csvw#",
     "dc": "http://purl.org/dc/elements/1.1/",
@@ -55,4 +65,20 @@ const context = {
     "wikibase": "http://wikiba.se/ontology#"
 };
 
-export { context, endpoint, pagesize };
+export const compact_id = (id: string) => {
+    for (const [k, v] of Object.entries(context)) {
+        if (id.indexOf(v) == 0) {
+            return id.replace(v, `${k}:`)
+        }
+    }
+    return id
+}
+
+export const expand_id = (id: string) =>  {
+    for (const [k, v] of Object.entries(context)) {
+        if (id.indexOf(`${k}:`) == 0) {
+            return id.replace(`${k}:`, v)
+        }
+    }
+    return id
+}

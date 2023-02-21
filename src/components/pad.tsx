@@ -1,28 +1,66 @@
-import React, { ReactElement, ReactNode } from "react";
+import React, { ReactElement, ReactNode, useState } from "react";
 import { LinkItUrl } from "react-linkify-it";
 import PropTypes from "prop-types";
+import { useAppSelector } from "../store";
+import {
+    Card,
+    CardContent,
+    Chip,
+    Dialog,
+} from "@mui/material";
+import { ld_to_str, graph_to_ul } from "../query/display_pad";
+import { creators, mapping } from "../config";
+
+function labelize(value: string): string {
+    const labels = useAppSelector((s) => s.details.labels)
+    return mapping[value] || labels[value] || value
+}
 
 function urlize(thing: ReactNode): ReactElement {
     return <LinkItUrl>{thing}</LinkItUrl>;
 }
 
-const LoadingView = () => (
-    <div>Loading</div>
-)
+const LoadingView = () => <div>Loading</div>;
 
-type SrcViewProps = { sources: Array<string> }
-const SrcView = ({ sources }: SrcViewProps) => (
-    <div className="src">
-        <div className="src-short">{sources.length}</div>
-        <div className="src-long">{urlize(sources.join(", "))}</div>
-    </div>
-);
+type SrcViewProps = { sources: Array<string> };
+const SrcView = ({ sources }: SrcViewProps) => {
+    return (
+        <div className="src">
+            {sources.map((s) => (
+                <SrcViewPop key={s} id={s} />
+            ))}
+        </div>
+    );
+};
 SrcView.propTypes = { sources: PropTypes.arrayOf(PropTypes.string).isRequired };
 
-type ValueViewProps = { value: string, src?: ReactNode }
+const SrcViewPop = ({ id }: { id?: string }) => {
+    const [open, setOpen] = useState(false);
+    const sources = useAppSelector((store) => store.details.sources);
+    const source = sources.find((s) => s["@id"] == id) || {"@id": id};
+    const creator = ld_to_str(source["dcterms:creator"]);
+    const name = creators[creator] || creator || "undefined";
+    const content = source ? graph_to_ul([source]) : id;
+    return (
+        <>
+            <Chip
+                size="small"
+                label={name}
+                onClick={() => setOpen(!open)}
+            ></Chip>
+            <Dialog open={open} onClose={() => setOpen(false)}>
+                <Card>
+                    <CardContent>{content}</CardContent>
+                </Card>
+            </Dialog>
+        </>
+    );
+};
+
+type ValueViewProps = { value: string; src?: ReactNode };
 const ValueView = ({ value, src }: ValueViewProps) => (
     <div className="value">
-        {urlize(value)}
+        {urlize(labelize(value))}
         {src}
     </div>
 );
@@ -31,10 +69,10 @@ ValueView.propTypes = {
     src: PropTypes.node,
 };
 
-type IdViewProps = { id: string, children?: ReactNode, src?: ReactNode }
+type IdViewProps = { id: string; children?: ReactNode; src?: ReactNode };
 const IdView = ({ id, children, src }: IdViewProps) => (
     <div className="id">
-        {urlize(id)}
+        {urlize(labelize(id))}
         {src}
         {children}
     </div>
@@ -45,10 +83,10 @@ IdView.propTypes = {
     src: PropTypes.node,
 };
 
-type ListViewProps = { value: string | ReactNode, src?: ReactNode }
+type ListViewProps = { value: string | ReactNode; src?: ReactNode };
 const ListView = ({ value, src }: ListViewProps) => (
     <li>
-        {value}
+        {typeof(value) == "string" ? labelize(value): value}
         {src}
     </li>
 );
@@ -57,31 +95,61 @@ ListView.propTypes = {
     src: PropTypes.node,
 };
 
-type UnorderedListViewProps = { children: Array<ReactNode>, src?: ReactNode }
-const UnorderedListView = ({ children, src }: UnorderedListViewProps) => (
-    <ul>{src}{children}</ul>
+type SortProps = { children: Array<ReactNode>; by?: string };
+const Sort = ({ children, by }: SortProps) => {
+    const compare = (a: ReactNode, b: ReactNode) => (a[by] > b[by] ? 1 : -1);
+    if (by) {
+        return <>{React.Children.toArray(children).sort(compare)}</>;
+    }
+    return <>{children}</>;
+};
+
+type UnorderedListViewProps = {
+    children: Array<ReactNode>;
+    sortBy?: string;
+    src?: ReactNode;
+};
+const UnorderedListView = ({
+    children,
+    sortBy,
+    src,
+}: UnorderedListViewProps) => (
+    <ul>
+        {src}
+        <Sort by={sortBy || "key"}>{children}</Sort>
+    </ul>
 );
 UnorderedListView.propTypes = {
     children: PropTypes.arrayOf(PropTypes.node).isRequired,
+    sortBy: PropTypes.string,
     src: PropTypes.node,
 };
 
-type OrderedListViewProps = { children: ReactNode, src?: ReactNode }
-const OrderedListView = ({ children, src }: OrderedListViewProps) => (
+type OrderedListViewProps = {
+    children: Array<ReactNode>;
+    sortBy?: string;
+    src?: ReactNode;
+};
+const OrderedListView = ({ children, sortBy, src }: OrderedListViewProps) => (
     <ol>
         {src}
-        {children}
+        <Sort by={sortBy || "key"}>{children}</Sort>
     </ol>
 );
 OrderedListView.propTypes = {
     children: PropTypes.arrayOf(PropTypes.node).isRequired,
+    sortBy: PropTypes.string,
     src: PropTypes.node,
 };
 
-type DefListViewProps = { title: string, value: string | ReactNode, src?: ReactNode }
+type DefListViewProps = {
+    title: string;
+    value: string | ReactNode;
+    src?: ReactNode;
+};
 const DefListView = ({ title, value, src }: DefListViewProps) => (
     <li>
-        <dt>{title}</dt>
+        <dt>{labelize(title)}</dt>
         <dd>{value}</dd>
         {src}
     </li>

@@ -1,12 +1,14 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import searchReducer from "../reducers/search";
+import SearchReducer from "../reducers/search";
 import PadsReducer from "../reducers/pads";
+import DetailsReducer from "../reducers/details";
 
 const store = configureStore({
     reducer: {
-        search: searchReducer,
-        pads: PadsReducer
+        search: SearchReducer,
+        pads: PadsReducer,
+        details: DetailsReducer
     },
     devTools: true
 });

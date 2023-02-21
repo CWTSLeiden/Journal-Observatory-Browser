@@ -1,35 +1,69 @@
 import "../styles.css"
 import "../details.css"
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
-import { QueryEngine } from "@comunica/query-sparql";
-import { pad_doc, pad_id_norm, platform_name_single } from "../query/pad";
+
+import * as detailsActions from "../actions/details"
 import MetadataComponent from "../components/metadata";
+import { AppContext, PadContext } from "../context";
+import { compact_id, expand_id } from "../config";
+import { pad_id_norm } from "../query/display_pad";
+import { query_jsonld, query_select, query_single } from "../query/local";
+import { pad_store } from "../query/pad_store"
+import { useAppDispatch } from "../store";
+import PolicyComponent from "../components/policy";
+import { mergeQuadstores } from "../query/local";
+import { Quadstore } from "quadstore";
 
 function DetailsComponent() {
-    const pad_id = useParams().id
+    const pad_id = pad_id_norm(useParams().id)
+    const ontologyStore = useContext(AppContext).ontologyStore
+    const [padStore, setPadStore] = useState(undefined)
     const [pad_name, setPadName] = useState("loading...");
-    const [doc, setDoc] = useState("loading...");
-    const sparqlEngine = new QueryEngine();
+    const dispatch = useAppDispatch();
 
-    async function setName() {
-        if (pad_id) {
-            setPadName(await platform_name_single(pad_id, sparqlEngine));
-        }
-    }
-    async function setRaw() {
-        if (pad_id) {
-            setDoc(await pad_doc(pad_id, sparqlEngine));
-        }
-    }
-
+    // Set PAD Store
     useEffect(() => {
-        setName();
-        setRaw();
-    }, []);
+        const render = async () => {
+            const store = await pad_store(pad_id)
+            await mergeQuadstores(store, [ontologyStore])
+            setPadStore(store)
+        }
+        ontologyStore ? render() : null
+    }, [ontologyStore]);
+
+    // Set Sources
+    useEffect(() => {
+        const render = async () => {
+            const src = await pad_sources(pad_id, padStore)
+            dispatch(detailsActions.set_sources(src))
+        }
+        padStore ? render() : null
+    }, [padStore])
+
+    // Set Platform Name
+    useEffect(() => {
+        const render = async () => 
+            setPadName(await pad_names(pad_id, padStore))
+        padStore ? render() : null
+    }, [padStore]);
+
+    // Set Labels
+    useEffect(() => {
+        const render = async () => {
+            const labels = await pad_labels(ontologyStore)
+            const labels_dict = {}
+            labels.map((l) => {
+                labels_dict[compact_id(l.get("property").value)] = l.get("label").value 
+                labels_dict[expand_id(l.get("property").value)] = l.get("label").value
+            })
+            dispatch(detailsActions.set_labels(labels_dict))
+        }
+        ontologyStore ? render() : null
+    }, [ontologyStore]);
 
     return (
-        <div className="App">
+        <PadContext.Provider value={padStore}>
             <section>
                 <title>{pad_name}</title>
                 <ul>
@@ -37,17 +71,51 @@ function DetailsComponent() {
                         Pad ID: <Link to={`/pad/${pad_id}`}>{pad_id}</Link>
                     </li>
                     <li id="pad_doc">
-                        <label htmlFor="docinput">JSON</label>
+                        JSON
                     </li>
                 </ul>
                 <input id="docinput" type="checkbox" />
-                <section id="doc">
-                    <pre>{doc}</pre>
-                </section>
             </section>
             <MetadataComponent pad_id={pad_id} />
-        </div>
+            <PolicyComponent pad_id={pad_id} />
+        </PadContext.Provider>
     );
+}
+
+async function pad_names(pad_id: string, store: Quadstore) {
+    const query = `
+        select ?name where {
+            ?pad a pad:PAD ;
+                pad:hasAssertion ?assertion .
+            graph ?assertion { ?s a ppo:Platform ; schema:name ?name }
+        }
+        values (?pad) {(pad:${pad_id})}
+    `;
+    const name = await query_single(query, store)
+    return name || pad_id
+}
+
+async function pad_sources(pad_id: string, store: Quadstore) {
+    const query = `
+        construct { ?source ?p ?o }
+        where { 
+            ?pad a pad:PAD ; pad:hasProvenance ?provenance .
+            graph ?provenance { ?assertion pad:hasSourceAssertion ?source } .
+            graph ?sprovenance { ?source ?p ?o }
+        }
+        values (?pad) {(pad:${pad_id})}
+    `;
+    return await query_jsonld(query, store);
+}
+
+async function pad_labels(store: Quadstore) {
+    const query = `
+        select ?property ?label where { 
+            ?property rdfs:label ?label
+            filter(str(?label) != "")
+        }
+    `;
+    return await query_select(query, store);
 }
 
 export default DetailsComponent;
