@@ -6,7 +6,7 @@ import { context, endpoint } from "../config";
 export type Sources = [IDataSource, ...IDataSource[]]
 export const defaultSource: Sources = [endpoint]
 
-function format_query(query: string) {
+export function format_query(query: string) {
     let prefix = "";
     for (const ns in context) {
         prefix += `prefix ${ns}: <${context[ns]}> \n`;
@@ -14,7 +14,7 @@ function format_query(query: string) {
     return `${prefix}\n${query}`;
 }
 
-async function query_select(query: string, engine: QueryEngine, sources = defaultSource) {
+export async function query_select(query: string, engine: QueryEngine, sources = defaultSource) {
     const response = await engine.queryBindings(
         format_query(query),
         { sources: sources, unionDefaultGraph: true }
@@ -23,7 +23,7 @@ async function query_select(query: string, engine: QueryEngine, sources = defaul
     return bindings;
 }
 
-async function query_quads(query: string, engine: QueryEngine, sources = defaultSource) {
+export async function query_quads(query: string, engine: QueryEngine, sources = defaultSource) {
     const response = await engine.queryQuads(
         format_query(query),
         { sources: sources, unionDefaultGraph: true }
@@ -32,7 +32,7 @@ async function query_quads(query: string, engine: QueryEngine, sources = default
     return quads;
 }
 
-async function query_jsonld(query: string, engine: QueryEngine, sources = defaultSource): Promise<Array<object>> {
+export async function query_jsonld(query: string, engine: QueryEngine, sources = defaultSource): Promise<Array<object>> {
     const quads = query_quads(query, engine, sources)
     const document = await fromRDF(quads);
     const document_flat = await flatten(document, context);
@@ -40,8 +40,7 @@ async function query_jsonld(query: string, engine: QueryEngine, sources = defaul
     return Array.isArray(document_compact["@graph"]) ? document_compact["@graph"] : [];
 }
 
-
-async function query_single(query: string, engine: QueryEngine, sources = defaultSource) {
+export async function query_single(query: string, engine: QueryEngine, sources = defaultSource) {
     const bindings = await query_select(query, engine, sources)
     const binding =  bindings.find(Boolean)
     if (binding) {
@@ -50,5 +49,3 @@ async function query_single(query: string, engine: QueryEngine, sources = defaul
         }
     }
 }
-
-export { query_single, query_jsonld, query_select, query_quads };

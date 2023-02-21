@@ -1,11 +1,10 @@
 import React, { useEffect, useState, ReactNode, useContext } from "react";
-import { query_jsonld, Sources } from "../query/query";
+import { query_jsonld } from "../query/local";
 import { graph_to_ul } from "../query/display_pad";
 import { pad_id_norm } from "../query/pad";
 import { fold_graph } from "../query/fold";
-import { AppContext, PadContext } from "../context";
-import { QueryEngine } from "@comunica/query-sparql-rdfjs";
-import { Engine } from "quadstore-comunica"
+import { PadContext } from "../context";
+import { Quadstore } from "quadstore";
 
 const publicationPolicyTypes = [
     "ppo:PublicationPolicy"
@@ -24,7 +23,6 @@ const evaluationPolicyTypes = [
 type PolicyComponentProps = { pad_id: string };
 function PolicyComponent({ pad_id }: PolicyComponentProps) {
     pad_id = pad_id_norm(pad_id);
-    const sparqlEngine = new QueryEngine()
     const padStore = useContext(PadContext)
     const [publicationPolicies, setPublicationPolicies] = useState([]);
     const [evaluationPolicies, setEvaluationPolicies] = useState([]);
@@ -32,30 +30,30 @@ function PolicyComponent({ pad_id }: PolicyComponentProps) {
 
     useEffect(() => {
         const render = async () => {
-            let result = await pad_publication_policy(pad_id, sparqlEngine, [padStore])
-            result = fold_graph(result, 2)
+            const result = await pad_publication_policy(pad_id, padStore)
+            const fold = fold_graph(result, 2)
             const filter = (g : object) => publicationPolicyTypes.includes(g["@type"])
-            setPublicationPolicies(result.filter(filter))
+            setPublicationPolicies(fold.filter(filter))
         }
         (pad_id && padStore) ? render() : null
     }, [pad_id, padStore]);
 
     useEffect(() => {
         const render = async () => {
-            let result = await pad_elsewhere_policy(pad_id, sparqlEngine, [padStore])
-            result = fold_graph(result, 2)
+            const result = await pad_elsewhere_policy(pad_id, padStore)
+            const fold = fold_graph(result, 2)
             const filter = (g : object) =>  elsewherePolicyTypes.includes(g["@type"])
-            setElsewherePolicies(result.filter(filter))
+            setElsewherePolicies(fold.filter(filter))
         }
         (pad_id && padStore) ? render() : null
     }, [pad_id, padStore]);
 
     useEffect(() => {
         const render = async () => {
-            let result = await pad_evaluation_policy(pad_id, sparqlEngine, [padStore])
-            result = fold_graph(result, 2)
+            const result = await pad_evaluation_policy(pad_id, padStore)
+            const fold = fold_graph(result, 2)
             const filter = (g : object) => evaluationPolicyTypes.includes(g["@type"])
-            setEvaluationPolicies(result.filter(filter))
+            setEvaluationPolicies(fold.filter(filter))
         }
         (pad_id && padStore) ? render() : null
     }, [pad_id, padStore]);
@@ -88,7 +86,7 @@ const PolicySection = ({ title, children }: PolicySectionProps) =>
         </div>
     ) : null;
 
-async function pad_publication_policy(pad_id: string, engine: QueryEngine, sources: Sources) {
+async function pad_publication_policy(pad_id: string, store: Quadstore) {
     const query = `
         construct {
             ?policy ?p1 ?o1 .
@@ -111,10 +109,10 @@ async function pad_publication_policy(pad_id: string, engine: QueryEngine, sourc
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine, sources);
+    return await query_jsonld(query, store);
 }
 
-async function pad_elsewhere_policy(pad_id: string, engine: QueryEngine, sources: Sources) {
+async function pad_elsewhere_policy(pad_id: string, store: Quadstore) {
     const query = `
         construct {
             ?policy ?p1 ?o1 .
@@ -138,10 +136,10 @@ async function pad_elsewhere_policy(pad_id: string, engine: QueryEngine, sources
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine, sources);
+    return await query_jsonld(query, store);
 }
 
-async function pad_evaluation_policy(pad_id: string, engine: QueryEngine, sources: Sources) {
+async function pad_evaluation_policy(pad_id: string, store: Quadstore) {
     const query = `
         construct {
             ?policy ?p1 ?o1 .
@@ -164,7 +162,7 @@ async function pad_evaluation_policy(pad_id: string, engine: QueryEngine, source
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine, sources);
+    return await query_jsonld(query, store);
 }
 
 export default PolicyComponent;

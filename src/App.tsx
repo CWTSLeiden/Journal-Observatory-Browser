@@ -12,6 +12,7 @@ import { ontology_store } from "./query/pad_store";
 import { QueryEngine } from "@comunica/query-sparql";
 
 window.Buffer = Buffer;
+global.process.nextTick = setImmediate
 
 function App() {
     const sparqlEngine = new QueryEngine()
