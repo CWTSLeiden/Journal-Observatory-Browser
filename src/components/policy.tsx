@@ -1,7 +1,6 @@
 import React, { useEffect, useState, ReactNode, useContext } from "react";
 import { query_jsonld } from "../query/local";
-import { graph_to_ul } from "../query/display_pad";
-import { pad_id_norm } from "../query/pad";
+import { pad_id_norm, graph_to_ul } from "../query/display_pad";
 import { fold_graph } from "../query/fold";
 import { PadContext } from "../context";
 import { Quadstore } from "quadstore";

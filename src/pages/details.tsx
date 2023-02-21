@@ -7,7 +7,7 @@ import * as detailsActions from "../actions/details"
 import MetadataComponent from "../components/metadata";
 import { AppContext, PadContext } from "../context";
 import { compact_id, expand_id } from "../config";
-import { pad_id_norm } from "../query/pad";
+import { pad_id_norm } from "../query/display_pad";
 import { query_jsonld, query_select, query_single } from "../query/local";
 import { pad_store } from "../query/pad_store"
 import { useAppDispatch } from "../store";
@@ -17,7 +17,6 @@ import { Quadstore } from "quadstore";
 
 function DetailsComponent() {
     const pad_id = pad_id_norm(useParams().id)
-    const sparqlEngine = useContext(AppContext).sparqlEngine
     const ontologyStore = useContext(AppContext).ontologyStore
     const [padStore, setPadStore] = useState(undefined)
     const [pad_name, setPadName] = useState("loading...");
@@ -26,7 +25,7 @@ function DetailsComponent() {
     // Set PAD Store
     useEffect(() => {
         const render = async () => {
-            const store = await pad_store(pad_id, sparqlEngine)
+            const store = await pad_store(pad_id)
             await mergeQuadstores(store, [ontologyStore])
             setPadStore(store)
         }

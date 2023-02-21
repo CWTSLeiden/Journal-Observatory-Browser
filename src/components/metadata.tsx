@@ -1,13 +1,11 @@
 import React, { useEffect, useState, ReactNode, useContext } from "react";
-import { mergeQuadstores, query_jsonld } from "../query/local";
+import { query_jsonld } from "../query/local";
 import { graph_to_ul, pgraph_to_ul } from "../query/display_pad";
-import { pad_id_norm } from "../query/pad";
 import { PadContext } from "../context";
 import { Quadstore } from "quadstore";
 
 type MetadataComponentProps = { pad_id: string };
 function MetadataComponent({ pad_id }: MetadataComponentProps) {
-    pad_id = pad_id_norm(pad_id)
     const padStore = useContext(PadContext)
     const [meta_name, setMetaName] = useState(undefined);
     const [meta_url, setMetaUrl] = useState(undefined);

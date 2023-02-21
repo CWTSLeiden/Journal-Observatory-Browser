@@ -3,7 +3,7 @@ import { Quadstore } from "quadstore";
 import { Engine } from "quadstore-comunica";
 import { context } from "../config";
 import type { ResultStream, Quad, Bindings } from '@rdfjs/types';
-import { format_query } from "./query";
+import { format_query } from "./remote";
 
 async function response2array(response: ResultStream<Quad | Bindings>) {
     const end_query = async () =>

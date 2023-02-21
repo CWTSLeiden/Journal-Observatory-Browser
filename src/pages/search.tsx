@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { FilterBar } from "../components/filter";
 import { SearchBar } from "../components/search";
 import { PadTable, PadTablePagination } from "../components/padtable";
@@ -8,18 +8,15 @@ import * as padsActions from "../actions/pads";
 import * as searchActions from "../actions/search";
 import { Grid } from "@mui/material";
 import { Stack } from "@mui/system";
-import { AppContext } from "../context";
 
 function SearchComponent() {
     const searchState = useAppSelector((s) => s.search);
     const page = useAppSelector((s) => s.search.page);
     const pagesize = useAppSelector((s) => s.search.pagesize);
     const dispatch = useAppDispatch();
-    const sparqlEngine = useContext(AppContext).sparqlEngine;
 
     async function loadPads() {
         const { padlist, num } = await pad_list(
-            sparqlEngine,
             searchState,
             pagesize * page
         );
