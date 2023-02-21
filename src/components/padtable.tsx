@@ -12,7 +12,7 @@ import { ArrowForward } from "@mui/icons-material";
 import React from "react";
 import { useNavigate } from "react-router-dom";
 import * as actions from "../actions/search";
-import { pad_id_norm, ld_to_str } from "../query/pad";
+import { pad_id_norm, ld_to_str } from "../query/display_pad";
 import { useAppDispatch, useAppSelector } from "../store";
 
 const PadTable = () => {

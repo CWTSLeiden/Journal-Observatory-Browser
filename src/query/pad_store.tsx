@@ -2,8 +2,7 @@ import { MemoryLevel } from 'memory-level';
 import { BlankNode, DataFactory, DefaultGraph, Literal, NamedNode, Variable } from 'rdf-data-factory';
 import * as RDF from "@rdfjs/types"
 import { Bindings } from "@comunica/types";
-import { QueryEngine } from "@comunica/query-sparql";
-import { query_quads, query_select } from "./query";
+import { query_quads, query_select } from "./remote";
 import { Quad, Quadstore } from "quadstore";
 
 function Qsubject(df: DataFactory, t : RDF.Term): NamedNode | BlankNode | Variable | undefined {
@@ -59,7 +58,7 @@ async function createStore(): Promise<Quadstore> {
     return store
 }
 
-export async function pad_store(pad_id: string, engine: QueryEngine): Promise<Quadstore> {
+export async function pad_store(pad_id: string): Promise<Quadstore> {
     const query = `
         select ?s ?p ?o ?g 
         where {
@@ -95,12 +94,12 @@ export async function pad_store(pad_id: string, engine: QueryEngine): Promise<Qu
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    const quads = await query_select(query, engine)
+    const quads = await query_select(query)
     const store = await createStore()
     return await binds2store(quads, store)
 }
 
-export async function ontology_store(engine: QueryEngine): Promise<Quadstore> {
+export async function ontology_store(): Promise<Quadstore> {
     const query = `
         construct { ?s ?p ?o }
         where {
@@ -109,7 +108,7 @@ export async function ontology_store(engine: QueryEngine): Promise<Quadstore> {
             { graph ppo:ontology { ?s ?p ?o } }
         }
     `
-    const quads = await query_quads(query, engine)
+    const quads = await query_quads(query)
     const store = await createStore()
     store.multiPut(quads)
     return store

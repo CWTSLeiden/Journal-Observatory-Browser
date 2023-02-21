@@ -8,8 +8,7 @@ import {
     Chip,
     Dialog,
 } from "@mui/material";
-import { ld_to_str } from "../query/pad";
-import { graph_to_ul } from "../query/display_pad";
+import { ld_to_str, graph_to_ul } from "../query/display_pad";
 import { creators, mapping } from "../config";
 
 function labelize(value: string): string {

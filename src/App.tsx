@@ -9,17 +9,16 @@ import AppRouter from "./AppRouter";
 import store from "./store";
 import { AppContext } from "./context";
 import { ontology_store } from "./query/pad_store";
-import { QueryEngine } from "@comunica/query-sparql";
 
 window.Buffer = Buffer;
+global.process.nextTick = setImmediate
 
 function App() {
-    const sparqlEngine = new QueryEngine()
-    const context: AppContext = { sparqlEngine }
+    const context: AppContext = {}
     const [appContext, setAppContext] = useState(context)
     async function getStore() {
         if (!appContext.ontologyStore) {
-            const ontologyStore = await ontology_store(sparqlEngine)
+            const ontologyStore = await ontology_store()
             setAppContext({...appContext, ontologyStore})
         }
     }

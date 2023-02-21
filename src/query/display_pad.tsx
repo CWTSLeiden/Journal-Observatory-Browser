@@ -9,10 +9,20 @@ import {
     OrderedListView,
     LoadingView,
 } from "../components/pad";
-import { ld_to_str } from "./pad";
 
 const src_to_div = (src?: Array<object>): ReactElement =>
     src ? <SrcView sources={src.map(ld_to_str)} /> : null;
+
+export const ld_to_str = (obj: string | object | Array<object> | Array<string>): string => {
+    const to_str = (o: string | object) => o ? o["@id"] || o["@value"] || String(o) : "";
+    return Array.isArray(obj) ? obj.map(to_str).join(", ") : to_str(obj)
+}
+
+export function pad_id_norm(pad_id: string) {
+    const regex = /([A-Za-z0-9-]+)$/i
+    const result = regex.exec(pad_id)
+    return (result && result[0]) || pad_id
+}
 
 function graph_to_react(obj: object | string, crumb?: string): ReactElement {
     const srcView = src_to_div(obj["ppo:_src"]);
@@ -76,7 +86,7 @@ function graph_to_react(obj: object | string, crumb?: string): ReactElement {
     );
 }
 
-function graph_to_ul(graph: Array<object>): ReactElement {
+export function graph_to_ul(graph: Array<object>): ReactElement {
     if (!graph) {
         return <LoadingView />;
     }
@@ -126,7 +136,7 @@ function pgraph_to_li(graph: object, param?: string) {
     }
 }
 
-function pgraph_to_ul(graph?: Array<object>, param?: string): ReactElement {
+export function pgraph_to_ul(graph?: Array<object>, param?: string): ReactElement {
     if (!graph) {
         return <LoadingView />;
     }
@@ -134,5 +144,3 @@ function pgraph_to_ul(graph?: Array<object>, param?: string): ReactElement {
     const li = pgraph.map((g) => pgraph_to_li(g, param));
     return li.length > 0 ? <UnorderedListView>{li}</UnorderedListView> : null;
 }
-
-export { graph_to_ul, pgraph_to_ul };

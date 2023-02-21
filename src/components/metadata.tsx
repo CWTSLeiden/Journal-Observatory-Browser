@@ -1,15 +1,11 @@
 import React, { useEffect, useState, ReactNode, useContext } from "react";
-import { QueryEngine } from "@comunica/query-sparql";
-import { query_jsonld, Sources } from "../query/query";
+import { query_jsonld } from "../query/local";
 import { graph_to_ul, pgraph_to_ul } from "../query/display_pad";
-import { pad_id_norm } from "../query/pad";
-import { AppContext, PadContext } from "../context";
+import { PadContext } from "../context";
+import { Quadstore } from "quadstore";
 
 type MetadataComponentProps = { pad_id: string };
 function MetadataComponent({ pad_id }: MetadataComponentProps) {
-    pad_id = pad_id_norm(pad_id)
-    const sparqlEngine = useContext(AppContext).sparqlEngine
-    const ontologyStore = useContext(AppContext).ontologyStore
     const padStore = useContext(PadContext)
     const [meta_name, setMetaName] = useState(undefined);
     const [meta_url, setMetaUrl] = useState(undefined);
@@ -19,35 +15,35 @@ function MetadataComponent({ pad_id }: MetadataComponentProps) {
 
     useEffect(() => {
         async function render() {
-            setMetaName(await pad_metadata_name(pad_id, sparqlEngine, [padStore]));
+            setMetaName(await pad_metadata_name(pad_id, padStore));
         }
         padStore ? render() : null;
     }, [padStore])
 
     useEffect(() => {
         async function render() {
-            setMetaUrl(await pad_metadata_url(pad_id, sparqlEngine, [padStore]));
+            setMetaUrl(await pad_metadata_url(pad_id, padStore));
         }
         padStore ? render() : null;
     }, [padStore])
 
     useEffect(() => {
         async function render() {
-            setMetaKeyword(await pad_metadata_keyword(pad_id, sparqlEngine, [padStore]));
+            setMetaKeyword(await pad_metadata_keyword(pad_id, padStore));
         }
         padStore ? render() : null;
     }, [padStore])
 
     useEffect(() => {
         async function render() {
-            setMetaId(await pad_metadata_identifiers(pad_id, sparqlEngine, [padStore, ontologyStore]));
+            setMetaId(await pad_metadata_identifiers(pad_id, padStore));
         }
-        padStore && ontologyStore ? render() : null;
-    }, [padStore, ontologyStore]);
+        padStore ? render() : null;
+    }, [padStore]);
 
     useEffect(() => {
         async function render() {
-            setMetaOrg(await pad_metadata_organizations(pad_id, sparqlEngine, [padStore]));
+            setMetaOrg(await pad_metadata_organizations(pad_id, padStore));
         }
         padStore ? render() : null;
     }, [padStore])
@@ -83,7 +79,7 @@ const MetadataSection = ({ title, children }: MetadataSectionProps) =>
         </div>
     ) : null;
 
-async function pad_metadata_name(pad_id: string, engine: QueryEngine, sources?: Sources) {
+async function pad_metadata_name(pad_id: string, store: Quadstore) {
     const query = `
         construct {
             ?s schema:name ?o .
@@ -99,10 +95,10 @@ async function pad_metadata_name(pad_id: string, engine: QueryEngine, sources?: 
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine, sources);
+    return await query_jsonld(query, store);
 }
 
-async function pad_metadata_url(pad_id: string, engine: QueryEngine, sources?: Sources) {
+async function pad_metadata_url(pad_id: string, store: Quadstore) {
     const query = `
         construct {
             ?s schema:url ?o .
@@ -118,10 +114,10 @@ async function pad_metadata_url(pad_id: string, engine: QueryEngine, sources?: S
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine, sources);
+    return await query_jsonld(query, store);
 }
 
-async function pad_metadata_keyword(pad_id: string, engine: QueryEngine, sources?: Sources) {
+async function pad_metadata_keyword(pad_id: string, store: Quadstore) {
     const query = `
         construct {
             ?s ppo:hasKeyword ?o .
@@ -137,10 +133,10 @@ async function pad_metadata_keyword(pad_id: string, engine: QueryEngine, sources
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine, sources);
+    return await query_jsonld(query, store);
 }
 
-async function pad_metadata_identifiers(pad_id: string, engine: QueryEngine, sources?: Sources) {
+async function pad_metadata_identifiers(pad_id: string, store: Quadstore) {
     const query = `
         construct {
             ?b ?p ?o .
@@ -158,10 +154,10 @@ async function pad_metadata_identifiers(pad_id: string, engine: QueryEngine, sou
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine, sources);
+    return await query_jsonld(query, store);
 }
 
-async function pad_metadata_organizations(pad_id: string, engine: QueryEngine, sources?: Sources) {
+async function pad_metadata_organizations(pad_id: string, store: Quadstore) {
     const query = `
         construct {
             ?org ?p ?o .
@@ -180,7 +176,7 @@ async function pad_metadata_organizations(pad_id: string, engine: QueryEngine, s
         }
         values (?pad) {(pad:${pad_id})}
     `;
-    return await query_jsonld(query, engine, sources);
+    return await query_jsonld(query, store);
 }
 
 export default MetadataComponent;
