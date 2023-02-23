@@ -4,6 +4,8 @@ export type SearchState = {
     searchstring?: string;
     embargo?: boolean;
     embargoduration?: number;
+    orderprop?: string;
+    orderasc?: boolean;
     pubpolicy?: boolean;
     paywall?: boolean;
     pagesize?: number;
@@ -14,6 +16,8 @@ const initSearch: SearchState = {
     searchstring: "",
     embargo: false,
     embargoduration: 0,
+    orderprop: "schema:name",
+    orderasc: true,
     pubpolicy: false,
     paywall: false,
     pagesize: 20,
@@ -38,6 +42,12 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
             return {...state, pagesize: Number(action.payload.value) }
         case actions.SET_SEARCH:
             return {...state, searchstring: String(action.payload.value)}
+        case actions.SET_ORDER_PROP:
+            return {...state, oderprop: String(action.payload.value) }
+        case actions.SET_ORDER_ASC:
+            return {...state, orderasc: Boolean(action.payload.value) }
+        case actions.TOGGLE_ORDER_ASC:
+            return {...state, orderasc: !state.orderasc }
         case actions.TOGGLE_EMBARGO:
             return {...state, embargo: !state.embargo }
         case actions.TOGGLE_PAYWALL:

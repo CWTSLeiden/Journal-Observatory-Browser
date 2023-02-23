@@ -13,6 +13,7 @@ function SearchComponent() {
     const searchState = useAppSelector((s) => s.search);
     const page = useAppSelector((s) => s.search.page);
     const pagesize = useAppSelector((s) => s.search.pagesize);
+    const orderasc = useAppSelector((s) => s.search.orderasc);
     const dispatch = useAppDispatch();
 
     async function loadPads() {
@@ -20,7 +21,7 @@ function SearchComponent() {
             searchState,
             pagesize * page
         );
-        dispatch(padsActions.set_pads(padlist));
+        dispatch(padsActions.set_pads(padlist, orderasc));
         dispatch(padsActions.set_total(num));
     }
 

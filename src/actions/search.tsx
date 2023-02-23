@@ -14,6 +14,9 @@ export const DECREMENT_PAGE = "decrementPage";
 export const INCREMENT_PAGE = "incrementPage";
 export const RESET_PAGE = "resetPage";
 export const SET_SEARCH = "setSearch";
+export const SET_ORDER_PROP = "setOrderProp";
+export const SET_ORDER_ASC = "setOrderAsc";
+export const TOGGLE_ORDER_ASC = "toggleOrderAsc";
 export const TOGGLE_EMBARGO = "toggleEmbargo";
 export const TOGGLE_PAYWALL = "togglePaywall";
 export const TOGGLE_PUBPOLICY = "togglePubpolicy";
@@ -47,6 +50,21 @@ export const set_search = (search: string): searchAction => ({
     payload: {
         value: search,
     },
+});
+export const set_orderprop = (prop: string): searchAction => ({
+    type: SET_ORDER_PROP,
+    payload: {
+        value: prop,
+    },
+});
+export const set_orderasc = (bool: boolean): searchAction => ({
+    type: SET_ORDER_ASC,
+    payload: {
+        value: bool,
+    },
+});
+export const toggle_orderasc = (): searchAction => ({
+    type: TOGGLE_ORDER_ASC,
 });
 export const toggle_pubpolicy = (): searchAction => ({
     type: TOGGLE_PUBPOLICY,
