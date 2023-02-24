@@ -43,19 +43,11 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
 
 const PadTable = () => {
     const pads = useAppSelector((store) => store.pads.pads);
-    return (
-                <>
-                    {pads.map((pad) => (
-                        <PadCard key={pad["@id"]} pad={pad} />
-                    ))}
-                    {pads.length < 1 ? <NoResultsRow /> : ""}
-                </>
-    );
+    if (pads.length < 1) {
+        return <Card sx={{padding: 2}}>No Results</Card>
+    }
+    return <>{pads.map((pad) => <PadCard key={pad["@id"]} pad={pad} />)}</>
 };
-
-const NoResultsRow = () => (
-    <TableRow><TableCell>No Results</TableCell></TableRow>
-)
 
 const PadTablePagination = () => {
     const total = useAppSelector((store) => store.pads.total);
@@ -63,7 +55,7 @@ const PadTablePagination = () => {
     const page = useAppSelector((store) => store.search.page);
     const dispatch = useAppDispatch();
     return (
-        <Grid container sx={{paddingLeft: 2, paddingRight: 2}}spacing={2} alignItems="center">
+        <Grid container sx={{paddingLeft: 2, paddingRight: 2}} spacing={2} alignItems="center">
             <Grid item xs={4}>
                 <OrderLabel label="Name" prop="schema:name" />
             </Grid>
