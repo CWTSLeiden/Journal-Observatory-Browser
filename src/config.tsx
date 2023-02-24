@@ -2,7 +2,13 @@ export const pagesize = 20
 
 export const creators = {
     "https://doaj.org": "DOAJ",
-    "https://v2.sherpa.ac.uk/romeo": "Sherpa-Romeo"
+    "https://v2.sherpa.ac.uk/romeo": "Sherpa-Romeo",
+    "https://www.wikidata.org": "Wikidata",
+    "https://openalex.org": "OpenAlex",
+    "https://www.ieee.org": "IEEE",
+    "https://springernature.com": "Springer",
+    "https://www.wiley.com/": "Wiley",
+    "https://elifesciences.org/": "eLife"
 }
 
 export const endpoint = {
