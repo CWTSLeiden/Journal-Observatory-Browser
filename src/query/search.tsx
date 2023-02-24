@@ -76,12 +76,15 @@ async function pad_list(search: SearchState, offset=0) {
                 ?policytype ?policy ;
                 ppo:hasKeyword ?keyword ;
                 ppo:hasPaywall ?paywall ;
-                ppo:_ord ?order ;
+                dcterms:creator ?creator ;
+                ppo:_ord ?order .
         }
         where {
             {
-                select ?pad ?platform (min(?order) as ?order) where {
+                select ?pad ?platform ?creator (min(?order) as ?order) where {
                     ?pad a pad:PAD ; pad:hasAssertion ?assertion .
+                    optional { ?assertion pad:hasSourceAssertion ?source .
+                        service <repository:pad> { ?source dcterms:creator ?creator } }
                     graph ?assertion { ?platform a ppo:Platform . }
                     ${orderprop(search.orderprop)}
                     ${searchfilter(search.searchstring)}
@@ -89,7 +92,7 @@ async function pad_list(search: SearchState, offset=0) {
                     ${paywallfilter(search.paywall)}
                     ${embargofilter(search.embargo, search.embargoduration)}
                 }
-                group by ?pad ?platform
+                group by ?pad ?platform ?creator
                 ${order(search.orderasc)}
                 ${limit(search.pagesize)}
             }

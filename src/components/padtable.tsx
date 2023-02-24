@@ -2,22 +2,18 @@ import {
     Card,
     Chip,
     Grid,
-    Paper,
-    Table,
-    TableBody,
     TableCell,
-    TableContainer,
-    TableHead,
     TablePagination,
     TableRow,
     TableSortLabel,
 } from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
-import React from "react";
+import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
 import * as actions from "../actions/search";
 import { pad_id_norm, ld_to_str } from "../query/display_pad";
 import { useAppDispatch, useAppSelector } from "../store";
+import { creators } from "../config";
 
 const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
     const orderprop = useAppSelector((store) => store.search.orderprop);
@@ -50,7 +46,7 @@ const PadTable = () => {
     return (
                 <>
                     {pads.map((pad) => (
-                        <PadRow key={pad["@id"]} pad={pad} />
+                        <PadCard key={pad["@id"]} pad={pad} />
                     ))}
                     {pads.length < 1 ? <NoResultsRow /> : ""}
                 </>
@@ -99,37 +95,88 @@ const propToString = (
     return short ? prop.find(Boolean) : prop.join(", ");
 };
 
-type PadRowProps = { pad: object };
-const PadRow = ({ pad }: PadRowProps) => {
+type PadCardProps = { pad: object };
+const PadCard = ({ pad }: PadCardProps) => {
     const pad_id = pad_id_norm(pad["@id"]);
     const navigate = useNavigate();
     const handleClick = () => navigate(`/pad/${pad_id}`);
     const name = propToString(pad["schema:name"], true) || "<none>"
     const issn = propToString(pad["prism:issn"], true)
-    const pubp = pad["ppo:PublicationPolicy"] ? pad["ppo:PublicationPolicy"].length : 0
-    const evap = pad["ppo:EvaluationPolicy"] ? pad["ppo:EvaluationPolicy"].length : 0
-    const els  = pad["ppo:PublicationElsewherePolicy"] ? pad["ppo:PublicationElsewherePolicy"].length : 0
-    const elsa = pad["ppo:PublicationElsewhereAllowed"] ? pad["ppo:PublicationElsewhereAllowed"].length : 0
-    const elsp = pad["ppo:PublicationElsewhereProhibited"] ? pad["ppo:PublicationElsewhereProhibited"].length : 0
-    const elsn = els + elsa + elsp
-    const payw = pad["ppo:hasPaywall"] ? pad["ppo:hasPaywall"].some(p => p) : false
     return (
         <Card key={pad_id} onClick={handleClick} sx={{padding: 2, cursor: "pointer"}}>
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={8}><b>{name}</b></Grid>
                 <Grid item xs={3}>{ issn ? <i>ISSN: {issn}</i> : null }</Grid>
                 <Grid item xs={1}><ArrowForward fontSize="small"/></Grid>
-                <Grid item xs={11} container spacing={2} alignItems="center">
-                    <Grid item>Policies: </Grid>
-                    { (pubp > 0) ? <Grid item><Chip color="primary" label={`Publication: ${pubp}`} /></Grid> : null }
-                    { (evap > 0) ? <Grid item><Chip color="primary" label={`Evaluation: ${evap}`} /></Grid> : null }
-                    { (elsn > 0) ? <Grid item><Chip color="primary" label={`Elsewhere: ${elsn}`} /></Grid> : null }
-                    { (pubp + evap + elsn == 0) ? <Grid item><Chip label="none" variant="outlined" /></Grid> : null }
-                    { payw ? <Grid item><Chip label="Paywall" color="error" /></Grid> : null }
+                <Grid item xs={12} container spacing={2} alignItems="center">
+                    <Grid item xs={1} sx={{minWidth: 80}}>Policies: </Grid>
+                    <PadCardPolicies pad={pad} />
+                </Grid>
+                <Grid item xs={12} container spacing={2} alignItems="center">
+                    <Grid item xs={1} sx={{minWidth: 80}}>Sources: </Grid>
+                    <PadCardSources pad={pad} />
                 </Grid>
             </Grid>
         </Card>
     );
 };
+
+const Cond = ({ cond, children }: { cond: boolean, children: ReactElement }) => (
+    cond ? <>{children}</> : null
+)
+
+const PadCardPolicies = ({ pad }: PadCardProps) => {
+    const pubpolicies         = pad["ppo:PublicationPolicy"]?.length || 0
+    const evalpolicies        = pad["ppo:EvaluationPolicy"]?.length || 0
+    const elsewherepolicies   = pad["ppo:PublicationElsewherePolicy"]?.length || 0
+    const elsewhereallowed    = pad["ppo:PublicationElsewhereAllowed"]?.length || 0
+    const elsewhereprohibited = pad["ppo:PublicationElsewhereProhibited"]?.length || 0
+    const elsewherepolicies_n = elsewherepolicies + elsewhereallowed + elsewhereprohibited
+    const paywall = pad["ppo:hasPaywall"]?.some(Boolean) || false
+    return (
+        <>
+            <Cond cond={pubpolicies > 0}>
+                <Grid item>
+                    <Chip color="primary" label={`Publication: ${pubpolicies}`} />
+                </Grid>
+            </Cond>
+            <Cond cond={evalpolicies > 0}>
+                <Grid item>
+                    <Chip color="primary" label={`Evaluation: ${evalpolicies}`} />
+                </Grid>
+            </Cond>
+            <Cond cond={elsewherepolicies_n > 0}>
+                <Grid item>
+                    <Chip color="primary" label={`Elsewhere: ${elsewherepolicies_n}`} />
+                </Grid>
+            </Cond>
+            <Cond cond={pubpolicies + evalpolicies + elsewherepolicies_n == 0}>
+                <Grid item>
+                    <Chip label="none" variant="outlined" />
+                </Grid>
+            </Cond>
+            <Cond cond={paywall}>
+                <Grid item>
+                    <Chip label="Paywall" color="error" />
+                </Grid>
+            </Cond>
+        </>
+    )
+}
+
+const PadCardSources = ({ pad }: PadCardProps) => {
+    const sources = (pad["dcterms:creator"] || []).map(ld_to_str)
+    return (
+        <>
+            { sources.map((c: string) =>
+                <Grid item key={c}><Chip color="secondary" label={creators[c] || c} /></Grid>) }
+            <Cond cond={sources.length == 0}>
+                <Grid item>
+                    <Chip label="none" variant="outlined" />
+                </Grid>
+            </Cond>
+        </>
+    )
+}
 
 export { PadTable, PadTablePagination };
