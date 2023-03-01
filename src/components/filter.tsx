@@ -95,29 +95,40 @@ const EmbargoFilter = () => {
     );
 };
 
+type FilterBarSectionProps = {
+    id: string,
+    title: string,
+    children: ReactElement[]
+};
+const FilterBarSection = ({ id, title, children }: FilterBarSectionProps ) => (
+    <Accordion defaultExpanded={true}>
+        <AccordionSummary id={id} expandIcon={<ExpandMore />} >
+            <Typography sx={{ fontWeight: 600 }}>
+                {title}
+            </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+            <FormGroup>
+                {children}
+            </FormGroup>
+        </AccordionDetails>
+    </Accordion>
+)
+
 type FilterBarProps = {
     handleSubmit: React.UIEventHandler;
 };
 const FilterBar = ({ handleSubmit }: FilterBarProps) => {
     return (
         <Stack id="filter-bar" spacing={2}>
-            <Accordion defaultExpanded={true}>
-                <AccordionSummary
-                    id="filter-panel-publication-policy"
-                    expandIcon={<ExpandMore />}
-                >
-                    <Typography sx={{ fontWeight: 600 }}>
-                        Publication Policy
-                    </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <FormGroup>
-                        <PubPolicyFilter />
-                        <OpenAccessFilter />
-                        <EmbargoFilter />
-                    </FormGroup>
-                </AccordionDetails>
-            </Accordion>
+            <FilterBarSection
+                id="filter-panel-publication-policy"
+                title="Publication Policy"
+            >
+                <PubPolicyFilter />
+                <OpenAccessFilter />
+                <EmbargoFilter />
+            </FilterBarSection>
             <Button variant="outlined" onClick={handleSubmit}>
                 Filter
             </Button>
