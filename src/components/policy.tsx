@@ -40,7 +40,6 @@ function PolicyComponent({ pad_id }: PolicyComponentProps) {
         const render = async () => {
             const result = await pad_elsewhere_policy(pad_id, padStore)
             const fold = fold_graph(result, 2)
-            console.log(fold)
             const filter = (g : object) =>  elsewherePolicyTypes.includes(g["@type"])
             setElsewherePolicies(fold.filter(filter))
         }
