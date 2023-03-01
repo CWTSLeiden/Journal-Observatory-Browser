@@ -7,12 +7,9 @@ export type SearchState = {
     orderprop?: string;
     orderasc?: boolean;
     pubpolicy?: boolean;
-    elsewherepolicy?: boolean;
-    elsewherearticleversion?: boolean;
     open_access?: boolean;
     pagesize?: number;
     page?: number;
-    creators?: string[];
 };
 
 const initSearch: SearchState = {
