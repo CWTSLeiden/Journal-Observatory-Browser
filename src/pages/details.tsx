@@ -6,9 +6,8 @@ import { useParams, Link } from "react-router-dom";
 import * as detailsActions from "../actions/details"
 import MetadataComponent from "../components/metadata";
 import { AppContext, PadContext } from "../context";
-import { compact_id, expand_id } from "../config";
 import { pad_id_norm } from "../query/display_pad";
-import { query_jsonld, query_select, query_single } from "../query/local";
+import { query_jsonld, query_single } from "../query/local";
 import { pad_store } from "../query/pad_store"
 import { useAppDispatch } from "../store";
 import PolicyComponent from "../components/policy";
@@ -47,20 +46,6 @@ function DetailsComponent() {
             setPadName(await pad_names(pad_id, padStore))
         padStore ? render() : null
     }, [padStore]);
-
-    // Set Labels
-    useEffect(() => {
-        const render = async () => {
-            const labels = await pad_labels(ontologyStore)
-            const labels_dict = {}
-            labels.map((l) => {
-                labels_dict[compact_id(l.get("property").value)] = l.get("label").value 
-                labels_dict[expand_id(l.get("property").value)] = l.get("label").value
-            })
-            dispatch(detailsActions.set_labels(labels_dict))
-        }
-        ontologyStore ? render() : null
-    }, [ontologyStore]);
 
     return (
         <PadContext.Provider value={padStore}>
@@ -106,16 +91,6 @@ async function pad_sources(pad_id: string, store: Quadstore) {
         values (?pad) {(pad:${pad_id})}
     `;
     return await query_jsonld(query, store);
-}
-
-async function pad_labels(store: Quadstore) {
-    const query = `
-        select ?property ?label where { 
-            ?property rdfs:label ?label
-            filter(str(?label) != "")
-        }
-    `;
-    return await query_select(query, store);
 }
 
 export default DetailsComponent;

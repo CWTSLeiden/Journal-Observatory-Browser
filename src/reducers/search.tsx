@@ -2,20 +2,23 @@ import * as actions from "../actions/search"
 
 export type SearchState = {
     searchstring?: string;
-    embargo?: boolean;
-    embargoduration?: number;
+    pub_embargo?: boolean;
+    pub_embargoduration?: number;
     orderprop?: string;
     orderasc?: boolean;
     pubpolicy?: boolean;
+    elsewherepolicy?: boolean;
+    elsewherearticleversion?: boolean;
     open_access?: boolean;
     pagesize?: number;
     page?: number;
+    creators?: string[];
 };
 
 const initSearch: SearchState = {
     searchstring: "",
-    embargo: false,
-    embargoduration: 0,
+    pub_embargo: false,
+    pub_embargoduration: 0,
     orderprop: "schema:name",
     orderasc: true,
     pubpolicy: false,
@@ -28,8 +31,8 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
     switch (action.type) {
         case actions.CLEAR:
             return initSearch
-        case actions.SET_EMBARGO:
-            return {...state, embargoduration: Number(action.payload.value) }
+        case actions.SET_PUB_EMBARGO:
+            return {...state, pub_embargoduration: Number(action.payload.value) }
         case actions.SET_PAGE:
             return {...state, page: Number(action.payload.value) }
         case actions.DECREMENT_PAGE:
@@ -48,8 +51,8 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
             return {...state, orderasc: Boolean(action.payload.value) }
         case actions.TOGGLE_ORDER_ASC:
             return {...state, orderasc: !state.orderasc }
-        case actions.TOGGLE_EMBARGO:
-            return {...state, embargo: !state.embargo }
+        case actions.TOGGLE_PUB_EMBARGO:
+            return {...state, pub_embargo: !state.pub_embargo }
         case actions.TOGGLE_OPEN_ACCESS:
             return {...state, open_access: !state.open_access }
         case actions.TOGGLE_PUBPOLICY:

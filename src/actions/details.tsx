@@ -7,7 +7,6 @@ export type detailsAction = {
 }
 
 export const SET_SOURCES = "setSources"
-export const SET_LABELS = "setLabels"
 
 export const set_sources = (sources: Array<object>): detailsAction => ({
     type: SET_SOURCES,
@@ -15,11 +14,3 @@ export const set_sources = (sources: Array<object>): detailsAction => ({
         list: sources
     }
 })
-
-export const set_labels = (labels: object): detailsAction => ({
-    type: SET_LABELS,
-    payload: {
-        value: labels
-    }
-})
-

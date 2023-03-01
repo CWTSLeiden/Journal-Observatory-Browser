@@ -7,7 +7,7 @@ type searchActionPayload = {
 };
 
 export const CLEAR = "clear";
-export const SET_EMBARGO = "setEmbargo";
+export const SET_PUB_EMBARGO = "setPub_Embargo";
 export const SET_PAGESIZE = "setPagesize";
 export const SET_PAGE = "setPage";
 export const DECREMENT_PAGE = "decrementPage";
@@ -17,7 +17,7 @@ export const SET_SEARCH = "setSearch";
 export const SET_ORDER_PROP = "setOrderProp";
 export const SET_ORDER_ASC = "setOrderAsc";
 export const TOGGLE_ORDER_ASC = "toggleOrderAsc";
-export const TOGGLE_EMBARGO = "toggleEmbargo";
+export const TOGGLE_PUB_EMBARGO = "togglePub_Embargo";
 export const TOGGLE_OPEN_ACCESS = "toggleOpenAccess";
 export const TOGGLE_PUBPOLICY = "togglePubpolicy";
 
@@ -72,11 +72,11 @@ export const toggle_pubpolicy = (): searchAction => ({
 export const toggle_open_access = (): searchAction => ({
     type: TOGGLE_OPEN_ACCESS,
 });
-export const toggle_embargo = (): searchAction => ({
-    type: TOGGLE_EMBARGO,
+export const toggle_pub_embargo = (): searchAction => ({
+    type: TOGGLE_PUB_EMBARGO,
 });
-export const set_embargo = (n: number): searchAction => ({
-    type: SET_EMBARGO,
+export const set_pub_embargo = (n: number): searchAction => ({
+    type: SET_PUB_EMBARGO,
     payload: {
         value: n,
     },

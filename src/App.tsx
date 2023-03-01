@@ -9,6 +9,7 @@ import AppRouter from "./AppRouter";
 import store from "./store";
 import { AppContext } from "./context";
 import { ontology_store } from "./query/pad_store";
+import { get_labels_dict } from "./query/labels";
 
 window.Buffer = Buffer;
 global.process.nextTick = setImmediate
@@ -20,6 +21,8 @@ function App() {
         if (!appContext.ontologyStore) {
             const ontologyStore = await ontology_store()
             setAppContext({...appContext, ontologyStore})
+            const labels_dict = await get_labels_dict(ontologyStore)
+            setAppContext({...appContext, labels: labels_dict})
         }
     }
     useEffect(() => {getStore()}, []);

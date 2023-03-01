@@ -1,4 +1,4 @@
-import React, { ReactElement, ReactNode, useState } from "react";
+import React, { ReactElement, ReactNode, useContext, useState } from "react";
 import { LinkItUrl } from "react-linkify-it";
 import PropTypes from "prop-types";
 import { useAppSelector } from "../store";
@@ -10,9 +10,10 @@ import {
 } from "@mui/material";
 import { ld_to_str, graph_to_ul } from "../query/display_pad";
 import { creators, mapping } from "../config";
+import { AppContext } from "../context";
 
 function labelize(value: string): string {
-    const labels = useAppSelector((s) => s.details.labels)
+    const labels = useContext(AppContext).labels
     return mapping[value] || labels[value] || value
 }
 

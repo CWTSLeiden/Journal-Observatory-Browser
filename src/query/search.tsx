@@ -36,11 +36,11 @@ async function pad_list(search: SearchState, offset=0) {
         return b ? q : "";
     };
 
-    const embargofilter = (b?: boolean, n?: number) => {
+    const pub_embargofilter = (b?: boolean, n?: number) => {
         const q = `
             filter exists {
-                ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ; fabio:hasEmbargoDuration ?embargo ] .
-                filter(?embargo <= "P${n}M"^^xsd:duration)
+                ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ; fabio:hasEmbargoDuration ?pub_embargo ] .
+                filter(?pub_embargo <= "P${n}M"^^xsd:duration)
             }
         `;
         return b ? q : "";
@@ -56,7 +56,7 @@ async function pad_list(search: SearchState, offset=0) {
             ${searchfilter(search.searchstring)}
             ${pubpolicyfilter(search.pubpolicy)}
             ${open_access_filter(search.open_access)}
-            ${embargofilter(search.embargo, search.embargoduration)}
+            ${pub_embargofilter(search.pub_embargo, search.pub_embargoduration)}
         }
     `
 
@@ -90,7 +90,7 @@ async function pad_list(search: SearchState, offset=0) {
                     ${searchfilter(search.searchstring)}
                     ${pubpolicyfilter(search.pubpolicy)}
                     ${open_access_filter(search.open_access)}
-                    ${embargofilter(search.embargo, search.embargoduration)}
+                    ${pub_embargofilter(search.pub_embargo, search.pub_embargoduration)}
                 }
                 group by ?pad ?platform ?creator
                 ${order(search.orderasc)}
