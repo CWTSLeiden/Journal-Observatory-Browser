@@ -62,6 +62,7 @@ export const context = {
     "openalex": "https://docs.openalex.org/about-the-data/venue#",
     "prism": "http://prismstandard.org/namespaces/basic/2.0/",
     "pro": "http://purl.org/spar/pro/",
+    "pso": "http://purl.org/spar/pso/",
     "romeo": "https://v2.sherpa.ac.uk/id/",
     "rdfg": "http://www.w3.org/2004/03/trix/rdfg-1/",
     "schema1": "http://schema.org/",
