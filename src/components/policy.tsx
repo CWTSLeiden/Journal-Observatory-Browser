@@ -12,8 +12,7 @@ const elsewherePolicyTypes = [
     "ppo:PublicationElsewherePolicy",
     "ppo:PublicationElsewhereAllowedPolicy",
     "ppo:PublicationElsewhereProhibitedPolicy",
-    "ppo:PublicationElsewhereAllowed",
-    "ppo:PublicationElsewhereProhibited"
+    "ppo:PublicationElsewhereMandatoryPolicy"
 ]
 const evaluationPolicyTypes = [
     "ppo:EvaluationPolicy"
@@ -123,11 +122,11 @@ async function pad_elsewhere_policy(pad_id: string, store: Quadstore) {
             graph ?assertion {
                 ?platform a ppo:Platform ;
                     ppo:hasPolicy ?policy .
-                ?policy a ?policytype .
+                ?policy a ?elsewherepolicy .
                 optional { ?policy ?p1 ?o1 } .
                 optional { ?o1 ?p2 ?o2 } .
-        filter(?policytype in (ppo:PublicationElsewherePolicy, ppo:PublicationElsewhereAllowed, ppo:PublicationElsewhereProhibited))
             }
+            ?elsewherepolicy rdfs:subClassOf ppo:PublicationElsewherePolicy .
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
                 graph ?source { [] a ppo:Platform ; ppo:hasPolicy ?policy } .

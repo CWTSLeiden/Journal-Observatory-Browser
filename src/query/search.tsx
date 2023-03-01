@@ -27,10 +27,10 @@ async function pad_list(search: SearchState, offset=0) {
         return b ? q : "";
     };
 
-    const paywallfilter = (b?: boolean) => {
+    const open_access_filter = (b?: boolean) => {
         const q = `
             filter exists {
-                ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ; ppo:hasPaywall true ] .
+                ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ; ppo:isOpenAccess true ] .
             }
         `;
         return b ? q : "";
@@ -39,7 +39,7 @@ async function pad_list(search: SearchState, offset=0) {
     const embargofilter = (b?: boolean, n?: number) => {
         const q = `
             filter exists {
-                ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ; ppo:embargo ?embargo ] .
+                ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ; fabio:hasEmbargoDuration ?embargo ] .
                 filter(?embargo <= "P${n}M"^^xsd:duration)
             }
         `;
@@ -55,7 +55,7 @@ async function pad_list(search: SearchState, offset=0) {
             graph ?assertion { ?platform a ppo:Platform . }
             ${searchfilter(search.searchstring)}
             ${pubpolicyfilter(search.pubpolicy)}
-            ${paywallfilter(search.paywall)}
+            ${open_access_filter(search.open_access)}
             ${embargofilter(search.embargo, search.embargoduration)}
         }
     `
@@ -75,7 +75,7 @@ async function pad_list(search: SearchState, offset=0) {
                 schema:name ?name ;
                 ?policytype ?policy ;
                 ppo:hasKeyword ?keyword ;
-                ppo:hasPaywall ?paywall ;
+                ppo:isOpenAccess ?openaccess ;
                 dcterms:creator ?creator ;
                 ppo:_ord ?order .
         }
@@ -89,7 +89,7 @@ async function pad_list(search: SearchState, offset=0) {
                     ${orderprop(search.orderprop)}
                     ${searchfilter(search.searchstring)}
                     ${pubpolicyfilter(search.pubpolicy)}
-                    ${paywallfilter(search.paywall)}
+                    ${open_access_filter(search.open_access)}
                     ${embargofilter(search.embargo, search.embargoduration)}
                 }
                 group by ?pad ?platform ?creator
@@ -103,16 +103,11 @@ async function pad_list(search: SearchState, offset=0) {
             optional { ?platform prism:eIssn ?eissn . }
             bind(coalesce(?issnl, ?issn, ?eissn) as ?issnu) .
             optional { ?platform ppo:hasKeyword ?keyword . }
-            optional { ?platform ppo:hasPolicy ?policy . ?policy a ?policytype .
-                filter(?policytype in (
-                    ppo:PublicationPolicy,
-                    ppo:EvaluationPolicy,
-                    ppo:PublicationElsewherePolicy,
-                    ppo:PublicationElsewhereAllowed,
-                    ppo:PublicationElsewhereProhibited
-                ))
+            optional {
+                ?platform ppo:hasPolicy ?policy .
+                ?policy a ?policytype .
+                optional { ?policy ppo:isOpenAccess ?openaccess . }
             }
-            optional { ?policy ppo:hasPaywall ?paywall . }
         }
     `;
     console.log("Perform query", Date.now())

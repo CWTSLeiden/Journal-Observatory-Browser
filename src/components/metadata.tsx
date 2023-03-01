@@ -166,12 +166,12 @@ async function pad_metadata_organizations(pad_id: string, store: Quadstore) {
         where {
             ?pad pad:hasAssertion ?a .
             graph ?a {
-                ?s a ppo:Platform ; ppo:hasOrganization ?org .
+                ?s a ppo:Platform ; dcterms:relation ?org .
                 ?org ?p ?o .
             } .
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
-                graph ?source { [] a ppo:Platform ; ppo:hasOrganization ?org } .
+                graph ?source { [] a ppo:Platform ; dcterms:relation ?org } .
             } .
         }
         values (?pad) {(pad:${pad_id})}
