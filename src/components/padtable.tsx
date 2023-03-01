@@ -124,7 +124,7 @@ const PadCardPolicies = ({ pad }: PadCardProps) => {
     const elsewhereallowed    = pad["ppo:PublicationElsewhereAllowed"]?.length || 0
     const elsewhereprohibited = pad["ppo:PublicationElsewhereProhibited"]?.length || 0
     const elsewherepolicies_n = elsewherepolicies + elsewhereallowed + elsewhereprohibited
-    const paywall = pad["ppo:hasPaywall"]?.some(Boolean) || false
+    const open_access = pad["ppo:isOpenAccess"]?.some(Boolean) || false
     return (
         <>
             <Cond cond={pubpolicies > 0}>
@@ -147,9 +147,9 @@ const PadCardPolicies = ({ pad }: PadCardProps) => {
                     <Chip label="none" variant="outlined" />
                 </Grid>
             </Cond>
-            <Cond cond={paywall}>
+            <Cond cond={open_access}>
                 <Grid item>
-                    <Chip label="Paywall" color="error" />
+                    <Chip label="Open Access" color="error" />
                 </Grid>
             </Cond>
         </>

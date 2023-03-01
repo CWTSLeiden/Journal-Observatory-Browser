@@ -52,11 +52,11 @@ const PubPolicyFilter = () => (
     />
 );
 
-const PaywallFilter = () => (
+const OpenAccessFilter = () => (
     <CheckBoxFilter
-        state={(store) => store.search.paywall}
-        action={searchActions.toggle_paywall}
-        label="hasPaywall"
+        state={(store) => store.search.open_access}
+        action={searchActions.toggle_open_access}
+        label="isOpenAccess"
     />
 );
 
@@ -108,7 +108,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
                 <AccordionDetails>
                     <FormGroup>
                         <PubPolicyFilter />
-                        <PaywallFilter />
+                        <OpenAccessFilter />
                         <EmbargoFilter />
                     </FormGroup>
                 </AccordionDetails>

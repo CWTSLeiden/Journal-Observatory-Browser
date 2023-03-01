@@ -18,7 +18,7 @@ export const SET_ORDER_PROP = "setOrderProp";
 export const SET_ORDER_ASC = "setOrderAsc";
 export const TOGGLE_ORDER_ASC = "toggleOrderAsc";
 export const TOGGLE_EMBARGO = "toggleEmbargo";
-export const TOGGLE_PAYWALL = "togglePaywall";
+export const TOGGLE_OPEN_ACCESS = "toggleOpenAccess";
 export const TOGGLE_PUBPOLICY = "togglePubpolicy";
 
 export const decrementPage = (): searchAction => ({
@@ -69,8 +69,8 @@ export const toggle_orderasc = (): searchAction => ({
 export const toggle_pubpolicy = (): searchAction => ({
     type: TOGGLE_PUBPOLICY,
 });
-export const toggle_paywall = (): searchAction => ({
-    type: TOGGLE_PAYWALL,
+export const toggle_open_access = (): searchAction => ({
+    type: TOGGLE_OPEN_ACCESS,
 });
 export const toggle_embargo = (): searchAction => ({
     type: TOGGLE_EMBARGO,

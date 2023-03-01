@@ -7,7 +7,7 @@ export type SearchState = {
     orderprop?: string;
     orderasc?: boolean;
     pubpolicy?: boolean;
-    paywall?: boolean;
+    open_access?: boolean;
     pagesize?: number;
     page?: number;
 };
@@ -19,7 +19,7 @@ const initSearch: SearchState = {
     orderprop: "schema:name",
     orderasc: true,
     pubpolicy: false,
-    paywall: false,
+    open_access: false,
     pagesize: 20,
     page: 0,
 };
@@ -50,8 +50,8 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
             return {...state, orderasc: !state.orderasc }
         case actions.TOGGLE_EMBARGO:
             return {...state, embargo: !state.embargo }
-        case actions.TOGGLE_PAYWALL:
-            return {...state, paywall: !state.paywall }
+        case actions.TOGGLE_OPEN_ACCESS:
+            return {...state, open_access: !state.open_access }
         case actions.TOGGLE_PUBPOLICY:
             return {...state, pubpolicy: !state.pubpolicy }
         default:
