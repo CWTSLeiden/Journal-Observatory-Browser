@@ -44,25 +44,30 @@ const CheckBoxFilter = ({
     );
 };
 
-const PubPolicyFilter = () => (
-    <CheckBoxFilter
-        state={(store) => store.search.pubpolicy}
-        action={searchActions.toggle_pubpolicy}
-        label="hasPubPolicy"
-    />
-);
+const PubPolicyFilter = () => {
+    const label = useAppSelector((s) => s.details.labels["ppo:hasPublicationPolicy"])
+    return (
+        <CheckBoxFilter
+            state={(store) => store.search.pubpolicy}
+            action={searchActions.toggle_pubpolicy}
+            label={label || "has Publication Policy"}
+        />
+)}
 
-const OpenAccessFilter = () => (
-    <CheckBoxFilter
-        state={(store) => store.search.open_access}
-        action={searchActions.toggle_open_access}
-        label="isOpenAccess"
-    />
-);
+const OpenAccessFilter = () => {
+    const label = useAppSelector((s) => s.details.labels["ppo:isOpenAccess"])
+    return (
+        <CheckBoxFilter
+            state={(store) => store.search.open_access}
+            action={searchActions.toggle_open_access}
+            label={label || "is Open Access"}
+        />
+)}
 
 const EmbargoFilter = () => {
     const state = useAppSelector((s) => s.search.embargo);
     const value = useAppSelector((s) => s.search.embargoduration);
+    const label = useAppSelector((s) => s.details.labels["fabio:hasEmbargoDuration"])
     const [number, setNumber] = useState(value);
     useEffect(() => setNumber(value), [value]);
     const dispatch = useAppDispatch();
@@ -70,7 +75,7 @@ const EmbargoFilter = () => {
         <CheckBoxFilter
             state={(store) => store.search.embargo}
             action={searchActions.toggle_embargo}
-            label="hasEmbargo"
+            label={label || "has Embargo Duration"}
         >
             <Slider
                 disabled={!state}
