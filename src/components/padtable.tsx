@@ -118,12 +118,9 @@ const Cond = ({ cond, children }: { cond: boolean, children: ReactElement }) => 
 )
 
 const PadCardPolicies = ({ pad }: PadCardProps) => {
-    const pubpolicies         = pad["ppo:PublicationPolicy"]?.length || 0
-    const evalpolicies        = pad["ppo:EvaluationPolicy"]?.length || 0
-    const elsewherepolicies   = pad["ppo:PublicationElsewherePolicy"]?.length || 0
-    const elsewhereallowed    = pad["ppo:PublicationElsewhereAllowed"]?.length || 0
-    const elsewhereprohibited = pad["ppo:PublicationElsewhereProhibited"]?.length || 0
-    const elsewherepolicies_n = elsewherepolicies + elsewhereallowed + elsewhereprohibited
+    const pubpolicies       = pad["ppo:PublicationPolicy"]?.length || 0
+    const evalpolicies      = pad["ppo:EvaluationPolicy"]?.length || 0
+    const elsewherepolicies = pad["ppo:PublicationElsewherePolicy"]?.length || 0
     const open_access = pad["ppo:isOpenAccess"]?.some(Boolean) || false
     return (
         <>
@@ -137,12 +134,12 @@ const PadCardPolicies = ({ pad }: PadCardProps) => {
                     <Chip color="primary" label={`Evaluation: ${evalpolicies}`} />
                 </Grid>
             </Cond>
-            <Cond cond={elsewherepolicies_n > 0}>
+            <Cond cond={elsewherepolicies > 0}>
                 <Grid item>
-                    <Chip color="primary" label={`Elsewhere: ${elsewherepolicies_n}`} />
+                    <Chip color="primary" label={`Elsewhere: ${elsewherepolicies}`} />
                 </Grid>
             </Cond>
-            <Cond cond={pubpolicies + evalpolicies + elsewherepolicies_n == 0}>
+            <Cond cond={pubpolicies + evalpolicies + elsewherepolicies == 0}>
                 <Grid item>
                     <Chip label="none" variant="outlined" />
                 </Grid>

@@ -103,14 +103,9 @@ async function pad_list(search: SearchState, offset=0) {
             optional { ?platform prism:eIssn ?eissn . }
             bind(coalesce(?issnl, ?issn, ?eissn) as ?issnu) .
             optional { ?platform ppo:hasKeyword ?keyword . }
-            optional { ?platform ppo:hasPolicy ?policy . ?policy a ?policytype .
-                filter(?policytype in (
-                    ppo:PublicationPolicy,
-                    ppo:EvaluationPolicy,
-                    ppo:PublicationElsewherePolicy,
-                    ppo:PublicationElsewhereAllowed,
-                    ppo:PublicationElsewhereProhibited
-                ))
+            optional {
+                ?platform ppo:hasPolicy ?policy .
+                ?policy a ?policytype .
                 optional { ?policy ppo:isOpenAccess ?openaccess . }
             }
         }
