@@ -49,8 +49,8 @@ const PubPolicyFilter = () => {
     const label = useContext(AppContext).labels["ppo:hasPublicationPolicy"] || "has Publication Policy"
     return (
         <CheckBoxFilter
-            state={(store) => store.search.pubpolicy}
-            action={searchActions.toggle_pubpolicy}
+            state={(store) => store.search.pub_policy}
+            action={searchActions.toggle_pub_policy}
             label={label}
         />
 )}

@@ -8,7 +8,7 @@ export type SearchState = {
     pub_apc?: boolean;
     pub_apcamount?: number;
     pub_license?: { [key: string]: boolean };
-    pubpolicy?: boolean;
+    pub_policy?: boolean;
     elsewhere_policy?: boolean;
     elsewhere_articleversion?: { [key: string]: boolean };
     elsewhere_embargo?: boolean;
@@ -29,7 +29,7 @@ const initSearch: SearchState = {
     pub_embargoduration: 0,
     orderprop: "schema:name",
     orderasc: true,
-    pubpolicy: false,
+    pub_policy: false,
     open_access: false,
     pagesize: 20,
     page: 0,
@@ -73,8 +73,8 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
             return {...state, pub_embargo: !state.pub_embargo }
         case actions.TOGGLE_OPEN_ACCESS:
             return {...state, open_access: !state.open_access }
-        case actions.TOGGLE_PUBPOLICY:
-            return {...state, pubpolicy: !state.pubpolicy }
+        case actions.TOGGLE_PUB_POLICY:
+            return {...state, pub_policy: !state.pub_policy }
         default:
             return state
    }

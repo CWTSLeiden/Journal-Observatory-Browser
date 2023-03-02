@@ -54,7 +54,7 @@ async function pad_list(search: SearchState, offset=0) {
             ?pad a pad:PAD ; pad:hasAssertion ?assertion .
             graph ?assertion { ?platform a ppo:Platform . }
             ${searchfilter(search.searchstring)}
-            ${pubpolicyfilter(search.pubpolicy)}
+            ${pubpolicyfilter(search.pub_policy)}
             ${open_access_filter(search.open_access)}
             ${pub_embargofilter(search.pub_embargo, search.pub_embargoduration)}
         }
@@ -88,7 +88,7 @@ async function pad_list(search: SearchState, offset=0) {
                     graph ?assertion { ?platform a ppo:Platform . }
                     ${orderprop(search.orderprop)}
                     ${searchfilter(search.searchstring)}
-                    ${pubpolicyfilter(search.pubpolicy)}
+                    ${pubpolicyfilter(search.pub_policy)}
                     ${open_access_filter(search.open_access)}
                     ${pub_embargofilter(search.pub_embargo, search.pub_embargoduration)}
                 }
