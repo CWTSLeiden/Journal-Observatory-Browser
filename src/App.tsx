@@ -15,14 +15,13 @@ window.Buffer = Buffer;
 global.process.nextTick = setImmediate
 
 function App() {
-    const context: AppContext = {}
+    const context: AppContext = {ontologyStore: null, labels: {}}
     const [appContext, setAppContext] = useState(context)
     async function getStore() {
         if (!appContext.ontologyStore) {
-            const ontologyStore = await ontology_store()
-            setAppContext({...appContext, ontologyStore})
-            const labels_dict = await get_labels_dict(ontologyStore)
-            setAppContext({...appContext, labels: labels_dict})
+            context.ontologyStore = await ontology_store()
+            context.labels = await get_labels_dict(context.ontologyStore)
+            setAppContext(context)
         }
     }
     useEffect(() => {getStore()}, []);
