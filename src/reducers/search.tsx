@@ -1,13 +1,24 @@
 import * as actions from "../actions/search"
 
+
 export type SearchState = {
     searchstring?: string;
     pub_embargo?: boolean;
     pub_embargoduration?: number;
+    pub_apc?: boolean;
+    pub_apcamount?: number;
+    pub_license?: { [key: string]: boolean };
+    pubpolicy?: boolean;
+    elsewhere_policy?: boolean;
+    elsewhere_articleversion?: { [key: string]: boolean };
+    elsewhere_embargo?: boolean;
+    elsewhere_embargoduration?: number;
+    elsewhere_license?: { [key: string]: boolean };
+    elsewhere_copyrightowner?: { [key: string]: boolean };
+    open_access?: boolean;
+    creators?: { [key: string]: boolean };
     orderprop?: string;
     orderasc?: boolean;
-    pubpolicy?: boolean;
-    open_access?: boolean;
     pagesize?: number;
     page?: number;
 };
@@ -22,6 +33,16 @@ const initSearch: SearchState = {
     open_access: false,
     pagesize: 20,
     page: 0,
+    creators: {
+        "https://doaj.org": true,
+        "https://v2.sherpa.ac.uk/romeo": true,
+        "https://www.wikidata.org": true,
+        "https://openalex.org": true,
+        "https://www.ieee.org": true,
+        "https://springernature.com": true,
+        "https://www.wiley.com": true,
+        "https://elifesciences.org": true,
+    }
 };
 
 const SearchReducer = (state = initSearch, action: actions.searchAction) => {
