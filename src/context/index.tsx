@@ -2,8 +2,8 @@ import { Quadstore } from "quadstore";
 import { createContext } from "react";
 
 export type AppContext = {
-    ontologyStore?: Quadstore;
-    labels?: object
+    ontologyStore: Quadstore;
+    labels: object
 }
 
 const defaultAppContext: AppContext = undefined

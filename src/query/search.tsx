@@ -18,6 +18,15 @@ async function pad_list(search: SearchState, offset=0) {
         return s ? q : "";
     };
 
+    const creatorfilter = (creators: { [key: string]: boolean }) => {
+        const unfiltered = Object.entries(creators)
+        const filtered = unfiltered.filter(([, bool]) => bool)
+        const q = `
+            filter(?creator in (${filtered.map(([id, ]) => `<${id}>`).join(', ')}))
+        `
+        return filtered.length > 0 && filtered.length != unfiltered.length ? q : ""
+    }
+
     const pubpolicyfilter = (b?: boolean) => {
         const q = `
             filter exists {
@@ -52,7 +61,10 @@ async function pad_list(search: SearchState, offset=0) {
     const nquery = `
         select (count(distinct ?pad) as ?count) where {
             ?pad a pad:PAD ; pad:hasAssertion ?assertion .
+            optional { ?assertion pad:hasSourceAssertion ?source .
+                service <repository:pad> { ?source dcterms:creator ?creator } }
             graph ?assertion { ?platform a ppo:Platform . }
+            ${creatorfilter(search.creators)}
             ${searchfilter(search.searchstring)}
             ${pubpolicyfilter(search.pub_policy)}
             ${open_access_filter(search.open_access)}
@@ -87,6 +99,7 @@ async function pad_list(search: SearchState, offset=0) {
                         service <repository:pad> { ?source dcterms:creator ?creator } }
                     graph ?assertion { ?platform a ppo:Platform . }
                     ${orderprop(search.orderprop)}
+                    ${creatorfilter(search.creators)}
                     ${searchfilter(search.searchstring)}
                     ${pubpolicyfilter(search.pub_policy)}
                     ${open_access_filter(search.open_access)}

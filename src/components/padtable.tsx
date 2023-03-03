@@ -66,10 +66,10 @@ const PadTablePagination = () => {
                     rowsPerPage={pagesize}
                     rowsPerPageOptions={[20, 50, 100]}
                     onRowsPerPageChange={(e) => {
-                        dispatch(actions.setPagesize(Number(e.target.value)));
+                        dispatch(actions.set_page_size(Number(e.target.value)));
                     }}
                     onPageChange={(_, n) => {
-                        dispatch(actions.setPage(n));
+                        dispatch(actions.set_page(n));
                     }}
                     count={total}
                     colSpan={4}

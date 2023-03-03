@@ -1,4 +1,4 @@
-import React, { ReactElement, useContext, useEffect, useState } from "react";
+import React, { ReactElement } from "react";
 import { useAppSelector, useAppDispatch, SearchStore } from "../store";
 import * as searchActions from "../actions/search";
 import {
@@ -10,12 +10,12 @@ import {
     Checkbox,
     FormControlLabel,
     FormGroup,
-    Slider,
     Stack,
     Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import { AppContext } from "../context";
+import { OpenAccessFilter, PubEmbargoFilter, PubPolicyFilter } from "./pub_filter";
+import { CreatorFilter } from "./creator_filter";
 
 type CheckBoxFilterParams = {
     state: (s: SearchStore) => boolean;
@@ -23,7 +23,7 @@ type CheckBoxFilterParams = {
     label: string;
     children?: Array<ReactElement> | ReactElement;
 };
-const CheckBoxFilter = ({
+export const CheckBoxFilter = ({
     state,
     action,
     label,
@@ -45,64 +45,14 @@ const CheckBoxFilter = ({
     );
 };
 
-const PubPolicyFilter = () => {
-    const label = useContext(AppContext).labels["ppo:hasPublicationPolicy"] || "has Publication Policy"
-    return (
-        <CheckBoxFilter
-            state={(store) => store.search.pub_policy}
-            action={searchActions.toggle_pub_policy}
-            label={label}
-        />
-)}
-
-const OpenAccessFilter = () => {
-    const label = useContext(AppContext).labels["ppo:isOpenAccess"] || "is Open Access"
-    return (
-        <CheckBoxFilter
-            state={(store) => store.search.open_access}
-            action={searchActions.toggle_open_access}
-            label={label}
-        />
-)}
-
-const Pub_EmbargoFilter = () => {
-    const state = useAppSelector((s) => s.search.pub_embargo);
-    const value = useAppSelector((s) => s.search.pub_embargoduration);
-    const label = useContext(AppContext).labels["fabio:hasEmbargoDuration"] || "has Embargo Duration"
-    const [number, setNumber] = useState(value);
-    useEffect(() => setNumber(value), [value]);
-    const dispatch = useAppDispatch();
-    return (
-        <CheckBoxFilter
-            state={(store) => store.search.pub_embargo}
-            action={searchActions.toggle_pub_embargo}
-            label={label}
-        >
-            <Slider
-                disabled={!state}
-                value={number}
-                onChange={(_, n: number) => setNumber(n)}
-                onChangeCommitted={(_, n: number) =>
-                    dispatch(searchActions.set_pub_embargo(n))
-                }
-                max={24}
-                valueLabelDisplay="auto"
-                marks={[0, 6, 12, 18, 24].map((n) => ({
-                    value: n,
-                    label: `${n}M`,
-                }))}
-            />
-        </CheckBoxFilter>
-    );
-};
-
 type FilterBarSectionProps = {
     id: string,
     title: string,
+    folded?: boolean
     children: ReactElement[]
 };
-const FilterBarSection = ({ id, title, children }: FilterBarSectionProps ) => (
-    <Accordion defaultExpanded={true}>
+const FilterBarSection = ({ id, title, folded, children }: FilterBarSectionProps ) => (
+    <Accordion defaultExpanded={!folded}>
         <AccordionSummary id={id} expandIcon={<ExpandMore />} >
             <Typography sx={{ fontWeight: 600 }}>
                 {title}
@@ -123,13 +73,29 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
     return (
         <Stack id="filter-bar" spacing={2}>
             <FilterBarSection
+                id="filter-panel-creator"
+                title="Sources"
+                folded={true}
+            >
+                <CreatorFilter creator="https://doaj.org" />
+                <CreatorFilter creator="https://v2.sherpa.ac.uk/romeo" />
+                <CreatorFilter creator="https://www.wikidata.org" />
+                <CreatorFilter creator="https://openalex.org" />
+                <CreatorFilter creator="https://www.ieee.org" />
+                <CreatorFilter creator="https://springernature.com" />
+                <CreatorFilter creator="https://wiley.com" />
+                <CreatorFilter creator="https://elifesciences.org" />
+            </FilterBarSection>
+            
+            <FilterBarSection
                 id="filter-panel-publication-policy"
                 title="Publication Policy"
             >
                 <PubPolicyFilter />
                 <OpenAccessFilter />
-                <Pub_EmbargoFilter />
+                <PubEmbargoFilter />
             </FilterBarSection>
+
             <Button variant="outlined" onClick={handleSubmit}>
                 Filter
             </Button>

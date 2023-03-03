@@ -7,8 +7,8 @@ export const creators = {
     "https://openalex.org": "OpenAlex",
     "https://www.ieee.org": "IEEE",
     "https://springernature.com": "Springer",
-    "https://www.wiley.com/": "Wiley",
-    "https://elifesciences.org/": "eLife"
+    "https://wiley.com": "Wiley",
+    "https://elifesciences.org": "eLife"
 }
 
 export const endpoint = {

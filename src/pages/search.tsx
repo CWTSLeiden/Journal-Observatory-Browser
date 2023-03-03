@@ -26,7 +26,7 @@ function SearchComponent() {
     }
 
     async function doSearch() {
-        dispatch(searchActions.resetPage());
+        dispatch(searchActions.reset_page());
         loadPads();
     }
 

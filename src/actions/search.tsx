@@ -6,78 +6,105 @@ type searchActionPayload = {
     value: string | boolean | number;
 };
 
-export const CLEAR = "clear";
-export const SET_PUB_EMBARGO = "setPub_Embargo";
-export const SET_PAGESIZE = "setPagesize";
-export const SET_PAGE = "setPage";
-export const DECREMENT_PAGE = "decrementPage";
-export const INCREMENT_PAGE = "incrementPage";
-export const RESET_PAGE = "resetPage";
-export const SET_SEARCH = "setSearch";
-export const SET_ORDER_PROP = "setOrderProp";
-export const SET_ORDER_ASC = "setOrderAsc";
-export const TOGGLE_ORDER_ASC = "toggleOrderAsc";
-export const TOGGLE_PUB_EMBARGO = "togglePub_Embargo";
-export const TOGGLE_OPEN_ACCESS = "toggleOpenAccess";
-export const TOGGLE_PUB_POLICY = "togglePubPolicy";
 
-export const decrementPage = (): searchAction => ({
-    type: DECREMENT_PAGE,
-});
-export const incrementPage = (): searchAction => ({
-    type: INCREMENT_PAGE,
-});
-export const setPage = (n: number): searchAction => ({
-    type: SET_PAGE,
-    payload: {
-        value: n,
-    },
-});
-export const setPagesize = (n: number): searchAction => ({
-    type: SET_PAGESIZE,
-    payload: {
-        value: n,
-    },
-});
-export const resetPage = (): searchAction => ({
-    type: RESET_PAGE
-});
+export const CLEAR = "clear";
 export const clear = (): searchAction => ({
     type: CLEAR,
 });
-export const set_search = (search: string): searchAction => ({
-    type: SET_SEARCH,
-    payload: {
-        value: search,
-    },
+
+export const DECREMENT_PAGE = "decrementPage";
+export const decrement_page = (): searchAction => ({
+    type: DECREMENT_PAGE,
 });
-export const set_orderprop = (prop: string): searchAction => ({
-    type: SET_ORDER_PROP,
-    payload: {
-        value: prop,
-    },
+
+export const INCREMENT_PAGE = "incrementPage";
+export const increment_page = (): searchAction => ({
+    type: INCREMENT_PAGE,
 });
+
+export const RESET_PAGE = "resetPage";
+export const reset_page = (): searchAction => ({
+    type: RESET_PAGE
+});
+
+export const RESET_CREATORS = "resetCreators"
+export const reset_creators = (): searchAction => ({
+    type: RESET_CREATORS
+});
+
+export const SET_ORDER_ASC = "setOrderAsc";
 export const set_orderasc = (bool: boolean): searchAction => ({
     type: SET_ORDER_ASC,
     payload: {
         value: bool,
     },
 });
-export const toggle_orderasc = (): searchAction => ({
-    type: TOGGLE_ORDER_ASC,
+
+export const SET_ORDER_PROP = "setOrderProp";
+export const set_orderprop = (prop: string): searchAction => ({
+    type: SET_ORDER_PROP,
+    payload: {
+        value: prop,
+    },
 });
-export const toggle_pub_policy = (): searchAction => ({
-    type: TOGGLE_PUB_POLICY,
+
+export const SET_PAGE = "setPage";
+export const set_page = (n: number): searchAction => ({
+    type: SET_PAGE,
+    payload: {
+        value: n,
+    },
 });
-export const toggle_open_access = (): searchAction => ({
-    type: TOGGLE_OPEN_ACCESS,
+
+export const SET_PAGESIZE = "setPagesize";
+export const set_page_size = (n: number): searchAction => ({
+    type: SET_PAGESIZE,
+    payload: {
+        value: n,
+    },
 });
-export const toggle_pub_embargo = (): searchAction => ({
-    type: TOGGLE_PUB_EMBARGO,
-});
+
+export const SET_PUB_EMBARGO = "setPub_Embargo";
 export const set_pub_embargo = (n: number): searchAction => ({
     type: SET_PUB_EMBARGO,
     payload: {
         value: n,
     },
 });
+
+export const SET_SEARCH = "setSearch";
+export const set_search = (search: string): searchAction => ({
+    type: SET_SEARCH,
+    payload: {
+        value: search,
+    },
+});
+
+export const TOGGLE_CREATOR = "toggleCreator";
+export const toggle_creator = (creator: string): searchAction => ({
+    type: TOGGLE_CREATOR,
+    payload: {
+        value: creator,
+    },
+});
+
+export const TOGGLE_OPEN_ACCESS = "toggleOpenAccess";
+export const toggle_open_access = (): searchAction => ({
+    type: TOGGLE_OPEN_ACCESS,
+});
+
+export const TOGGLE_ORDER_ASC = "toggleOrderAsc";
+export const toggle_orderasc = (): searchAction => ({
+    type: TOGGLE_ORDER_ASC,
+});
+
+export const TOGGLE_PUB_EMBARGO = "togglePubEmbargo";
+export const toggle_pub_embargo = (): searchAction => ({
+    type: TOGGLE_PUB_EMBARGO,
+});
+
+export const TOGGLE_PUB_POLICY = "togglePubPolicy";
+export const toggle_pub_policy = (): searchAction => ({
+    type: TOGGLE_PUB_POLICY,
+});
+
