@@ -1,6 +1,8 @@
 import * as actions from "../actions/search"
 
-type Toggles = { [key: string]: boolean }
+export type Toggles = { [key: string]: boolean }
+export const enabledToggles = (t: Toggles) =>
+    Object.entries(t).filter(([,v]) => v).map(([k,]) => k)
 
 export type SearchState = {
     creators?: Toggles;
@@ -34,7 +36,7 @@ const initSearch: SearchState = {
         "https://openalex.org": true,
         "https://www.ieee.org": true,
         "https://springernature.com": true,
-        "https://wiley.com": true,
+        "https://www.wiley.com": true,
         "https://elifesciences.org": true,
     },
     open_access: false,
@@ -62,6 +64,7 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
         case actions.INCREMENT_PAGE: return {...state, page: state.page + 1 }
         case actions.RESET_PAGE: return {...state, page: initSearch.page }
         case actions.RESET_CREATORS: return {...state, creators: initSearch.creators }
+        case actions.SET_CREATORS: return {...state, creators: action.payload.toggles }
         case actions.SET_ORDER_ASC: return {...state, orderasc: Boolean(action.payload.value) }
         case actions.SET_ORDER_PROP: return {...state, oderprop: String(action.payload.value) }
         case actions.SET_PAGE: return {...state, page: Number(action.payload.value) }

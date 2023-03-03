@@ -1,12 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../store";
 import * as searchActions from "../actions/search";
 import { Slider } from "@mui/material";
-import { AppContext } from "../context";
 import { CheckBoxFilter } from "./filter";
+import { labelize } from "../query/labels";
 
 export const PubPolicyFilter = () => {
-    const label = useContext(AppContext).labels["ppo:hasPublicationPolicy"] || "has Publication Policy"
+    const label = labelize("ppo:hasPublicationPolicy", "has Publication Policy")
     return (
         <CheckBoxFilter
             state={(store) => store.search.pub_policy}
@@ -16,7 +16,7 @@ export const PubPolicyFilter = () => {
 )}
 
 export const OpenAccessFilter = () => {
-    const label = useContext(AppContext).labels["ppo:isOpenAccess"] || "is Open Access"
+    const label = labelize("ppo:isOpenAccess", "is Open Access")
     return (
         <CheckBoxFilter
             state={(store) => store.search.open_access}
@@ -28,7 +28,7 @@ export const OpenAccessFilter = () => {
 export const PubEmbargoFilter = () => {
     const state = useAppSelector((s) => s.search.pub_embargo);
     const value = useAppSelector((s) => s.search.pub_embargoduration);
-    const label = useContext(AppContext).labels["fabio:hasEmbargoDuration"] || "has Embargo Duration"
+    const label = labelize("fabio:hasEmbargoDuration", "has Embargo Duration")
     const [number, setNumber] = useState(value);
     useEffect(() => setNumber(value), [value]);
     const dispatch = useAppDispatch();

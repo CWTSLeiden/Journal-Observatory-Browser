@@ -15,7 +15,7 @@ import {
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
 import { OpenAccessFilter, PubEmbargoFilter, PubPolicyFilter } from "./pub_filter";
-import { CreatorFilter } from "./creator_filter";
+import { CreatorSelect } from "./creator_filter";
 
 type CheckBoxFilterParams = {
     state: (s: SearchStore) => boolean;
@@ -38,10 +38,10 @@ export const CheckBoxFilter = ({
         />
     );
     return (
-        <div className="filter">
-            <FormControlLabel control={checkbox} label={label} />
+        <Box>
+            <FormControlLabel control={checkbox} label={label} sx={{width: "100%"}} />
             {children ? <Box sx={{ ml: 4, mr: 4 }}>{children}</Box> : ""}
-        </div>
+        </Box>
     );
 };
 
@@ -49,7 +49,7 @@ type FilterBarSectionProps = {
     id: string,
     title: string,
     folded?: boolean
-    children: ReactElement[]
+    children: ReactElement | ReactElement[]
 };
 const FilterBarSection = ({ id, title, folded, children }: FilterBarSectionProps ) => (
     <Accordion defaultExpanded={!folded}>
@@ -72,20 +72,7 @@ type FilterBarProps = {
 const FilterBar = ({ handleSubmit }: FilterBarProps) => {
     return (
         <Stack id="filter-bar" spacing={2}>
-            <FilterBarSection
-                id="filter-panel-creator"
-                title="Sources"
-                folded={true}
-            >
-                <CreatorFilter creator="https://doaj.org" />
-                <CreatorFilter creator="https://v2.sherpa.ac.uk/romeo" />
-                <CreatorFilter creator="https://www.wikidata.org" />
-                <CreatorFilter creator="https://openalex.org" />
-                <CreatorFilter creator="https://www.ieee.org" />
-                <CreatorFilter creator="https://springernature.com" />
-                <CreatorFilter creator="https://wiley.com" />
-                <CreatorFilter creator="https://elifesciences.org" />
-            </FilterBarSection>
+            <CreatorSelect />
             
             <FilterBarSection
                 id="filter-panel-publication-policy"

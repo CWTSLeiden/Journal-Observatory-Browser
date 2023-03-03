@@ -1,9 +1,12 @@
+import { Toggles } from "../reducers/search";
+
 export type searchAction = {
     type: string;
     payload?: searchActionPayload;
 };
 type searchActionPayload = {
-    value: string | boolean | number;
+    value?: string | boolean | number;
+    toggles?: Toggles
 };
 
 
@@ -30,6 +33,14 @@ export const reset_page = (): searchAction => ({
 export const RESET_CREATORS = "resetCreators"
 export const reset_creators = (): searchAction => ({
     type: RESET_CREATORS
+});
+
+export const SET_CREATORS = "setCreators"
+export const set_creators = (creators: Toggles): searchAction => ({
+    type: SET_CREATORS,
+    payload: {
+        toggles: creators
+    }
 });
 
 export const SET_ORDER_ASC = "setOrderAsc";
