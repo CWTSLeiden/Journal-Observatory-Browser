@@ -1,4 +1,4 @@
-import React, { ReactElement } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch, SearchStore } from "../store";
 import * as searchActions from "../actions/search";
 import {
@@ -8,20 +8,22 @@ import {
     Box,
     Button,
     Checkbox,
+    Collapse,
     FormControlLabel,
     FormGroup,
+    Slider,
     Stack,
     Typography,
 } from "@mui/material";
 import { ExpandMore } from "@mui/icons-material";
-import { OpenAccessFilter, PubEmbargoFilter, PubPolicyFilter } from "./pub_filter";
+import { OpenAccessFilter, PubApcFilter, PubEmbargoFilter, PubPolicyFilter } from "./pub_filter";
 import { CreatorSelect } from "./creator_filter";
 
 type CheckBoxFilterParams = {
     state: (s: SearchStore) => boolean;
     action: () => searchActions.searchAction;
     label: string;
-    children?: Array<ReactElement> | ReactElement;
+    children?: ReactElement[] | ReactElement;
 };
 export const CheckBoxFilter = ({
     state,
@@ -44,6 +46,78 @@ export const CheckBoxFilter = ({
         </Box>
     );
 };
+
+type SliderFilterParams = {
+    state: (s: SearchStore) => boolean;
+    value: (s: SearchStore) => number;
+    action: (n: number) => searchActions.searchAction;
+    range: number[];
+    unit?: string;
+};
+export const SliderFilter = ({
+    state,
+    value,
+    action,
+    range,
+    unit,
+}: SliderFilterParams) => {
+    const checked_state = useAppSelector(state);
+    const value_state = useAppSelector(value);
+    const dispatch = useAppDispatch();
+    const [number, setNumber] = useState(value_state);
+    useEffect(() => setNumber(value_state), [value_state]);
+    return (
+        <Slider
+            disabled={!checked_state}
+            valueLabelFormat={(n) => <div>{`${n} ${unit ? unit : ""}`}</div>}
+            value={number}
+            onChange={(_, n: number) => setNumber(n)}
+            onChangeCommitted={(_, n: number) => dispatch(action(n))}
+            min={Math.min(...range)}
+            max={Math.max(...range)}
+            valueLabelDisplay="auto"
+            marks={range.map((n) => ({
+                value: n,
+                label: String(n),
+            }))}
+        />
+    );
+};
+
+type CheckSliderFilterParams = {
+    state: (s: SearchStore) => boolean;
+    togglestate: () => searchActions.searchAction;
+    value: (s: SearchStore) => number;
+    setvalue: (n: number) => searchActions.searchAction;
+    label: string;
+    range: number[];
+    unit?: string;
+};
+export const CheckSliderFilter = ({
+    state,
+    togglestate,
+    value,
+    setvalue,
+    label,
+    range,
+    unit,
+}: CheckSliderFilterParams) => (
+    <CheckBoxFilter
+        state={state}
+        action={togglestate}
+        label={label}
+    >
+        <Collapse in={useAppSelector(state)}>
+        <SliderFilter
+            state={state}
+            value={value}
+            action={setvalue}
+            range={range}
+            unit={unit}
+        />
+        </Collapse>
+    </CheckBoxFilter>
+)
 
 type FilterBarSectionProps = {
     id: string,
@@ -81,6 +155,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
                 <PubPolicyFilter />
                 <OpenAccessFilter />
                 <PubEmbargoFilter />
+                <PubApcFilter />
             </FilterBarSection>
 
             <Button variant="outlined" onClick={handleSubmit}>

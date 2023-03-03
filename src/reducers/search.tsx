@@ -46,6 +46,8 @@ const initSearch: SearchState = {
     pagesize: 20,
     pub_embargo: false,
     pub_embargoduration: 0,
+    pub_apc: false,
+    pub_apcamount: 0,
     pub_policy: false,
     searchstring: ""
 };
@@ -70,11 +72,13 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
         case actions.SET_PAGE: return {...state, page: Number(action.payload.value) }
         case actions.SET_PAGESIZE: return {...state, pagesize: Number(action.payload.value) }
         case actions.SET_PUB_EMBARGO: return {...state, pub_embargoduration: Number(action.payload.value) }
+        case actions.SET_PUB_APC: return {...state, pub_apcamount: Number(action.payload.value) }
         case actions.SET_SEARCH: return {...state, searchstring: String(action.payload.value)}
         case actions.TOGGLE_CREATOR: return {...state, creators: toggleProp(state.creators, action.payload.value)}
         case actions.TOGGLE_OPEN_ACCESS: return {...state, open_access: !state.open_access }
         case actions.TOGGLE_ORDER_ASC: return {...state, orderasc: !state.orderasc }
         case actions.TOGGLE_PUB_EMBARGO: return {...state, pub_embargo: !state.pub_embargo }
+        case actions.TOGGLE_PUB_APC: return {...state, pub_apc: !state.pub_apc }
         case actions.TOGGLE_PUB_POLICY: return {...state, pub_policy: !state.pub_policy }
         default: return state
    }

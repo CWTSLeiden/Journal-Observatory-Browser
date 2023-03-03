@@ -75,7 +75,15 @@ export const set_page_size = (n: number): searchAction => ({
     },
 });
 
-export const SET_PUB_EMBARGO = "setPub_Embargo";
+export const SET_PUB_APC = "setPubApc";
+export const set_pub_apc = (n: number): searchAction => ({
+    type: SET_PUB_APC,
+    payload: {
+        value: n,
+    },
+});
+
+export const SET_PUB_EMBARGO = "setPubEmbargo";
 export const set_pub_embargo = (n: number): searchAction => ({
     type: SET_PUB_EMBARGO,
     payload: {
@@ -107,6 +115,11 @@ export const toggle_open_access = (): searchAction => ({
 export const TOGGLE_ORDER_ASC = "toggleOrderAsc";
 export const toggle_orderasc = (): searchAction => ({
     type: TOGGLE_ORDER_ASC,
+});
+
+export const TOGGLE_PUB_APC = "togglePubApc";
+export const toggle_pub_apc = (): searchAction => ({
+    type: TOGGLE_PUB_APC,
 });
 
 export const TOGGLE_PUB_EMBARGO = "togglePubEmbargo";
