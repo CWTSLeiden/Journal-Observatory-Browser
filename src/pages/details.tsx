@@ -3,23 +3,21 @@ import "../details.css"
 import React, { useState, useEffect, useContext } from "react";
 import { useParams, Link } from "react-router-dom";
 
-import * as detailsActions from "../actions/details"
 import MetadataComponent from "../components/metadata";
-import { AppContext, PadContext } from "../context";
+import { OntologyContext, PadContext, SourcesContext } from "../context";
 import { pad_id_norm } from "../query/display_pad";
 import { query_jsonld, query_single } from "../query/local";
 import { pad_store } from "../query/pad_store"
-import { useAppDispatch } from "../store";
 import PolicyComponent from "../components/policy";
 import { mergeQuadstores } from "../query/local";
 import { Quadstore } from "quadstore";
 
 function DetailsComponent() {
     const pad_id = pad_id_norm(useParams().id)
-    const ontologyStore = useContext(AppContext).ontologyStore
+    const ontologyStore = useContext(OntologyContext)
     const [padStore, setPadStore] = useState(undefined)
+    const [sources, setSources] = useState([])
     const [pad_name, setPadName] = useState("loading...");
-    const dispatch = useAppDispatch();
 
     // Set PAD Store
     useEffect(() => {
@@ -35,7 +33,7 @@ function DetailsComponent() {
     useEffect(() => {
         const render = async () => {
             const src = await pad_sources(pad_id, padStore)
-            dispatch(detailsActions.set_sources(src))
+            setSources(src)
         }
         padStore ? render() : null
     }, [padStore])
@@ -49,20 +47,22 @@ function DetailsComponent() {
 
     return (
         <PadContext.Provider value={padStore}>
-            <section>
-                <title>{pad_name}</title>
-                <ul>
-                    <li id="pad_id">
-                        Pad ID: <Link to={`/pad/${pad_id}`}>{pad_id}</Link>
-                    </li>
-                    <li id="pad_doc">
-                        JSON
-                    </li>
-                </ul>
-                <input id="docinput" type="checkbox" />
-            </section>
-            <MetadataComponent pad_id={pad_id} />
-            <PolicyComponent pad_id={pad_id} />
+            <SourcesContext.Provider value={sources}>
+                <section>
+                    <title>{pad_name}</title>
+                    <ul>
+                        <li id="pad_id">
+                            Pad ID: <Link to={`/pad/${pad_id}`}>{pad_id}</Link>
+                        </li>
+                        <li id="pad_doc">
+                            JSON
+                        </li>
+                    </ul>
+                    <input id="docinput" type="checkbox" />
+                </section>
+                <MetadataComponent pad_id={pad_id} />
+                <PolicyComponent pad_id={pad_id} />
+            </SourcesContext.Provider>
         </PadContext.Provider>
     );
 }

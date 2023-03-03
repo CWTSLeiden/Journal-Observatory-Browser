@@ -1,7 +1,6 @@
 import React, { ReactElement, ReactNode, useContext, useState } from "react";
 import { LinkItUrl } from "react-linkify-it";
 import PropTypes from "prop-types";
-import { useAppSelector } from "../store";
 import {
     Card,
     CardContent,
@@ -9,13 +8,8 @@ import {
     Dialog,
 } from "@mui/material";
 import { ld_to_str, graph_to_ul } from "../query/display_pad";
-import { creators, mapping } from "../config";
-import { AppContext } from "../context";
-
-function labelize(value: string): string {
-    const labels = useContext(AppContext).labels
-    return mapping[value] || labels[value] || value
-}
+import { labelize } from "../query/labels";
+import { SourcesContext } from "../context";
 
 function urlize(thing: ReactNode): ReactElement {
     return <LinkItUrl>{thing}</LinkItUrl>;
@@ -37,10 +31,10 @@ SrcView.propTypes = { sources: PropTypes.arrayOf(PropTypes.string).isRequired };
 
 const SrcViewPop = ({ id }: { id?: string }) => {
     const [open, setOpen] = useState(false);
-    const sources = useAppSelector((store) => store.details.sources);
+    const sources = useContext(SourcesContext);
     const source = sources.find((s) => s["@id"] == id) || {"@id": id};
     const creator = ld_to_str(source["dcterms:creator"]);
-    const name = creators[creator] || creator || "undefined";
+    const name = labelize(creator, "undefined")
     const content = source ? graph_to_ul([source]) : id;
     return (
         <>

@@ -13,7 +13,7 @@ import { useNavigate } from "react-router-dom";
 import * as actions from "../actions/search";
 import { pad_id_norm, ld_to_str } from "../query/display_pad";
 import { useAppDispatch, useAppSelector } from "../store";
-import { creators } from "../config";
+import { labelize } from "../query/labels";
 
 const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
     const orderprop = useAppSelector((store) => store.search.orderprop);
@@ -158,7 +158,7 @@ const PadCardSources = ({ pad }: PadCardProps) => {
     return (
         <>
             { sources.map((c: string) =>
-                <Grid item key={c}><Chip color="secondary" label={creators[c] || c} /></Grid>) }
+                <Grid item key={c}><Chip color="secondary" label={labelize(c)} /></Grid>) }
             <Cond cond={sources.length == 0}>
                 <Grid item>
                     <Chip label="none" variant="outlined" />

@@ -1,27 +1,22 @@
 export const pagesize = 20
 
-export const creators = {
+export const labels_override = {
+    "@id": "Identifier",
+    "@type": "Type",
     "https://doaj.org": "DOAJ",
     "https://v2.sherpa.ac.uk/romeo": "Sherpa-Romeo",
     "https://www.wikidata.org": "Wikidata",
     "https://openalex.org": "OpenAlex",
     "https://www.ieee.org": "IEEE",
     "https://springernature.com": "Springer",
-    "https://wiley.com": "Wiley",
+    "https://www.wiley.com": "Wiley",
     "https://elifesciences.org": "eLife"
 }
 
 export const endpoint = {
     type: "sparql",
-    // value: "http://localhost:7200/repositories/job"
     value: "https://sparql.boomen.net/repositories/job"
-    // value: "http://188.166.16.172:7200/repositories/job"
 };
-
-export const mapping = {
-    "@id": "Identifier",
-    "@type": "Type",
-}
 
 export const context = {
     "brick": "https://brickschema.org/schema/Brick#",

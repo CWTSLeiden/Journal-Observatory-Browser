@@ -124,7 +124,7 @@ async function pad_list(search: SearchState, offset=0) {
         }
     `;
     console.log("Perform query", Date.now())
-    console.log(query)
+    // console.log(query)
     const result = await query_jsonld(query)
     const num = Number(await query_single(nquery))
     const padlist = Array.isArray(result) ? result : []
