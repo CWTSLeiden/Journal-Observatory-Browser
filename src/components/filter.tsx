@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { enabledToggles, Toggles } from "../reducers/search";
+import { labelize } from "../query/labels";
 
 type CheckboxFilterParams = {
     state: boolean;
@@ -124,7 +125,7 @@ export const DropdownToggles = ({label, toggles, toggle_action}: DropdownToggles
                     key={p}
                     state={toggles[p]}
                     action={() => toggle_action(p)}
-                    label={p}
+                    label={labelize(p)}
                 />)
             }
         </DropdownCheckbox>

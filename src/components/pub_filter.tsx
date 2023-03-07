@@ -82,3 +82,14 @@ export const PubLicenseFilter = () => {
     )
 }
 
+export const PubCopyrightOwnersFilter = () => {
+    const toggles = useAppSelector((store: SearchStore) => store.search.pub_copyrightowners)
+    const dispatch = useAppDispatch()
+    return (
+        <DropdownToggles
+            label={labelize("ppo:hasCopyrightOwner", "has Copyright Owners")}
+            toggles={toggles}
+            toggle_action={(p: string) => dispatch(searchActions.toggle_pub_copyrightowner(p))}
+        />
+    )
+}
