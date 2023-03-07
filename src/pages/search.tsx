@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { FilterBar } from "../components/filter";
-import { SearchBar } from "../components/search";
+import { FilterBar } from "../components/filterbar";
+import { SearchBar } from "../components/searchbar";
 import { PadTable, PadTablePagination } from "../components/padtable";
 import { pad_list } from "../query/search";
 import { useAppSelector, useAppDispatch } from "../store";

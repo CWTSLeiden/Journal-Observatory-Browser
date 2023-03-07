@@ -23,21 +23,21 @@ export type SearchState = {
     pub_apcamount?: number;
     pub_embargo?: boolean;
     pub_embargoduration?: number;
-    pub_license?: Toggles;
-    pub_policy?: boolean;
+    pub_licenses?: Toggles;
+    pub_policy: boolean;
     searchstring?: string;
 };
 
 const initSearch: SearchState = {
     creators: {
-        "https://doaj.org": true,
-        "https://v2.sherpa.ac.uk/romeo": true,
-        "https://www.wikidata.org": true,
-        "https://openalex.org": true,
-        "https://www.ieee.org": true,
-        "https://springernature.com": true,
-        "https://www.wiley.com": true,
-        "https://elifesciences.org": true,
+        "https://doaj.org": false,
+        "https://v2.sherpa.ac.uk/romeo": false,
+        "https://www.wikidata.org": false,
+        "https://openalex.org": false,
+        "https://www.ieee.org": false,
+        "https://springernature.com": false,
+        "https://www.wiley.com": false,
+        "https://elifesciences.org": false,
     },
     open_access: false,
     orderasc: true,
@@ -48,6 +48,15 @@ const initSearch: SearchState = {
     pub_embargoduration: 0,
     pub_apc: false,
     pub_apcamount: 0,
+    pub_licenses: {
+        "cc0": false,
+        "cc-by": false,
+        "cc-by-nc": false,
+        "cc-by-nc-nd": false,
+        "cc-by-nc-sa": false,
+        "cc-by-nd": false,
+        "cc-by-sa": false
+    },
     pub_policy: false,
     searchstring: ""
 };
@@ -66,7 +75,9 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
         case actions.INCREMENT_PAGE: return {...state, page: state.page + 1 }
         case actions.RESET_PAGE: return {...state, page: initSearch.page }
         case actions.RESET_CREATORS: return {...state, creators: initSearch.creators }
+        case actions.RESET_PUB_LICENSES: return {...state, pub_licenses: initSearch.pub_licenses}
         case actions.SET_CREATORS: return {...state, creators: action.payload.toggles }
+        case actions.SET_PUB_LICENSES: return {...state, pub_licenses: action.payload.toggles}
         case actions.SET_ORDER_ASC: return {...state, orderasc: Boolean(action.payload.value) }
         case actions.SET_ORDER_PROP: return {...state, oderprop: String(action.payload.value) }
         case actions.SET_PAGE: return {...state, page: Number(action.payload.value) }
@@ -75,6 +86,7 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
         case actions.SET_PUB_APC: return {...state, pub_apcamount: Number(action.payload.value) }
         case actions.SET_SEARCH: return {...state, searchstring: String(action.payload.value)}
         case actions.TOGGLE_CREATOR: return {...state, creators: toggleProp(state.creators, action.payload.value)}
+        case actions.TOGGLE_PUB_LICENSE: return {...state, pub_licenses: toggleProp(state.pub_licenses, action.payload.value)}
         case actions.TOGGLE_OPEN_ACCESS: return {...state, open_access: !state.open_access }
         case actions.TOGGLE_ORDER_ASC: return {...state, orderasc: !state.orderasc }
         case actions.TOGGLE_PUB_EMBARGO: return {...state, pub_embargo: !state.pub_embargo }

@@ -1,78 +1,63 @@
 import React, { ReactElement, useEffect, useState } from "react";
-import { useAppSelector, useAppDispatch, SearchStore } from "../store";
-import * as searchActions from "../actions/search";
 import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Box,
-    Button,
+    Badge,
     Checkbox,
     Collapse,
-    FormControlLabel,
-    FormGroup,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
     Slider,
-    Stack,
-    Typography,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
-import { OpenAccessFilter, PubApcFilter, PubEmbargoFilter, PubPolicyFilter } from "./pub_filter";
-import { CreatorSelect } from "./creator_filter";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { enabledToggles, Toggles } from "../reducers/search";
 
-type CheckBoxFilterParams = {
-    state: (s: SearchStore) => boolean;
-    action: () => searchActions.searchAction;
+type CheckboxFilterParams = {
+    state: boolean;
+    action: () => void;
     label: string;
-    children?: ReactElement[] | ReactElement;
 };
-export const CheckBoxFilter = ({
+export const CheckboxFilter = ({
     state,
     action,
     label,
-    children,
-}: CheckBoxFilterParams) => {
-    const checked = useAppSelector(state);
-    const dispatch = useAppDispatch();
-    const checkbox = (
-        <Checkbox
-            checked={Boolean(checked)}
-            onChange={() => dispatch(action())}
-        />
-    );
+}: CheckboxFilterParams) => {
     return (
-        <Box>
-            <FormControlLabel control={checkbox} label={label} sx={{width: "100%"}} />
-            {children ? <Box sx={{ ml: 4, mr: 4 }}>{children}</Box> : ""}
-        </Box>
+        <ListItem disablePadding>
+            <ListItemButton onClick={action} sx={{padding:0, margin:0}}>
+                <ListItemIcon>
+                    <Checkbox checked={state} />
+                </ListItemIcon>
+                <ListItemText primary={label} />
+            </ListItemButton>
+        </ListItem>
     );
 };
 
 type SliderFilterParams = {
-    state: (s: SearchStore) => boolean;
-    value: (s: SearchStore) => number;
-    action: (n: number) => searchActions.searchAction;
+    state: boolean;
+    value: number;
+    setvalue: (n: number) => void;
     range: number[];
     unit?: string;
 };
 export const SliderFilter = ({
     state,
     value,
-    action,
+    setvalue,
     range,
     unit,
 }: SliderFilterParams) => {
-    const checked_state = useAppSelector(state);
-    const value_state = useAppSelector(value);
-    const dispatch = useAppDispatch();
-    const [number, setNumber] = useState(value_state);
-    useEffect(() => setNumber(value_state), [value_state]);
+    const [number, setNumber] = useState(value);
+    useEffect(() => setNumber(value), [value]);
     return (
         <Slider
-            disabled={!checked_state}
+            disabled={!state}
             valueLabelFormat={(n) => <div>{`${n} ${unit ? unit : ""}`}</div>}
             value={number}
             onChange={(_, n: number) => setNumber(n)}
-            onChangeCommitted={(_, n: number) => dispatch(action(n))}
+            onChangeCommitted={(_, n: number) => setvalue(n)}
             min={Math.min(...range)}
             max={Math.max(...range)}
             valueLabelDisplay="auto"
@@ -84,85 +69,62 @@ export const SliderFilter = ({
     );
 };
 
-type CheckSliderFilterParams = {
-    state: (s: SearchStore) => boolean;
-    togglestate: () => searchActions.searchAction;
-    value: (s: SearchStore) => number;
-    setvalue: (n: number) => searchActions.searchAction;
+type DropdownCheckboxProps = {
+    state: boolean;
+    toggle: () => void;
+    icon?: ReactElement;
     label: string;
-    range: number[];
-    unit?: string;
-};
-export const CheckSliderFilter = ({
-    state,
-    togglestate,
-    value,
-    setvalue,
-    label,
-    range,
-    unit,
-}: CheckSliderFilterParams) => (
-    <CheckBoxFilter
-        state={state}
-        action={togglestate}
-        label={label}
-    >
-        <Collapse in={useAppSelector(state)}>
-        <SliderFilter
-            state={state}
-            value={value}
-            action={setvalue}
-            range={range}
-            unit={unit}
-        />
-        </Collapse>
-    </CheckBoxFilter>
-)
-
-type FilterBarSectionProps = {
-    id: string,
-    title: string,
-    folded?: boolean
     children: ReactElement | ReactElement[]
-};
-const FilterBarSection = ({ id, title, folded, children }: FilterBarSectionProps ) => (
-    <Accordion defaultExpanded={!folded}>
-        <AccordionSummary id={id} expandIcon={<ExpandMore />} >
-            <Typography sx={{ fontWeight: 600 }}>
-                {title}
-            </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-            <FormGroup>
-                {children}
-            </FormGroup>
-        </AccordionDetails>
-    </Accordion>
-)
-
-type FilterBarProps = {
-    handleSubmit: React.UIEventHandler;
-};
-const FilterBar = ({ handleSubmit }: FilterBarProps) => {
+}
+export const DropdownCheckbox = ({state, toggle, icon, label, children}: DropdownCheckboxProps) => {
     return (
-        <Stack id="filter-bar" spacing={2}>
-            <CreatorSelect />
-            
-            <FilterBarSection
-                id="filter-panel-publication-policy"
-                title="Publication Policy"
-            >
-                <PubPolicyFilter />
-                <OpenAccessFilter />
-                <PubEmbargoFilter />
-                <PubApcFilter />
-            </FilterBarSection>
+        <>
+            <ListItem disablePadding>
+                <ListItemButton onClick={toggle} sx={{padding:0, margin:0}}>
+                    <ListItemIcon>
+                        {icon ? icon : <Checkbox checked={state} />}
+                    </ListItemIcon>
+                    <ListItemText primary={label} />
+                    {state ? <ExpandLess /> : <ExpandMore />}
+                </ListItemButton>
+            </ListItem>
+            <Collapse in={state} timeout="auto" unmountOnExit>
+                <List disablePadding sx={{pl: 4, pr: 2}}>
+                    { children }
+                </List>
+            </Collapse>
+        </>
+    )
+}
 
-            <Button variant="outlined" onClick={handleSubmit}>
-                Filter
-            </Button>
-        </Stack>
-    );
-};
-
-export { FilterBar };
+type DropdownTogglesProps = {
+    label: string;
+    toggles: Toggles;
+    toggle_action: (p: string) => void;
+}
+export const DropdownToggles = ({label, toggles, toggle_action}: DropdownTogglesProps) => {
+    const [open, setOpen] = useState(false)
+    const amount = enabledToggles(toggles).length
+    const icon = (
+        <Badge overlap="circular" badgeContent={amount} color="primary">
+            <Checkbox checked={amount > 0} />
+        </Badge>
+    )
+    return (
+        <DropdownCheckbox
+            state={open}
+            toggle={() => setOpen(!open)}
+            icon={icon}
+            label={label}
+        >
+            { Object.keys(toggles).map((p: string) => (
+                <CheckboxFilter
+                    key={p}
+                    state={toggles[p]}
+                    action={() => toggle_action(p)}
+                    label={p}
+                />
+            ))}
+        </DropdownCheckbox>
+    )
+}

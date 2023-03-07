@@ -1,44 +1,84 @@
 import React from "react";
 import * as searchActions from "../actions/search";
-import { CheckBoxFilter, CheckSliderFilter } from "./filter";
+import { DropdownCheckbox, DropdownToggles, CheckboxFilter, SliderFilter } from "./filter";
 import { labelize } from "../query/labels";
+import { SearchStore, useAppDispatch, useAppSelector } from "../store";
 
-export const PubPolicyFilter = () => (
-    <CheckBoxFilter
-        state={(store) => store.search.pub_policy}
-        action={searchActions.toggle_pub_policy}
-        label={labelize("ppo:hasPublicationPolicy", "has Publication Policy")}
-    />
-)
+export const PubPolicyFilter = () => {
+    const state = useAppSelector((store: SearchStore) => store.search.pub_policy)
+    const dispatch = useAppDispatch()
+    return (
+        <CheckboxFilter
+            state={state}
+            action={() => dispatch(searchActions.toggle_pub_policy())}
+            label={labelize("ppo:hasPublicationPolicy", "has Publication Policy")}
+        />
+    )
+}
 
-export const OpenAccessFilter = () => (
-    <CheckBoxFilter
-        state={(store) => store.search.open_access}
-        action={searchActions.toggle_open_access}
-        label={labelize("ppo:isOpenAccess", "is Open Access")}
-    />
-)
+export const OpenAccessFilter = () => {
+    const state = useAppSelector((store: SearchStore) => store.search.open_access)
+    const dispatch = useAppDispatch()
+    return (
+        <CheckboxFilter
+            state={state}
+            action={() => dispatch(searchActions.toggle_open_access())}
+            label={labelize("ppo:isOpenAccess", "is Open Access")}
+        />
+    )
+}
 
-export const PubEmbargoFilter = () => (
-    <CheckSliderFilter
-        state={(store) => store.search.pub_embargo}
-        togglestate={searchActions.toggle_pub_embargo}
-        label={labelize("fabio:hasEmbargoDuration", "has Embargo Duration")}
-        value={(store) => store.search.pub_embargoduration}
-        setvalue={searchActions.set_pub_embargo}
-        range={[0, 6, 12, 18, 24]}
-        unit="Months"
-    />
-);
+export const PubEmbargoFilter = () => {
+    const state = useAppSelector((store: SearchStore) => store.search.pub_embargo)
+    const amount = useAppSelector((store: SearchStore) => store.search.pub_embargoduration)
+    const dispatch = useAppDispatch()
+    return (
+        <DropdownCheckbox
+            state={state}
+            toggle={() => dispatch(searchActions.toggle_pub_embargo())}
+            label={labelize("ppo:hasArticlePublishingCharges", "has APC")}
+        >
+            <SliderFilter
+                state={state}
+                value={amount}
+                setvalue={(n) => dispatch(searchActions.set_pub_embargo(n))}
+                range={[0, 6, 12, 18, 24]}
+                unit="Months"
+            />
+        </DropdownCheckbox>
+    )
+};
 
-export const PubApcFilter = () => (
-    <CheckSliderFilter
-        state={(store) => store.search.pub_apc}
-        togglestate={searchActions.toggle_pub_apc}
-        label={labelize("ppo:hasArticlePublishingCharges", "has APC")}
-        value={(store) => store.search.pub_apcamount}
-        setvalue={searchActions.set_pub_apc}
-        range={[0, 100, 200, 300, 400]}
-        unit="USD"
-    />
-);
+export const PubApcFilter = () => {
+    const state = useAppSelector((store: SearchStore) => store.search.pub_apc)
+    const amount = useAppSelector((store: SearchStore) => store.search.pub_apcamount)
+    const dispatch = useAppDispatch()
+    return (
+        <DropdownCheckbox
+            state={state}
+            toggle={() => dispatch(searchActions.toggle_pub_apc())}
+            label={labelize("ppo:hasArticlePublishingCharges", "has APC")}
+        >
+            <SliderFilter
+                state={state}
+                value={amount}
+                setvalue={(n) => dispatch(searchActions.set_pub_apc(n))}
+                range={[0, 100, 200, 300, 400]}
+                unit="USD"
+            />
+        </DropdownCheckbox>
+    )
+};
+
+export const PubLicenseFilter = () => {
+    const toggles = useAppSelector((store: SearchStore) => store.search.pub_licenses)
+    const dispatch = useAppDispatch()
+    return (
+        <DropdownToggles
+            label="License"
+            toggles={toggles}
+            toggle_action={(p: string) => dispatch(searchActions.toggle_pub_license(p))}
+        />
+    )
+}
+

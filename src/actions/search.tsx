@@ -34,12 +34,23 @@ export const RESET_CREATORS = "resetCreators"
 export const reset_creators = (): searchAction => ({
     type: RESET_CREATORS
 });
+export const RESET_PUB_LICENSES = "resetPubLicenses"
+export const reset_pub_licenses = (): searchAction => ({
+    type: RESET_PUB_LICENSES
+});
 
 export const SET_CREATORS = "setCreators"
 export const set_creators = (creators: Toggles): searchAction => ({
     type: SET_CREATORS,
     payload: {
         toggles: creators
+    }
+});
+export const SET_PUB_LICENSES = "setPubLicenses"
+export const set_pub_licenses = (pub_licenses: Toggles): searchAction => ({
+    type: SET_PUB_LICENSES,
+    payload: {
+        toggles: pub_licenses
     }
 });
 
@@ -104,6 +115,14 @@ export const toggle_creator = (creator: string): searchAction => ({
     type: TOGGLE_CREATOR,
     payload: {
         value: creator,
+    },
+});
+
+export const TOGGLE_PUB_LICENSE = "togglePubLicense";
+export const toggle_pub_license = (pub_license: string): searchAction => ({
+    type: TOGGLE_PUB_LICENSE,
+    payload: {
+        value: pub_license,
     },
 });
 
