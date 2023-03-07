@@ -1,6 +1,7 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import {
     Badge,
+    Button,
     Checkbox,
     Collapse,
     List,
@@ -117,14 +118,14 @@ export const DropdownToggles = ({label, toggles, toggle_action}: DropdownToggles
             icon={icon}
             label={label}
         >
-            { Object.keys(toggles).map((p: string) => (
+            { Object.keys(toggles).map((p: string) => 
                 <CheckboxFilter
                     key={p}
                     state={toggles[p]}
                     action={() => toggle_action(p)}
                     label={p}
-                />
-            ))}
+                />)
+            }
         </DropdownCheckbox>
     )
 }

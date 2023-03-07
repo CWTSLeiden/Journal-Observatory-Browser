@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import * as searchActions from "../actions/search";
 import { useAppDispatch, useAppSelector } from "../store";
-import { Button, FormControl, InputLabel, ListItemIcon, ListItemText, MenuItem, OutlinedInput, Select } from "@mui/material";
+import { Button, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select } from "@mui/material";
 import { enabledToggles, Toggles } from "../reducers/search";
 import { labelize } from "../query/labels";
-import { Check } from "@mui/icons-material";
 
 export const CreatorSelect = () => { 
     const creatorstate = useAppSelector(s => s.search.creators);
@@ -53,7 +52,7 @@ export const MultipleSelect = ({label, toggles, commit}: MultipleSelectProps) =>
             >
                 {Object.keys(state).map(key => (
                     <MenuItem key={key} value={key}>
-                        <ListItemIcon>{state[key] ? <Check /> : null}</ListItemIcon>
+                        <Checkbox checked={state[key]} />
                         <ListItemText primary={labelize(key)} />
                     </MenuItem>
                 ))}
