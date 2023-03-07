@@ -75,18 +75,19 @@ type DropdownCheckboxProps = {
     toggle: () => void;
     icon?: ReactElement;
     label: string;
-    children: ReactElement | ReactElement[]
+    children: ReactElement | ReactElement[];
+    indicator?: boolean;
 }
-export const DropdownCheckbox = ({state, toggle, icon, label, children}: DropdownCheckboxProps) => {
+export const DropdownCheckbox = ({state, toggle, icon, label, children, indicator}: DropdownCheckboxProps) => {
     return (
-        <>
+        <React.Fragment>
             <ListItem disablePadding>
                 <ListItemButton onClick={toggle} sx={{padding:0, margin:0}}>
                     <ListItemIcon>
                         {icon ? icon : <Checkbox checked={state} />}
                     </ListItemIcon>
                     <ListItemText primary={label} />
-                    {state ? <ExpandLess /> : <ExpandMore />}
+                    {indicator ? (state ? <ExpandLess /> : <ExpandMore />) : null}
                 </ListItemButton>
             </ListItem>
             <Collapse in={state} timeout="auto" unmountOnExit>
@@ -94,7 +95,7 @@ export const DropdownCheckbox = ({state, toggle, icon, label, children}: Dropdow
                     { children }
                 </List>
             </Collapse>
-        </>
+        </React.Fragment>
     )
 }
 
@@ -117,6 +118,7 @@ export const DropdownToggles = ({label, toggles, toggle_action}: DropdownToggles
             toggle={() => setOpen(!open)}
             icon={icon}
             label={label}
+            indicator
         >
             { Object.keys(toggles).map((p: string) => 
                 <CheckboxFilter

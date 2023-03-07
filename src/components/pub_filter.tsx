@@ -36,7 +36,7 @@ export const PubEmbargoFilter = () => {
         <DropdownCheckbox
             state={state}
             toggle={() => dispatch(searchActions.toggle_pub_embargo())}
-            label={labelize("ppo:hasArticlePublishingCharges", "has APC")}
+            label={labelize("ppo:hasEmbargo", "has Embargo")}
         >
             <SliderFilter
                 state={state}
