@@ -1,7 +1,7 @@
 import "./styles.css";
 import React, { useEffect, useState } from "react";
 import { Buffer } from "buffer";
-import { Container, Stack } from "@mui/material";
+import { Container, Stack, ThemeProvider } from "@mui/material";
 import { Provider } from "react-redux";
 
 import AppHeader from "./components/header";
@@ -10,6 +10,7 @@ import store from "./store";
 import { LabelContext, OntologyContext } from "./context";
 import { ontology_store } from "./query/pad_store";
 import { get_labels_dict } from "./query/labels";
+import theme from "./components/theme";
 
 window.Buffer = Buffer;
 global.process.nextTick = setImmediate
@@ -32,9 +33,11 @@ function App() {
             <OntologyContext.Provider value={ontology}>
                 <LabelContext.Provider value={labels}>
                     <Provider store={store}>
-                        <Container id="content-container">
-                            <AppRouter />
-                        </Container>
+                        <ThemeProvider theme={theme}>
+                            <Container id="content-container">
+                                <AppRouter />
+                            </Container>
+                        </ThemeProvider>
                     </Provider>
                 </LabelContext.Provider>
             </OntologyContext.Provider>

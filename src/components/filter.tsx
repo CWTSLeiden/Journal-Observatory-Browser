@@ -1,7 +1,6 @@
 import React, { ReactElement, useEffect, useState } from "react";
 import {
     Badge,
-    Button,
     Checkbox,
     Collapse,
     List,
@@ -25,8 +24,8 @@ export const CheckboxFilter = ({
     label,
 }: CheckboxFilterParams) => {
     return (
-        <ListItem disablePadding>
-            <ListItemButton onClick={action} sx={{padding:0, margin:0}}>
+        <ListItem>
+            <ListItemButton onClick={action}>
                 <ListItemIcon>
                     <Checkbox checked={state} />
                 </ListItemIcon>
@@ -81,8 +80,8 @@ type DropdownCheckboxProps = {
 export const DropdownCheckbox = ({state, toggle, icon, label, children, indicator}: DropdownCheckboxProps) => {
     return (
         <React.Fragment>
-            <ListItem disablePadding>
-                <ListItemButton onClick={toggle} sx={{padding:0, margin:0}}>
+            <ListItem>
+                <ListItemButton onClick={toggle}>
                     <ListItemIcon>
                         {icon ? icon : <Checkbox checked={state} />}
                     </ListItemIcon>
@@ -91,7 +90,7 @@ export const DropdownCheckbox = ({state, toggle, icon, label, children, indicato
                 </ListItemButton>
             </ListItem>
             <Collapse in={state} timeout="auto" unmountOnExit>
-                <List disablePadding sx={{pl: 4, pr: 2}}>
+                <List sx={{pl: 4, pr: 2}}>
                     { children }
                 </List>
             </Collapse>

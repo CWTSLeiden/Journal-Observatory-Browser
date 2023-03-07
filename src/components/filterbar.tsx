@@ -19,7 +19,7 @@ const FilterBarSection = ({ id, title, folded, children }: FilterBarSectionProps
             </Typography>
         </AccordionSummary>
         <AccordionDetails>
-            <List disablePadding>
+            <List>
                 {children}
             </List>
         </AccordionDetails>
