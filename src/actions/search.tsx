@@ -1,185 +1,47 @@
 import { Toggles } from "../reducers/search";
-
+import { createAction } from "@reduxjs/toolkit";
 export type searchAction = {
     type: string;
-    payload?: searchActionPayload;
-};
-type searchActionPayload = {
-    value?: string | boolean | number;
-    toggles?: Toggles
+    payload?: string | boolean | number | Toggles
 };
 
 // Search
-
-export const SET_SEARCH = "setSearch";
-export const set_search = (search: string): searchAction => ({
-    type: SET_SEARCH,
-    payload: {
-        value: search,
-    },
-});
-
-export const CLEAR = "clear";
-export const clear = (): searchAction => ({
-    type: CLEAR,
-});
+export const set_search = createAction<string>('search/set')
+export const clear = createAction('clear')
 
 // Page
-
-export const DECREMENT_PAGE = "decrementPage";
-export const decrement_page = (): searchAction => ({
-    type: DECREMENT_PAGE,
-});
-
-export const INCREMENT_PAGE = "incrementPage";
-export const increment_page = (): searchAction => ({
-    type: INCREMENT_PAGE,
-});
-
-export const SET_PAGE = "setPage";
-export const set_page = (n: number): searchAction => ({
-    type: SET_PAGE,
-    payload: {
-        value: n,
-    },
-});
-
-export const SET_PAGESIZE = "setPagesize";
-export const set_page_size = (n: number): searchAction => ({
-    type: SET_PAGESIZE,
-    payload: {
-        value: n,
-    },
-});
-
-export const RESET_PAGE = "resetPage";
-export const reset_page = (): searchAction => ({
-    type: RESET_PAGE
-});
+export const decrement_page = createAction('decrementPage')
+export const increment_page = createAction('incrementPage')
+export const set_page = createAction<number>('setPage')
+export const set_page_size = createAction<number>('setPagesize');
+export const reset_page = createAction('resetPage');
 
 // Order
-
-export const SET_ORDER_PROP = "setOrderProp";
-export const set_orderprop = (prop: string): searchAction => ({
-    type: SET_ORDER_PROP,
-    payload: {
-        value: prop,
-    },
-});
-
-export const TOGGLE_ORDER_ASC = "toggleOrderAsc";
-export const toggle_orderasc = (): searchAction => ({
-    type: TOGGLE_ORDER_ASC,
-});
-
-export const SET_ORDER_ASC = "setOrderAsc";
-export const set_orderasc = (bool: boolean): searchAction => ({
-    type: SET_ORDER_ASC,
-    payload: {
-        value: bool,
-    },
-});
-
+export const set_order_prop = createAction<string>('setOrderProp');
+export const toggle_order_asc = createAction('toggleOrderAsc');
+export const set_order_asc = createAction<boolean>('setOrderAsc');
 
 // Creators
-
-export const SET_CREATORS = "setCreators"
-export const set_creators = (creators: Toggles): searchAction => ({
-    type: SET_CREATORS,
-    payload: {
-        toggles: creators
-    }
-});
-
-export const TOGGLE_CREATOR = "toggleCreator";
-export const toggle_creator = (creator: string): searchAction => ({
-    type: TOGGLE_CREATOR,
-    payload: {
-        value: creator,
-    },
-});
-
-export const RESET_CREATORS = "resetCreators"
-export const reset_creators = (): searchAction => ({
-    type: RESET_CREATORS
-});
+export const set_creators = createAction<Toggles>('setCreators');
+export const toggle_creator = createAction<string>('toggleCreator');
+export const reset_creators = createAction('resetCreators');
 
 // Publication Policy
+export const toggle_pub_policy = createAction('togglePubPolicy');
+export const reset_pub_copyrightowners = createAction('resetPubCopyrightowners');
+export const set_pub_copyrightowners = createAction<Toggles>('setPubCopyrightowners');
+export const toggle_pub_copyrightowner = createAction<string>('togglePubCopyrightowner');
+export const set_pub_apc = createAction<number>('setPubApc');
+export const toggle_pub_apc = createAction('togglePubApc');
 
-export const TOGGLE_PUB_POLICY = "togglePubPolicy";
-export const toggle_pub_policy = (): searchAction => ({
-    type: TOGGLE_PUB_POLICY,
-});
+export const set_pub_embargo = createAction<number>('setPubEmbargo');
+export const toggle_pub_embargo = createAction('togglePubEmbargo');
 
-export const RESET_PUB_LICENSES = "resetPubLicenses"
-export const reset_pub_licenses = (): searchAction => ({
-    type: RESET_PUB_LICENSES
-});
-export const SET_PUB_LICENSES = "setPubLicenses"
-export const set_pub_licenses = (pub_licenses: Toggles): searchAction => ({
-    type: SET_PUB_LICENSES,
-    payload: {
-        toggles: pub_licenses
-    }
-});
-export const TOGGLE_PUB_LICENSE = "togglePubLicense";
-export const toggle_pub_license = (pub_license: string): searchAction => ({
-    type: TOGGLE_PUB_LICENSE,
-    payload: {
-        value: pub_license,
-    },
-});
-
-export const RESET_PUB_COPYRIGHTOWNERS = "resetPubCopyrightowners"
-export const reset_pub_copyrightowners = (): searchAction => ({
-    type: RESET_PUB_COPYRIGHTOWNERS
-});
-export const SET_PUB_COPYRIGHTOWNERS = "setPubCopyrightowners"
-export const set_pub_copyrightowners = (pub_copyrightowners: Toggles): searchAction => ({
-    type: SET_PUB_COPYRIGHTOWNERS,
-    payload: {
-        toggles: pub_copyrightowners
-    }
-});
-export const TOGGLE_PUB_COPYRIGHTOWNER = "togglePubCopyrightowner";
-export const toggle_pub_copyrightowner = (pub_copyrightowner: string): searchAction => ({
-    type: TOGGLE_PUB_COPYRIGHTOWNER,
-    payload: {
-        value: pub_copyrightowner,
-    },
-});
-
-export const SET_PUB_APC = "setPubApc";
-export const set_pub_apc = (n: number): searchAction => ({
-    type: SET_PUB_APC,
-    payload: {
-        value: n,
-    },
-});
-export const TOGGLE_PUB_APC = "togglePubApc";
-export const toggle_pub_apc = (): searchAction => ({
-    type: TOGGLE_PUB_APC,
-});
-
-
-export const SET_PUB_EMBARGO = "setPubEmbargo";
-export const set_pub_embargo = (n: number): searchAction => ({
-    type: SET_PUB_EMBARGO,
-    payload: {
-        value: n,
-    },
-});
-export const TOGGLE_PUB_EMBARGO = "togglePubEmbargo";
-export const toggle_pub_embargo = (): searchAction => ({
-    type: TOGGLE_PUB_EMBARGO,
-});
-
-
-export const TOGGLE_OPEN_ACCESS = "toggleOpenAccess";
-export const toggle_open_access = (): searchAction => ({
-    type: TOGGLE_OPEN_ACCESS,
-});
+export const toggle_open_access = createAction('toggleOpenAccess');
 
 // Publication Elsewhere Policy
+export const reset_elsewhere_licenses = createAction('resetElsewhereLicenses');
+export const set_elsewhere_licenses = createAction<Toggles>('setElsewhereLicenses');
+export const toggle_elsewhere_license = createAction<string>('toggleElsewhereLicense');
 
 // Evaluation Policy

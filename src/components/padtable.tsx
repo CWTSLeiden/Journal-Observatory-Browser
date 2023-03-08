@@ -19,11 +19,11 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
     const dispatch = useAppDispatch()
     const clickHandler = () => {
         if (orderprop === prop) {
-            dispatch(actions.toggle_orderasc())
+            dispatch(actions.toggle_order_asc())
         }
         else {
-            dispatch(actions.set_orderasc(true))
-            dispatch(actions.set_orderprop(prop))
+            dispatch(actions.set_order_asc(true))
+            dispatch(actions.set_order_prop(prop))
         }
     }
     return (

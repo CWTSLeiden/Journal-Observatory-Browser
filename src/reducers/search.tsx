@@ -1,3 +1,4 @@
+import { createReducer } from "@reduxjs/toolkit";
 import * as actions from "../actions/search"
 
 export type Toggles = { [key: string]: boolean }
@@ -78,43 +79,67 @@ function toggleProp(toggles: Toggles, prop: string | boolean | number): Toggles 
     return new_toggles
 }
 
-const SearchReducer = (state = initSearch, action: actions.searchAction) => {
-    switch (action.type) {
-        // Search
-        case actions.SET_SEARCH: return {...state, searchstring: String(action.payload.value)}
-        case actions.CLEAR: return initSearch
-        // Page
-        case actions.DECREMENT_PAGE: return {...state, page: Math.max(state.page - 1, 0) }
-        case actions.INCREMENT_PAGE: return {...state, page: state.page + 1 }
-        case actions.SET_PAGE: return {...state, page: Number(action.payload.value) }
-        case actions.SET_PAGESIZE: return {...state, pagesize: Number(action.payload.value) }
-        case actions.RESET_PAGE: return {...state, page: initSearch.page }
-        // Order
-        case actions.SET_ORDER_PROP: return {...state, oderprop: String(action.payload.value) }
-        case actions.TOGGLE_ORDER_ASC: return {...state, orderasc: !state.orderasc }
-        case actions.SET_ORDER_ASC: return {...state, orderasc: Boolean(action.payload.value) }
-        // Creators
-        case actions.SET_CREATORS: return {...state, creators: action.payload.toggles }
-        case actions.TOGGLE_CREATOR: return {...state, creators: toggleProp(state.creators, action.payload.value)}
-        case actions.RESET_CREATORS: return {...state, creators: initSearch.creators }
-        // Publication Policy
-        case actions.TOGGLE_PUB_POLICY: return {...state, pub_policy: !state.pub_policy }
-        case actions.SET_PUB_COPYRIGHTOWNERS: return {...state, pub_copyrightowners: action.payload.toggles}
-        case actions.TOGGLE_PUB_COPYRIGHTOWNER: return {...state, pub_copyrightowners: toggleProp(state.pub_copyrightowners, action.payload.value)}
-        case actions.RESET_PUB_COPYRIGHTOWNERS: return {...state, pub_copyrightowners: initSearch.pub_copyrightowners}
-        case actions.SET_PUB_APC: return {...state, pub_apcamount: Number(action.payload.value) }
-        case actions.TOGGLE_PUB_APC: return {...state, pub_apc: !state.pub_apc }
-        case actions.SET_PUB_EMBARGO: return {...state, pub_embargoduration: Number(action.payload.value) }
-        case actions.TOGGLE_PUB_EMBARGO: return {...state, pub_embargo: !state.pub_embargo }
-        case actions.TOGGLE_OPEN_ACCESS: return {...state, open_access: !state.open_access }
-        // Publication Elsewhere Policy
-        case actions.SET_ELSEWHERE_LICENSES: return {...state, elsewhere_licenses: action.payload.toggles}
-        case actions.TOGGLE_ELSEWHERE_LICENSE: return {...state, elsewhere_licenses: toggleProp(state.elsewhere_licenses, action.payload.value)}
-        case actions.RESET_ELSEWHERE_LICENSES: return {...state, elsewhere_licenses: initSearch.elsewhere_licenses}
-        // Evaluation Policy
-        //
-        default: return state
-   }
-};
+const SearchReducer = createReducer(initSearch, (builder) => {
+    builder
+    // Search
+        .addCase(actions.set_search,
+            (state, action) => {state.searchstring = action.payload})
+        .addCase(actions.clear,
+            () => initSearch )
+    // Page
+        .addCase(actions.decrement_page,
+            (state) => { state.page = Math.max(state.page - 1, 0) })
+        .addCase(actions.increment_page,
+            (state) => { state.page = state.page + 1 })
+        .addCase(actions.set_page,
+            (state, action) => { state.page = Number(action.payload) })
+        .addCase(actions.set_page_size,
+            (state, action) => { state.pagesize = Number(action.payload) })
+        .addCase(actions.reset_page,
+            (state) => { state.page = initSearch.page })
+    // Order
+        .addCase(actions.set_order_prop,
+            (state, action) => { state.orderprop = String(action.payload) })
+        .addCase(actions.toggle_order_asc,
+            (state) => { state.orderasc = !state.orderasc })
+        .addCase(actions.set_order_asc,
+            (state, action) => { state.orderasc = Boolean(action.payload) })
+    // Creators
+        .addCase(actions.set_creators,
+            (state, action) => { state.creators = action.payload })
+        .addCase(actions.toggle_creator,
+            (state, action) => { state.creators = toggleProp(state.creators, action.payload)})
+        .addCase(actions.reset_creators,
+            (state) => { state.creators = initSearch.creators })
+    // Publication Policy
+        .addCase(actions.toggle_pub_policy,
+            (state) => { state.pub_policy = !state.pub_policy })
+        .addCase(actions.set_pub_copyrightowners,
+            (state, action) => { state.pub_copyrightowners = action.payload})
+        .addCase(actions.toggle_pub_copyrightowner,
+            (state, action) => { state.pub_copyrightowners = toggleProp(state.pub_copyrightowners, action.payload)})
+        .addCase(actions.reset_pub_copyrightowners,
+            (state) => { state.pub_copyrightowners = initSearch.pub_copyrightowners})
+        .addCase(actions.set_pub_apc,
+            (state, action) => { state.pub_apcamount = Number(action.payload) })
+        .addCase(actions.toggle_pub_apc,
+            (state) => { state.pub_apc = !state.pub_apc })
+        .addCase(actions.set_pub_embargo,
+            (state, action) => { state.pub_embargoduration = Number(action.payload) })
+        .addCase(actions.toggle_pub_embargo,
+            (state) => { state.pub_embargo = !state.pub_embargo })
+        .addCase(actions.toggle_open_access,
+            (state) => { state.open_access = !state.open_access })
+    // Publication Elsewhere Policy
+        .addCase(actions.set_elsewhere_licenses,
+            (state, action) => { state.elsewhere_licenses = action.payload})
+        .addCase(actions.toggle_elsewhere_license,
+            (state, action) => { state.elsewhere_licenses = toggleProp(state.elsewhere_licenses, action.payload)})
+        .addCase(actions.reset_elsewhere_licenses,
+            (state) => { state.elsewhere_licenses = initSearch.elsewhere_licenses})
+    // Evaluation Policy
+    //
+        .addDefaultCase((state) => state)
+})
 
 export default SearchReducer
