@@ -19,11 +19,11 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
     const dispatch = useAppDispatch()
     const clickHandler = () => {
         if (orderprop === prop) {
-            dispatch(actions.toggle_order_asc())
+            dispatch(actions.order_toggleasc())
         }
         else {
-            dispatch(actions.set_order_asc(true))
-            dispatch(actions.set_order_prop(prop))
+            dispatch(actions.order_setasc(true))
+            dispatch(actions.order_setprop(prop))
         }
     }
     return (
@@ -64,10 +64,10 @@ const PadTablePagination = () => {
                     rowsPerPage={pagesize}
                     rowsPerPageOptions={[20, 50, 100]}
                     onRowsPerPageChange={(e) => {
-                        dispatch(actions.set_page_size(Number(e.target.value)));
+                        dispatch(actions.page_setsize(Number(e.target.value)));
                     }}
                     onPageChange={(_, n) => {
-                        dispatch(actions.set_page(n));
+                        dispatch(actions.page_set(n));
                     }}
                     count={total}
                     colSpan={4}

@@ -12,7 +12,7 @@ export const CreatorSelect = () => {
         <MultipleSelect
             label="Sources"
             toggles={creatorstate}
-            commit={(state: Toggles) => dispatch(searchActions.set_creators(state)) }
+            commit={(state: Toggles) => dispatch(searchActions.creators_set(state)) }
         />)
 }
 

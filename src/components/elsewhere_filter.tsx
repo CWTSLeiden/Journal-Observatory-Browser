@@ -11,7 +11,7 @@ export const ElsewhereLicenseFilter = () => {
         <DropdownToggles
             label="License"
             toggles={toggles}
-            toggle_action={(p: string) => dispatch(searchActions.toggle_elsewhere_license(p))}
+            toggle_action={(p: string) => dispatch(searchActions.elsewhere_licenses_toggleone(p))}
         />
     )
 }

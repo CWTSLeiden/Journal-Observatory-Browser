@@ -10,7 +10,7 @@ export const PubPolicyFilter = () => {
     return (
         <CheckboxFilter
             state={state}
-            action={() => dispatch(searchActions.toggle_pub_policy())}
+            action={() => dispatch(searchActions.publication_toggle())}
             label={labelize("ppo:hasPublicationPolicy", "has Publication Policy")}
         />
     )
@@ -22,7 +22,7 @@ export const OpenAccessFilter = () => {
     return (
         <CheckboxFilter
             state={state}
-            action={() => dispatch(searchActions.toggle_open_access())}
+            action={() => dispatch(searchActions.publication_openaccess_toggle())}
             label={labelize("ppo:isOpenAccess", "is Open Access")}
         />
     )
@@ -35,13 +35,13 @@ export const PubEmbargoFilter = () => {
     return (
         <DropdownCheckbox
             state={state}
-            toggle={() => dispatch(searchActions.toggle_pub_embargo())}
+            toggle={() => dispatch(searchActions.publication_embargo_toggle())}
             label={labelize("ppo:hasEmbargo", "has Embargo")}
         >
             <SliderFilter
                 state={state}
                 value={amount}
-                setvalue={(n) => dispatch(searchActions.set_pub_embargo(n))}
+                setvalue={(n) => dispatch(searchActions.publication_embargo_set(n))}
                 range={[0, 6, 12, 18, 24]}
                 unit="Months"
             />
@@ -56,13 +56,13 @@ export const PubApcFilter = () => {
     return (
         <DropdownCheckbox
             state={state}
-            toggle={() => dispatch(searchActions.toggle_pub_apc())}
+            toggle={() => dispatch(searchActions.publication_apc_toggle())}
             label={labelize("ppo:hasArticlePublishingCharges", "has APC")}
         >
             <SliderFilter
                 state={state}
                 value={amount}
-                setvalue={(n) => dispatch(searchActions.set_pub_apc(n))}
+                setvalue={(n) => dispatch(searchActions.publication_apc_set(n))}
                 range={[0, 100, 200, 300, 400]}
                 unit="USD"
             />
@@ -77,7 +77,7 @@ export const PubCopyrightOwnersFilter = () => {
         <DropdownToggles
             label={labelize("ppo:hasCopyrightOwner", "has Copyright Owners")}
             toggles={toggles}
-            toggle_action={(p: string) => dispatch(searchActions.toggle_pub_copyrightowner(p))}
+            toggle_action={(p: string) => dispatch(searchActions.publication_copyrightowners_toggleone(p))}
         />
     )
 }
