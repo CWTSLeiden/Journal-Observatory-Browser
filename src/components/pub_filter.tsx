@@ -70,18 +70,6 @@ export const PubApcFilter = () => {
     )
 };
 
-export const PubLicenseFilter = () => {
-    const toggles = useAppSelector((store: SearchStore) => store.search.pub_licenses)
-    const dispatch = useAppDispatch()
-    return (
-        <DropdownToggles
-            label="License"
-            toggles={toggles}
-            toggle_action={(p: string) => dispatch(searchActions.toggle_pub_license(p))}
-        />
-    )
-}
-
 export const PubCopyrightOwnersFilter = () => {
     const toggles = useAppSelector((store: SearchStore) => store.search.pub_copyrightowners)
     const dispatch = useAppDispatch()

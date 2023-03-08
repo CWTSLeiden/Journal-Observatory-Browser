@@ -2,9 +2,7 @@ import {
     Card,
     Chip,
     Grid,
-    TableCell,
     TablePagination,
-    TableRow,
     TableSortLabel,
 } from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";

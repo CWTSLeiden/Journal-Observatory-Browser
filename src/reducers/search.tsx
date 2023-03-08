@@ -6,12 +6,12 @@ export const enabledToggles = (t: Toggles) =>
 
 export type SearchState = {
     creators?: Toggles;
-    elsewhere_articleversion?: Toggles;
-    elsewhere_copyrightowner?: Toggles;
+    elsewhere_articleversions?: Toggles;
+    elsewhere_copyrightowners?: Toggles;
     elsewhere_embargo?: boolean;
     elsewhere_embargoduration?: number;
-    elsewhere_license?: Toggles;
-    elsewhere_location?: Toggles;
+    elsewhere_licenses?: Toggles;
+    elsewhere_locations?: Toggles;
     elsewhere_policy?: boolean;
     evaluation_policy?: boolean;
     open_access?: boolean;
@@ -24,7 +24,6 @@ export type SearchState = {
     pub_copyrightowners?: Toggles;
     pub_embargo?: boolean;
     pub_embargoduration?: number;
-    pub_licenses?: Toggles;
     pub_policy: boolean;
     searchstring?: string;
 };
@@ -53,7 +52,11 @@ const initSearch: SearchState = {
         "pro:author": false,
         "pro:publisher": false
     },
-    pub_licenses: {
+    elsewhere_articleversions: {},
+    elsewhere_copyrightowners: {},
+    elsewhere_embargo: false,
+    elsewhere_embargoduration: 0,
+    elsewhere_licenses: {
         "cc0": false,
         "cc-by": false,
         "cc-by-nc": false,
@@ -62,6 +65,8 @@ const initSearch: SearchState = {
         "cc-by-nd": false,
         "cc-by-sa": false
     },
+    elsewhere_locations: {},
+    elsewhere_policy: false,
     pub_policy: false,
     searchstring: ""
 };
@@ -94,9 +99,6 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
         case actions.RESET_CREATORS: return {...state, creators: initSearch.creators }
         // Publication Policy
         case actions.TOGGLE_PUB_POLICY: return {...state, pub_policy: !state.pub_policy }
-        case actions.SET_PUB_LICENSES: return {...state, pub_licenses: action.payload.toggles}
-        case actions.TOGGLE_PUB_LICENSE: return {...state, pub_licenses: toggleProp(state.pub_licenses, action.payload.value)}
-        case actions.RESET_PUB_LICENSES: return {...state, pub_licenses: initSearch.pub_licenses}
         case actions.SET_PUB_COPYRIGHTOWNERS: return {...state, pub_copyrightowners: action.payload.toggles}
         case actions.TOGGLE_PUB_COPYRIGHTOWNER: return {...state, pub_copyrightowners: toggleProp(state.pub_copyrightowners, action.payload.value)}
         case actions.RESET_PUB_COPYRIGHTOWNERS: return {...state, pub_copyrightowners: initSearch.pub_copyrightowners}
@@ -106,6 +108,9 @@ const SearchReducer = (state = initSearch, action: actions.searchAction) => {
         case actions.TOGGLE_PUB_EMBARGO: return {...state, pub_embargo: !state.pub_embargo }
         case actions.TOGGLE_OPEN_ACCESS: return {...state, open_access: !state.open_access }
         // Publication Elsewhere Policy
+        case actions.SET_ELSEWHERE_LICENSES: return {...state, elsewhere_licenses: action.payload.toggles}
+        case actions.TOGGLE_ELSEWHERE_LICENSE: return {...state, elsewhere_licenses: toggleProp(state.elsewhere_licenses, action.payload.value)}
+        case actions.RESET_ELSEWHERE_LICENSES: return {...state, elsewhere_licenses: initSearch.elsewhere_licenses}
         // Evaluation Policy
         //
         default: return state

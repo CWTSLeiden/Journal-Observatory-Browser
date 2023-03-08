@@ -1,6 +1,7 @@
 import React, { ReactElement } from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Button, List, Stack, Typography } from "@mui/material";
-import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubLicenseFilter, PubPolicyFilter } from "./pub_filter";
+import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubPolicyFilter } from "./pub_filter";
+import { ElsewhereLicenseFilter } from "./elsewhere_filter";
 import { CreatorSelect } from "./creator_filter";
 import { ExpandMore } from "@mui/icons-material";
 
@@ -43,6 +44,19 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
                 <PubEmbargoFilter />
                 <PubApcFilter />
                 <PubCopyrightOwnersFilter />
+            </FilterBarSection>
+
+            <FilterBarSection
+                id="filter-panel-publication-elsewhere-policy"
+                title="Publication Elsewhere Policy"
+            >
+                <ElsewhereLicenseFilter />
+            </FilterBarSection>
+
+            <FilterBarSection
+                id="filter-panel-evaluation-policy"
+                title="Evaluation Policy"
+            >
             </FilterBarSection>
 
             <Button variant="outlined" onClick={handleSubmit}>
