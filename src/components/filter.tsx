@@ -3,11 +3,14 @@ import {
     Badge,
     Checkbox,
     Collapse,
+    FormControlLabel,
     List,
     ListItem,
     ListItemButton,
     ListItemIcon,
     ListItemText,
+    Radio,
+    RadioGroup,
     Slider,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
@@ -103,8 +106,9 @@ type DropdownTogglesProps = {
     label: string;
     toggles: Toggles;
     toggle_action: (p: string) => void;
+    labels?: { [key: string]: string };
 }
-export const DropdownToggles = ({label, toggles, toggle_action}: DropdownTogglesProps) => {
+export const DropdownToggles = ({label, toggles, toggle_action, labels}: DropdownTogglesProps) => {
     const [open, setOpen] = useState(false)
     const amount = enabledToggles(toggles).length
     const icon = (
@@ -125,9 +129,34 @@ export const DropdownToggles = ({label, toggles, toggle_action}: DropdownToggles
                     key={p}
                     state={toggles[p]}
                     action={() => toggle_action(p)}
-                    label={labelize(p)}
+                    label={labelize(p, labels ? labels[p] : null)}
                 />)
             }
         </DropdownCheckbox>
+    )
+}
+
+type RadioFilterProps = {
+    option: string;
+    options: string[];
+    setoption: (p: string) => void;
+    labels?: { [key: string]: string };
+}
+export const RadioFilter = ({option, options, setoption, labels}: RadioFilterProps) => {
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+        setoption(event.target.value)
+    const Option = ({value}: {value: string}) =>
+        <FormControlLabel
+            value={value}
+            control={<Radio />}
+            label={labelize(value, labels ? labels[value] : null)}
+        />
+    return (
+        <RadioGroup
+            value={option}
+            onChange={handleChange}
+        >
+            {options.map(option => <Option key={option} value={option} />)}
+        </RadioGroup>
     )
 }

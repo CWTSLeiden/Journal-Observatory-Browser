@@ -8,6 +8,7 @@ import * as padsActions from "../actions/pads";
 import * as searchActions from "../actions/search";
 import { Grid } from "@mui/material";
 import { Stack } from "@mui/system";
+import { order_pads } from "../reducers/pads";
 
 function SearchComponent() {
     const searchState = useAppSelector((s) => s.search);
@@ -21,7 +22,7 @@ function SearchComponent() {
             searchState,
             pagesize * page
         );
-        dispatch(padsActions.pads_set(padlist, orderasc));
+        dispatch(padsActions.pads_set(order_pads(padlist, orderasc)));
         dispatch(padsActions.total_set(num));
     }
 

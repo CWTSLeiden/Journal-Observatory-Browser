@@ -1,9 +1,10 @@
 import React, { ReactElement } from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Button, List, Stack, Typography } from "@mui/material";
 import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubPolicyFilter } from "./pub_filter";
-import { ElsewhereLicenseFilter } from "./elsewhere_filter";
+import { ElsewhereCopyrightownerFilter, ElsewhereEmbargoFilter, ElsewhereLicenseFilter, ElsewhereLocationFilter, ElsewherePolicyFilter, ElsewhereVersionFilter } from "./elsewhere_filter";
 import { CreatorSelect } from "./creator_filter";
 import { ExpandMore } from "@mui/icons-material";
+import { EvaluationAnonymizedFilter, EvaluationCommentsFilter, EvaluationInformationFilter, EvaluationInteractionsFilter, EvaluationPolicyFilter } from "./evaluation_filter";
 
 
 type FilterBarSectionProps = {
@@ -50,13 +51,23 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
                 id="filter-panel-publication-elsewhere-policy"
                 title="Publication Elsewhere Policy"
             >
+                <ElsewherePolicyFilter />
+                <ElsewhereVersionFilter />
+                <ElsewhereLocationFilter />
                 <ElsewhereLicenseFilter />
+                <ElsewhereCopyrightownerFilter />
+                <ElsewhereEmbargoFilter />
             </FilterBarSection>
 
             <FilterBarSection
                 id="filter-panel-evaluation-policy"
                 title="Evaluation Policy"
             >
+                <EvaluationPolicyFilter />
+                <EvaluationAnonymizedFilter />
+                <EvaluationInteractionsFilter />
+                <EvaluationInformationFilter />
+                <EvaluationCommentsFilter />
             </FilterBarSection>
 
             <Button variant="outlined" onClick={handleSubmit}>

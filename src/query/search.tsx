@@ -1,96 +1,17 @@
 import { query_jsonld, query_single } from "../query/remote";
-import { pagesize } from "../config";
-import { SearchState, Toggles } from "../reducers/search";
+import { SearchState } from "../reducers/search";
+import * as filter from "./search_filter"
 
-const searchfilter = (s?: string) => {
-    const q = `
-        filter exists {
-            optional { ?platform schema:name ?name . }
-            optional { ?platform dcterms:identifier ?id . }
-            optional { ?platform ppo:hasKeyword ?keyword . } 
-            filter(contains(lcase(str(?name)), lcase("${s}"))
-                || contains(lcase(str(?id)), lcase("${s}"))
-                || contains(lcase(str(?keyword)), lcase("${s}"))
-            ) 
-        }
-    `;
-    return s ? q : "";
-};
+const limit = (search: SearchState, offset: number) =>
+    `limit ${search.pagesize} offset ${offset}`;
 
-const togglefilter = (toggles: Toggles) => {
-    const unfiltered = Object.entries(toggles)
-    return unfiltered.filter(([, bool]) => bool)
-}
-
-const creatorfilter = (creators: Toggles) => {
-    const filtered = togglefilter(creators)
-    const q = `
-        filter(?creator in (${filtered.map(([id, ]) => `<${id}>`).join(', ')}))
-    `
-    return filtered.length ? q : ""
-}
-
-const pubpolicyfilter = (b?: boolean) => {
-    const q = `
-        filter exists {
-            ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ] .
-        }
-    `;
-    return b ? q : "";
-};
-
-const open_access_filter = (b?: boolean) => {
-    const q = `
-        filter exists {
-            ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ; ppo:isOpenAccess true ] .
-        }
-    `;
-    return b ? q : "";
-};
-
-const pub_embargofilter = (b?: boolean, n?: number) => {
-    const q = `
-        filter exists {
-            ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ; fabio:hasEmbargoDuration ?pub_embargo ] .
-            filter(?pub_embargo <= "P${n}M"^^xsd:duration)
-        }
-    `;
-    return b ? q : "";
-};
-
-const pub_apcfilter = (b?: boolean, n?: number) => {
-    const q = `
-        filter exists {
-            ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ; ppo:hasArticlePublishingCharges ?apc ] .
-            ?apc schema:price ?price .
-            # ?apc schema:priceCurrency "USD" .
-            filter(?price <= ${n})
-        }
-    `;
-    return b ? q : "";
-};
-
-const pub_copyrightownerfilter = (copyrightowners: Toggles) => {
-    const filtered = togglefilter(copyrightowners)
-    const q = `
-        filter exists {
-            ?platform ppo:hasPolicy [ a ppo:PublicationPolicy ; ppo:hasCopyrightOwner [a ?copyrightowner]] .
-            filter(?copyrightowner in (${filtered.map(([id, ]) => `${id}`).join(', ')}))
-        }
-    `;
-    return filtered.length ? q : "";
-};
-
-const limit = (size: number = pagesize, offset: number) =>
-    `limit ${size} offset ${offset}`;
-
-const orderprop = (prop = "schema:name") => `
-    optional { ?platform ${prop} ?orderprop } .
+const orderprop = (search: SearchState) => `
+    optional { ?platform ${search.orderprop || "schema:name"} ?orderprop } .
     bind(coalesce(str(?orderprop), "zzz") as ?order)
 `
 
-const order = (asc = true) => 
-    asc ? "order by asc(?order)" : "order by desc(?order)"
+const order = (search: SearchState) => 
+    search.orderasc ? "order by asc(?order)" : "order by desc(?order)"
 
 
 async function pad_list(search: SearchState, offset=0) {
@@ -101,13 +22,23 @@ async function pad_list(search: SearchState, offset=0) {
             optional { ?assertion pad:hasSourceAssertion ?source .
                 service <repository:pad> { ?source dcterms:creator ?creator } }
             graph ?assertion { ?platform a ppo:Platform . }
-            ${creatorfilter(search.creators)}
-            ${searchfilter(search.searchstring)}
-            ${pubpolicyfilter(search.pub_policy)}
-            ${open_access_filter(search.open_access)}
-            ${pub_embargofilter(search.pub_embargo, search.pub_embargoduration)}
-            ${pub_apcfilter(search.pub_apc, search.pub_apcamount)}
-            ${pub_copyrightownerfilter(search.pub_copyrightowners)}
+            ${filter.creator_filter(search)}
+            ${filter.search_filter(search.searchstring)}
+            ${filter.pub_policy_filter(search)}
+            ${filter.pub_open_access_filter(search)}
+            ${filter.pub_embargo_filter(search)}
+            ${filter.pub_apc_filter(search)}
+            ${filter.pub_copyrightowner_filter(search)}
+            ${filter.elsewhere_policy_filter(search)}
+            ${filter.elsewhere_version_filter(search)}
+            ${filter.elsewhere_location_filter(search)}
+            ${filter.elsewhere_license_filter(search)}
+            ${filter.elsewhere_copyrightowner_filter(search)}
+            ${filter.elsewhere_embargo_filter(search)}
+            ${filter.evaluation_policy_filter(search)}
+            ${filter.evaluation_anonymized_filter(search)}
+            ${filter.evaluation_interaction_filter(search)}
+            ${filter.evaluation_information_filter(search)}
         }
     `
 
@@ -128,19 +59,31 @@ async function pad_list(search: SearchState, offset=0) {
                     ?pad a pad:PAD ; pad:hasAssertion ?assertion .
                     optional { ?assertion pad:hasSourceAssertion ?source .
                         service <repository:pad> { ?source dcterms:creator ?creator } }
-                    graph ?assertion { ?platform a ppo:Platform . }
-                    ${orderprop(search.orderprop)}
-                    ${creatorfilter(search.creators)}
-                    ${searchfilter(search.searchstring)}
-                    ${pubpolicyfilter(search.pub_policy)}
-                    ${open_access_filter(search.open_access)}
-                    ${pub_embargofilter(search.pub_embargo, search.pub_embargoduration)}
-                    ${pub_apcfilter(search.pub_apc, search.pub_apcamount)}
-                    ${pub_copyrightownerfilter(search.pub_copyrightowners)}
+                    graph ?assertion {
+                        ?platform a ppo:Platform .
+                    }
+                    ${orderprop(search)}
+                    ${filter.creator_filter(search)}
+                    ${filter.search_filter(search.searchstring)}
+                    ${filter.pub_policy_filter(search)}
+                    ${filter.pub_open_access_filter(search)}
+                    ${filter.pub_embargo_filter(search)}
+                    ${filter.pub_apc_filter(search)}
+                    ${filter.pub_copyrightowner_filter(search)}
+                    ${filter.elsewhere_policy_filter(search)}
+                    ${filter.elsewhere_version_filter(search)}
+                    ${filter.elsewhere_location_filter(search)}
+                    ${filter.elsewhere_license_filter(search)}
+                    ${filter.elsewhere_copyrightowner_filter(search)}
+                    ${filter.elsewhere_embargo_filter(search)}
+                    ${filter.evaluation_policy_filter(search)}
+                    ${filter.evaluation_anonymized_filter(search)}
+                    ${filter.evaluation_interaction_filter(search)}
+                    ${filter.evaluation_information_filter(search)}
                 }
                 group by ?pad ?platform ?creator
-                ${order(search.orderasc)}
-                ${limit(search.pagesize, offset)}
+                ${order(search)}
+                ${limit(search, offset)}
             }
             optional { ?platform schema:name ?name . }
             optional { ?platform dcterms:identifier ?id . bind(str(?id) as ?sid) . }

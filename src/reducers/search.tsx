@@ -2,34 +2,53 @@ import { createReducer } from "@reduxjs/toolkit";
 import * as actions from "../actions/search"
 
 export type Toggles = { [key: string]: boolean }
+
 export const enabledToggles = (t: Toggles) =>
     Object.entries(t).filter(([,v]) => v).map(([k,]) => k)
 
+function toggleProp(toggles: Toggles, prop: string | boolean | number): Toggles {
+    const new_toggles = {...toggles}
+    const str_prop = String(prop)
+    new_toggles[str_prop] = !new_toggles[str_prop]
+    return new_toggles
+}
+
+
 export type SearchState = {
-    creators?: Toggles;
-    elsewhere_articleversions?: Toggles;
-    elsewhere_copyrightowners?: Toggles;
-    elsewhere_embargo?: boolean;
-    elsewhere_embargoduration?: number;
-    elsewhere_licenses?: Toggles;
-    elsewhere_locations?: Toggles;
-    elsewhere_policy?: boolean;
-    evaluation_policy?: boolean;
-    open_access?: boolean;
-    orderasc?: boolean;
-    orderprop?: string;
+    searchstring?: string;
     page?: number;
     pagesize?: number;
+    orderasc?: boolean;
+    orderprop?: string;
+    creators?: Toggles;
+    pub_policy: boolean;
     pub_apc?: boolean;
     pub_apcamount?: number;
     pub_copyrightowners?: Toggles;
     pub_embargo?: boolean;
     pub_embargoduration?: number;
-    pub_policy: boolean;
-    searchstring?: string;
+    open_access?: boolean;
+    elsewhere_policy?: boolean;
+    elsewhere_versions?: Toggles;
+    elsewhere_locations?: Toggles;
+    elsewhere_licenses?: Toggles;
+    elsewhere_copyrightowners?: Toggles;
+    elsewhere_embargo?: boolean;
+    elsewhere_embargoduration?: number;
+    evaluation_policy?: boolean;
+    evaluation_anonymized?: boolean;
+    evaluation_anonymizedtype?: string;
+    evaluation_interactions?: Toggles;
+    evaluation_information?: Toggles;
+    evaluation_comments?: Toggles;
 };
 
 const initSearch: SearchState = {
+    searchstring: "",
+    orderasc: true,
+    orderprop: "schema:name",
+    page: 0,
+    pagesize: 20,
     creators: {
         "https://doaj.org": false,
         "https://v2.sherpa.ac.uk/romeo": false,
@@ -40,11 +59,7 @@ const initSearch: SearchState = {
         "https://www.wiley.com": false,
         "https://elifesciences.org": false,
     },
-    open_access: false,
-    orderasc: true,
-    orderprop: "schema:name",
-    page: 0,
-    pagesize: 20,
+    pub_policy: false,
     pub_embargo: false,
     pub_embargoduration: 0,
     pub_apc: false,
@@ -53,31 +68,67 @@ const initSearch: SearchState = {
         "pro:author": false,
         "pro:publisher": false
     },
-    elsewhere_articleversions: {},
-    elsewhere_copyrightowners: {},
+    open_access: false,
+    elsewhere_policy: false,
+    elsewhere_versions: {
+        "pso:submitted": false,
+        "pso:accepted-for-publication": false,
+        "pso:published": false
+    },
+    elsewhere_locations: {
+        "non_commercial_institutional_repository": false,
+        "non_commercial_subject_repository": false,
+        "non_commercial_social_network": false,
+        "this_journal": false,
+        "named_repository": false,
+        "any_website": false,
+        "preprint_repository": false,
+        "institutional_website": false,
+        "named_academic_social_network": false,
+        "any_repository": false,
+        "non_commercial_repository": false,
+        "non_commercial_website": false,
+        "institutional_repository": false,
+        "authors_homepage": false,
+        "funder_designated_location": false,
+        "subject_repository": false,
+        "academic_social_network": false,
+    },
+    elsewhere_copyrightowners: {
+        "pro:author": false,
+        "pro:publisher": false
+    },
+    elsewhere_licenses: {
+        "https://creativecommons.org/publicdomain/zero/1.0/": false,
+        "https://creativecommons.org/licenses/by/4.0/": false,
+        "https://creativecommons.org/licenses/by-nc/4.0/": false,
+        "https://creativecommons.org/licenses/by-nc-nd/4.0/": false,
+        "https://creativecommons.org/licenses/by-nc-sa/4.0/": false,
+        "https://creativecommons.org/licenses/by-nd/4.0/": false,
+        "https://creativecommons.org/licenses/by-sa/4.0/": false
+    },
     elsewhere_embargo: false,
     elsewhere_embargoduration: 0,
-    elsewhere_licenses: {
-        "cc0": false,
-        "cc-by": false,
-        "cc-by-nc": false,
-        "cc-by-nc-nd": false,
-        "cc-by-nc-sa": false,
-        "cc-by-nd": false,
-        "cc-by-sa": false
+    evaluation_policy: false,
+    evaluation_anonymized: false,
+    evaluation_anonymizedtype: "all",
+    evaluation_interactions: {
+        "pro:editor": false,
+        "pro:peer-reviewer": false,
+        "pro:author": false
     },
-    elsewhere_locations: {},
-    elsewhere_policy: false,
-    pub_policy: false,
-    searchstring: ""
+    evaluation_information: {
+        "ppo:ReviewReport": false,
+        "ppo:ReviewSummary": false,
+        "ppo:SubmittedManuscript": false,
+        "ppo:AuthorEditorCommunication": false
+    },
+    evaluation_comments: {
+        "ppo:postPublicationCommentingOpen": false,
+        "ppo:postPublicationCommentingOnInvitation": false,
+        "ppo:postPublicationCommentingClosed": false
+    }
 };
-
-function toggleProp(toggles: Toggles, prop: string | boolean | number): Toggles {
-    const new_toggles = {...toggles}
-    const str_prop = String(prop)
-    new_toggles[str_prop] = !new_toggles[str_prop]
-    return new_toggles
-}
 
 const SearchReducer = createReducer(initSearch, (builder) => {
     builder
@@ -108,7 +159,7 @@ const SearchReducer = createReducer(initSearch, (builder) => {
         .addCase(actions.creators_set,
             (state, action) => { state.creators = action.payload })
         .addCase(actions.creators_toggleone,
-            (state, action) => { state.creators = toggleProp(state.creators, action.payload)})
+            (state, action) => { state.creators[action.payload] = !state.creators[action.payload]})
         .addCase(actions.creators_reset,
             (state) => { state.creators = initSearch.creators })
     // Publication Policy
@@ -131,13 +182,61 @@ const SearchReducer = createReducer(initSearch, (builder) => {
         .addCase(actions.publication_openaccess_toggle,
             (state) => { state.open_access = !state.open_access })
     // Publication Elsewhere Policy
+        .addCase(actions.elsewhere_toggle,
+            (state) => { state.elsewhere_policy = !state.elsewhere_policy })
+        .addCase(actions.elsewhere_versions_set,
+            (state, action) => { state.elsewhere_versions = action.payload})
+        .addCase(actions.elsewhere_versions_toggleone,
+            (state, action) => { state.elsewhere_versions = toggleProp(state.elsewhere_versions, action.payload)})
+        .addCase(actions.elsewhere_versions_reset,
+            (state) => { state.elsewhere_versions = initSearch.elsewhere_versions})
+        .addCase(actions.elsewhere_locations_set,
+            (state, action) => { state.elsewhere_locations = action.payload})
+        .addCase(actions.elsewhere_locations_toggleone,
+            (state, action) => { state.elsewhere_locations = toggleProp(state.elsewhere_locations, action.payload)})
+        .addCase(actions.elsewhere_locations_reset,
+            (state) => { state.elsewhere_locations = initSearch.elsewhere_locations})
+        .addCase(actions.elsewhere_copyrightowners_set,
+            (state, action) => { state.elsewhere_copyrightowners = action.payload})
+        .addCase(actions.elsewhere_copyrightowners_toggleone,
+            (state, action) => { state.elsewhere_copyrightowners = toggleProp(state.elsewhere_copyrightowners, action.payload)})
+        .addCase(actions.elsewhere_copyrightowners_reset,
+            (state) => { state.elsewhere_copyrightowners = initSearch.elsewhere_copyrightowners})
         .addCase(actions.elsewhere_licenses_set,
             (state, action) => { state.elsewhere_licenses = action.payload})
         .addCase(actions.elsewhere_licenses_toggleone,
             (state, action) => { state.elsewhere_licenses = toggleProp(state.elsewhere_licenses, action.payload)})
         .addCase(actions.elsewhere_licenses_reset,
             (state) => { state.elsewhere_licenses = initSearch.elsewhere_licenses})
+        .addCase(actions.elsewhere_embargo_set,
+            (state, action) => { state.elsewhere_embargoduration = Number(action.payload) })
+        .addCase(actions.elsewhere_embargo_toggle,
+            (state) => { state.elsewhere_embargo = !state.pub_embargo })
     // Evaluation Policy
+        .addCase(actions.evaluation_toggle,
+            (state) => { state.evaluation_policy = !state.evaluation_policy })
+        .addCase(actions.evaluation_anonymized_set,
+            (state, action) => { state.evaluation_anonymizedtype = action.payload })
+        .addCase(actions.evaluation_anonymized_toggle,
+            (state) => { state.evaluation_anonymized = !state.evaluation_anonymized })
+        .addCase(actions.evaluation_interactions_set,
+            (state, action) => { state.evaluation_interactions = action.payload})
+        .addCase(actions.evaluation_interactions_toggleone,
+            (state, action) => { state.evaluation_interactions = toggleProp(state.evaluation_interactions, action.payload)})
+        .addCase(actions.evaluation_interactions_reset,
+            (state) => { state.evaluation_interactions = initSearch.evaluation_interactions})
+        .addCase(actions.evaluation_information_set,
+            (state, action) => { state.evaluation_information = action.payload})
+        .addCase(actions.evaluation_information_toggleone,
+            (state, action) => { state.evaluation_information = toggleProp(state.evaluation_information, action.payload)})
+        .addCase(actions.evaluation_information_reset,
+            (state) => { state.evaluation_information = initSearch.evaluation_information})
+        .addCase(actions.evaluation_comments_set,
+            (state, action) => { state.evaluation_comments = action.payload})
+        .addCase(actions.evaluation_comments_toggleone,
+            (state, action) => { state.evaluation_comments = toggleProp(state.evaluation_comments, action.payload)})
+        .addCase(actions.evaluation_comments_reset,
+            (state) => { state.evaluation_comments = initSearch.evaluation_comments})
     //
         .addDefaultCase((state) => state)
 })
