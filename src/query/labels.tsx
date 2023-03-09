@@ -25,10 +25,10 @@ export async function get_labels_dict (ontologyStore: Quadstore) {
     return labels_dict
 }
 
-export function labelize(value: string, fallback?: string): string {
+export function labelize(value: string, override?: string): string {
     const labels = useContext(LabelContext)
     if (labels) {
-        return labels_override[value] || fallback || labels[value] || value
+        return labels_override[value] || override || labels[value] || value
     }
-    return labels_override[value] || fallback || value
+    return labels_override[value] || override || value
 }

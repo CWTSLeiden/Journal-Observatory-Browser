@@ -211,7 +211,7 @@ const SearchReducer = createReducer(initSearch, (builder) => {
         .addCase(actions.elsewhere_embargo_set,
             (state, action) => { state.elsewhere_embargoduration = Number(action.payload) })
         .addCase(actions.elsewhere_embargo_toggle,
-            (state) => { state.elsewhere_embargo = !state.pub_embargo })
+            (state) => { state.elsewhere_embargo = !state.elsewhere_embargo })
     // Evaluation Policy
         .addCase(actions.evaluation_toggle,
             (state) => { state.evaluation_policy = !state.evaluation_policy })
