@@ -21,8 +21,8 @@ function SearchComponent() {
             searchState,
             pagesize * page
         );
-        dispatch(padsActions.set_pads(padlist, orderasc));
-        dispatch(padsActions.set_total(num));
+        dispatch(padsActions.pads_set(padlist, orderasc));
+        dispatch(padsActions.total_set(num));
     }
 
     async function doSearch() {
