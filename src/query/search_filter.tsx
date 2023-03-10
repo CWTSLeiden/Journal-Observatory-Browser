@@ -182,54 +182,42 @@ export const evaluation_policy_filter = (search: SearchState) => {
 
 export const evaluation_anonymized_filter = (search: SearchState) => {
     const filtered = enabled(search.evaluation_anonymized)
-    if (filtered.length == 0) return ''
-    const author_reviewer = []
-    const reviewer_author = []
-    const author_editor = []
-    const reviewer_editor = []
-    const identified = "ppo:identifiedTo"
-    const anonymous = "ppo:anonymousTo"
-    let editor = false
-    if (filtered.includes("all")) {
-        editor = true
-        author_reviewer.push(identified)
-        author_editor.push(identified)
-        reviewer_author.push(identified)
-        reviewer_editor.push(identified)
-    }
-    if (filtered.includes("single")) {
-        author_reviewer.push(identified)
-        reviewer_author.push(anonymous)
-    }
-    if (filtered.includes("double")) {
-        author_reviewer.push(anonymous)
-        reviewer_author.push(anonymous)
-    }
-    if (filtered.includes("triple")) {
-        editor = true
-        author_reviewer.push(anonymous)
-        author_editor.push(anonymous)
-        reviewer_author.push(anonymous)
-        reviewer_editor.push(anonymous)
-    }
-    const editor_str = editor ? `
-        ?policy ppo:involves ?editor .
-        ?editor a pro:editor .
-        ?author ?author_editor ?editor .
-        ?reviewer ?reviewer_editor ?editor .
-    ` : ''
-    const author_reviewer_str = author_reviewer.length > 0 ? `
-        filter(?author_reviewer in (${author_reviewer.join(', ')}))
-    ` : ''
-    const reviewer_author_str = reviewer_author.length > 0 ? `
-        filter(?reviewer_author in (${reviewer_author.join(', ')}))
-    ` : ''
-    const author_editor_str = author_editor.length > 0 ? `
-        filter(?author_editor in (${author_editor.join(', ')}))
-    ` : ''
-    const reviewer_editor_str = reviewer_editor.length > 0 ? `
-        filter(?reviewer_editor in (${reviewer_editor.join(', ')}))
-    ` : ''
+    const all = `
+        exists {
+            ?editor a pro:editor .
+            ?author ppo:identifiedTo ?reviewer .
+            ?author ppo:identifiedTo ?editor .
+            ?reviewer ppo:identifiedTo ?author .
+            ?reviewer ppo:identifiedTo ?editor .
+        }
+    `
+    const single = `
+        exists {
+            ?author ppo:identifiedTo ?reviewer .
+            ?reviewer ppo:anonymousTo ?author .
+        }
+    `
+    const double = `
+        exists {
+            ?author ppo:anonymousTo ?reviewer .
+            ?reviewer ppo:anonymousTo ?author .
+        }
+    `
+    const triple = `
+        exists {
+            ?editor a pro:editor .
+            ?author ppo:anonymousTo ?reviewer .
+            ?author ppo:anonymousTo ?editor .
+            ?reviewer ppo:anonymousTo ?author .
+            ?reviewer ppo:anonymousTo ?editor .
+        }
+    `
+    const anonymized = [
+        filtered.includes("all") ? all : null,
+        filtered.includes("single") ? single : null,
+        filtered.includes("double") ? double : null,
+        filtered.includes("triple") ? triple : null
+    ].filter(Boolean)
     const q = `
         filter exists {
             ?platform ppo:hasPolicy ?policy .
@@ -240,11 +228,8 @@ export const evaluation_anonymized_filter = (search: SearchState) => {
             ?policy ppo:involves ?reviewer .
             ?reviewer a pro:peer-reviewer .
             ?reviewer ?reviewer_author ?author .
-            ${editor_str}
-            ${author_reviewer_str}
-            ${reviewer_author_str}
-            ${author_editor_str}
-            ${reviewer_editor_str}
+            ?policy ppo:involves ?editor .
+            filter (${anonymized.join(' || ')})
         }
     `;
     return filtered.length ? q : "";
@@ -269,6 +254,21 @@ export const evaluation_interaction_filter = (search: SearchState) => {
 
 export const evaluation_information_filter = (search: SearchState) => {
     const filtered = enabled(search.evaluation_information)
+    const q = `
+        filter exists {
+            ?platform ppo:hasPolicy ?policy .
+            ?policy a ppo:EvaluationPolicy ;
+                ppo:covers ?work .
+            ?work a ?worktype ;
+                ppo:publiclyAccessible ppo:Accessible .
+            filter(?worktype in (${filtered.join(', ')}))
+        }
+    `;
+    return filtered.length ? q : "";
+};
+
+export const evaluation_comment_filter = (search: SearchState) => {
+    const filtered = enabled(search.evaluation_comments)
     const q = `
         filter exists {
             ?platform ppo:hasPolicy ?policy .
