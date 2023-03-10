@@ -36,8 +36,7 @@ export type SearchState = {
     elsewhere_embargo?: boolean;
     elsewhere_embargoduration?: number;
     evaluation_policy?: boolean;
-    evaluation_anonymized?: boolean;
-    evaluation_anonymizedtype?: string;
+    evaluation_anonymized?: Toggles;
     evaluation_interactions?: Toggles;
     evaluation_information?: Toggles;
     evaluation_comments?: Toggles;
@@ -110,8 +109,12 @@ const initSearch: SearchState = {
     elsewhere_embargo: false,
     elsewhere_embargoduration: 0,
     evaluation_policy: false,
-    evaluation_anonymized: false,
-    evaluation_anonymizedtype: "all",
+    evaluation_anonymized: {
+        "all": false,
+        "single": false,
+        "double": false,
+        "triple": false
+    },
     evaluation_interactions: {
         "pro:editor": false,
         "pro:peer-reviewer": false,
@@ -216,9 +219,11 @@ const SearchReducer = createReducer(initSearch, (builder) => {
         .addCase(actions.evaluation_toggle,
             (state) => { state.evaluation_policy = !state.evaluation_policy })
         .addCase(actions.evaluation_anonymized_set,
-            (state, action) => { state.evaluation_anonymizedtype = action.payload })
-        .addCase(actions.evaluation_anonymized_toggle,
-            (state) => { state.evaluation_anonymized = !state.evaluation_anonymized })
+            (state, action) => { state.evaluation_anonymized = action.payload})
+        .addCase(actions.evaluation_anonymized_toggleone,
+            (state, action) => { state.evaluation_anonymized = toggleProp(state.evaluation_anonymized, action.payload)})
+        .addCase(actions.evaluation_anonymized_reset,
+            (state) => { state.evaluation_anonymized = initSearch.evaluation_anonymized})
         .addCase(actions.evaluation_interactions_set,
             (state, action) => { state.evaluation_interactions = action.payload})
         .addCase(actions.evaluation_interactions_toggleone,

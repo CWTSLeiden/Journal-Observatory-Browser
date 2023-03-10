@@ -17,29 +17,23 @@ export const EvaluationPolicyFilter = () => {
 }
 
 export const EvaluationAnonymizedFilter = () => {
-    const state = useAppSelector((store: SearchStore) => store.search.evaluation_anonymized)
-    const value = useAppSelector((store: SearchStore) => store.search.evaluation_anonymizedtype)
+    const toggles = useAppSelector((store: SearchStore) => store.search.evaluation_anonymized)
     const dispatch = useAppDispatch()
     return (
-        <DropdownCheckbox
-            state={state}
-            toggle={() => dispatch(searchActions.evaluation_anonymized_toggle())}
+        <DropdownToggles
             label="Anonymized"
-        >
-            <RadioFilter
-                option={value}
-                options={["all", "single", "double", "triple"]}
-                setoption={(s: string) => dispatch(searchActions.evaluation_anonymized_set(s))}
-                labels={{
-                    "all": "All Identities Visible",
-                    "single": "Single Anonymized",
-                    "double": "Double Anonymized",
-                    "triple": "Triple Anonymized"
-                }}
-            />
-        </DropdownCheckbox>
+            toggles={toggles}
+            toggle_action={(p: string) => dispatch(searchActions.evaluation_anonymized_toggleone(p))}
+            reset_action={() => dispatch(searchActions.evaluation_anonymized_reset())}
+            labels={{
+                "all": "All Identities Visible",
+                "single": "Single Anonymized",
+                "double": "Double Anonymized",
+                "triple": "Triple Anonymized"
+            }}
+        />
     )
-};
+}
 
 export const EvaluationInteractionsFilter = () => {
     const toggles = useAppSelector((store: SearchStore) => store.search.evaluation_interactions)

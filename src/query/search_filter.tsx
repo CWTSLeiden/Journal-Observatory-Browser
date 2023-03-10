@@ -181,46 +181,73 @@ export const evaluation_policy_filter = (search: SearchState) => {
 };
 
 export const evaluation_anonymized_filter = (search: SearchState) => {
-    const anonymized = (type: string) => {
-        switch(type) {
-            case "all": return `
-                ?editor a pro:editor .
-                ?reviewer ppo:identifiedTo ?author .
-                ?author   ppo:identifiedTo ?reviewer .
-                ?author   ppo:identifiedTo ?editor .
-                ?reviewer ppo:identifiedTo ?editor .
-                `
-            case "single": return `
-                ?reviewer ppo:anonymousTo  ?author .
-                ?author   ppo:identifiedTo ?reviewer .
-            `
-            case "double": return `
-                ?reviewer ppo:anonymousTo ?author .
-                ?author   ppo:anonymousTo ?reviewer .
-            `
-            case "triple": return `
-                ?editor a pro:editor .
-                ?reviewer ppo:anonymousTo ?author .
-                ?author   ppo:anonymousTo ?reviewer .
-                ?author   ppo:anonymousTo ?editor .
-                ?reviewer ppo:anonymousTo ?editor .
-            `
-            default: return ''
-        }
+    const filtered = enabled(search.evaluation_anonymized)
+    if (filtered.length == 0) return ''
+    const author_reviewer = []
+    const reviewer_author = []
+    const author_editor = []
+    const reviewer_editor = []
+    const identified = "ppo:identifiedTo"
+    const anonymous = "ppo:anonymousTo"
+    let editor = false
+    if (filtered.includes("all")) {
+        editor = true
+        author_reviewer.push(identified)
+        author_editor.push(identified)
+        reviewer_author.push(identified)
+        reviewer_editor.push(identified)
     }
+    if (filtered.includes("single")) {
+        author_reviewer.push(identified)
+        reviewer_author.push(anonymous)
+    }
+    if (filtered.includes("double")) {
+        author_reviewer.push(anonymous)
+        reviewer_author.push(anonymous)
+    }
+    if (filtered.includes("triple")) {
+        editor = true
+        author_reviewer.push(anonymous)
+        author_editor.push(anonymous)
+        reviewer_author.push(anonymous)
+        reviewer_editor.push(anonymous)
+    }
+    const editor_str = editor ? `
+        ?policy ppo:involves ?editor .
+        ?editor a pro:editor .
+        ?author ?author_editor ?editor .
+        ?reviewer ?reviewer_editor ?editor .
+    ` : ''
+    const author_reviewer_str = author_reviewer.length > 0 ? `
+        filter(?author_reviewer in (${author_reviewer.join(', ')}))
+    ` : ''
+    const reviewer_author_str = reviewer_author.length > 0 ? `
+        filter(?reviewer_author in (${reviewer_author.join(', ')}))
+    ` : ''
+    const author_editor_str = author_editor.length > 0 ? `
+        filter(?author_editor in (${author_editor.join(', ')}))
+    ` : ''
+    const reviewer_editor_str = reviewer_editor.length > 0 ? `
+        filter(?reviewer_editor in (${reviewer_editor.join(', ')}))
+    ` : ''
     const q = `
         filter exists {
             ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:EvaluationPolicy ;
-                ppo:involves ?author ;
-                ppo:involves ?reviewer ;
-                ppo:involves ?editor .
-            ?reviewer a pro:peer-reviewer .
+            ?policy a ppo:EvaluationPolicy .
+            ?policy ppo:involves ?author .
             ?author a pro:author .
-            ${anonymized(search.evaluation_anonymizedtype)}
+            ?author ?author_reviewer ?reviewer .
+            ?policy ppo:involves ?reviewer .
+            ?reviewer a pro:peer-reviewer .
+            ?reviewer ?reviewer_author ?author .
+            ${editor_str}
+            ${author_reviewer_str}
+            ${reviewer_author_str}
+            ${author_editor_str}
+            ${reviewer_editor_str}
         }
     `;
-    return search.evaluation_anonymized ? q : "";
+    return filtered.length ? q : "";
 };
 
 export const evaluation_interaction_filter = (search: SearchState) => {

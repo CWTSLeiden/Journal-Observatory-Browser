@@ -56,8 +56,9 @@ export const elsewhere_embargo_toggle = createAction('elsewhere/embargo/toggle')
 
 // Evaluation Policy
 export const evaluation_toggle = createAction('evaluation/toggle');
-export const evaluation_anonymized_set = createAction<string>('evaluation/anonymized/set');
-export const evaluation_anonymized_toggle = createAction('evaluation/anonymized/toggle');
+export const evaluation_anonymized_set = createAction<Toggles>('evaluation/anonymized/set');
+export const evaluation_anonymized_reset = createAction('evaluation/anonymized/reset');
+export const evaluation_anonymized_toggleone = createAction<string>('evaluation/anonymized/toggleone');
 export const evaluation_interactions_set = createAction<Toggles>('evaluation/interactions/set');
 export const evaluation_interactions_reset = createAction('evaluation/interactions/reset');
 export const evaluation_interactions_toggleone = createAction<string>('evaluation/interactions/toggleone');
