@@ -39,6 +39,7 @@ async function pad_list(search: SearchState, offset=0) {
             ${filter.evaluation_anonymized_filter(search)}
             ${filter.evaluation_interaction_filter(search)}
             ${filter.evaluation_information_filter(search)}
+            ${filter.evaluation_comment_filter(search)}
         }
     `
 
@@ -55,7 +56,7 @@ async function pad_list(search: SearchState, offset=0) {
         }
         where {
             {
-                select ?pad ?platform ?creator (min(?order) as ?order) where {
+                select ?pad ?platform ?creator ?order where {
                     ?pad a pad:PAD ; pad:hasAssertion ?assertion .
                     optional { ?assertion pad:hasSourceAssertion ?source .
                         service <repository:pad> { ?source dcterms:creator ?creator } }
@@ -80,8 +81,8 @@ async function pad_list(search: SearchState, offset=0) {
                     ${filter.evaluation_anonymized_filter(search)}
                     ${filter.evaluation_interaction_filter(search)}
                     ${filter.evaluation_information_filter(search)}
+                    ${filter.evaluation_comment_filter(search)}
                 }
-                group by ?pad ?platform ?creator
                 ${order(search)}
                 ${limit(search, offset)}
             }
