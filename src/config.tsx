@@ -52,7 +52,7 @@ export const context = {
     "fc": "https://fatcat.wiki/",
     "issn": "https://issn.org/",
     "pad": "https://journalobservatory.org/pad/",
-    "ppo": "https://purl.org/cwts/ppo/",
+    "ppo": "http://purl.org/cwts/ppo/",
     "loc": "http://id.loc.gov/ontologies/bibframe/",
     "openalex": "https://docs.openalex.org/about-the-data/venue#",
     "prism": "http://prismstandard.org/namespaces/basic/2.0/",
