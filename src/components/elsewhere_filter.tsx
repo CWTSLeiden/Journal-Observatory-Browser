@@ -24,6 +24,7 @@ export const ElsewhereVersionFilter = () => {
             label="Applies To Version"
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.elsewhere_versions_toggleone(p))}
+            reset_action={() => dispatch(searchActions.elsewhere_versions_reset())}
             labels={{
                 "pso:submitted": "Submitted",
                 "pso:accepted-for-publication": "Accepted",
@@ -41,6 +42,7 @@ export const ElsewhereLocationFilter = () => {
             label="Location"
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.elsewhere_locations_toggleone(p))}
+            reset_action={() => dispatch(searchActions.elsewhere_locations_reset())}
             labels={{
                 "non_commercial_institutional_repository": "Non Commercial Institutional Repository",
                 "non_commercial_subject_repository": "Non Commercial Subject Repository",
@@ -72,6 +74,7 @@ export const ElsewhereLicenseFilter = () => {
             label="License"
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.elsewhere_licenses_toggleone(p))}
+            reset_action={() => dispatch(searchActions.elsewhere_licenses_reset())}
             labels={{
                 "https://creativecommons.org/publicdomain/zero/1.0/": "CC0",
                 "https://creativecommons.org/licenses/by/4.0/": "CC BY",
@@ -93,6 +96,7 @@ export const ElsewhereCopyrightownerFilter = () => {
             label={labelize("ppo:hasCopyrightOwner", "has Copyright Owners")}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.elsewhere_copyrightowners_toggleone(p))}
+            reset_action={() => dispatch(searchActions.elsewhere_copyrightowners_reset())}
         />
     )
 }

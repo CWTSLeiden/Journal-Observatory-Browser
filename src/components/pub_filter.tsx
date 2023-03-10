@@ -78,6 +78,7 @@ export const PubCopyrightOwnersFilter = () => {
             label={labelize("ppo:hasCopyrightOwner", "has Copyright Owners")}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.publication_copyrightowners_toggleone(p))}
+            reset_action={() => dispatch(searchActions.publication_copyrightowners_reset())}
         />
     )
 }

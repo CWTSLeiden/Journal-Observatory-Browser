@@ -106,9 +106,10 @@ type DropdownTogglesProps = {
     label: string;
     toggles: Toggles;
     toggle_action: (p: string) => void;
+    reset_action?: () => void;
     labels?: { [key: string]: string };
 }
-export const DropdownToggles = ({label, toggles, toggle_action, labels}: DropdownTogglesProps) => {
+export const DropdownToggles = ({label, toggles, toggle_action, reset_action, labels}: DropdownTogglesProps) => {
     const [open, setOpen] = useState(false)
     const amount = enabledToggles(toggles).length
     const icon = (
@@ -116,10 +117,14 @@ export const DropdownToggles = ({label, toggles, toggle_action, labels}: Dropdow
             <Checkbox checked={amount > 0} />
         </Badge>
     )
+    const handleToggle = () => {
+        if (open) reset_action()
+        setOpen(!open)
+    }
     return (
         <DropdownCheckbox
             state={open}
-            toggle={() => setOpen(!open)}
+            toggle={handleToggle}
             icon={icon}
             label={label}
             indicator
