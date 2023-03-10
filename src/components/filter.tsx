@@ -29,7 +29,7 @@ export const CheckboxFilter = ({
 }: CheckboxFilterParams) => {
     return (
         <ListItem>
-            <ListItemButton onClick={action}>
+            <ListItemButton onClick={action} disabled={state == undefined}>
                 <ListItemIcon>
                     <Checkbox checked={state} />
                 </ListItemIcon>
@@ -85,7 +85,7 @@ export const DropdownCheckbox = ({state, toggle, icon, label, children, indicato
     return (
         <React.Fragment>
             <ListItem>
-                <ListItemButton onClick={toggle}>
+                <ListItemButton disabled={state == undefined} onClick={toggle}>
                     <ListItemIcon>
                         {icon ? icon : <Checkbox checked={state} />}
                     </ListItemIcon>

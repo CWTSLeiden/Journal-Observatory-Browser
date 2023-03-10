@@ -113,22 +113,22 @@ const initSearch: SearchState = {
         "all": false,
         "single": false,
         "double": false,
-        "triple": false
+        "triple": undefined
     },
     evaluation_interactions: {
         "pro:editor": false,
-        "pro:peer-reviewer": false,
+        "pro:peer-reviewer": undefined,
         "pro:author": false
     },
     evaluation_information: {
         "ppo:ReviewReport": false,
         "ppo:ReviewSummary": false,
-        "ppo:SubmittedManuscript": false,
+        "ppo:SubmittedManuscript": undefined,
         "ppo:AuthorEditorCommunication": false
     },
     evaluation_comments: {
         "ppo:postPublicationCommentingOpen": false,
-        "ppo:postPublicationCommentingOnInvitation": false,
+        "ppo:postPublicationCommentingOnInvitation": undefined,
         "ppo:postPublicationCommentingClosed": false
     }
 };
