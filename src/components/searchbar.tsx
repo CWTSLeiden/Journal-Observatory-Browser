@@ -13,6 +13,10 @@ const SearchBar = ({ handleSubmit }: SearchBarProps) => {
     useEffect(() => setInput(state), [state])
     const dispatch = useAppDispatch();
     const commit = () => dispatch(searchActions.search_set(input))
+    const clear = () => {
+        setInput("")
+        dispatch(searchActions.search_clear())
+    }
     return (
         <Stack id="search-bar" direction="row" spacing={2} mt={2}>
             <TextField
@@ -33,7 +37,7 @@ const SearchBar = ({ handleSubmit }: SearchBarProps) => {
             </Button>
             <Button
                 variant="outlined"
-                onMouseDown={() => dispatch(searchActions.search_clear())}
+                onMouseDown={clear}
                 onMouseUp={handleSubmit}
                 sx={{width: 160}}
             >
