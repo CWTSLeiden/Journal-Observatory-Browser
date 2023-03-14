@@ -25,13 +25,17 @@ const SearchBar = ({ handleSubmit }: SearchBarProps) => {
                 onKeyUp={(e) => (e.key == "Enter" ? handleSubmit() : null)}
                 fullWidth
             />
-            <Button onClick={handleSubmit} variant="contained">
+            <Button
+                variant="contained"
+                onClick={handleSubmit}
+                sx={{width: 160}}>
                 Search
             </Button>
             <Button
                 variant="outlined"
                 onMouseDown={() => dispatch(searchActions.search_clear())}
                 onMouseUp={handleSubmit}
+                sx={{width: 160}}
             >
                 Clear
             </Button>

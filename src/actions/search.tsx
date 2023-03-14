@@ -9,6 +9,9 @@ export type searchAction = {
 export const search_set = createAction<string>('search/set')
 export const search_clear = createAction('search/clear')
 
+// All Filters
+export const filter_clear = createAction('filter/clear')
+
 // Page
 export const page_decrement = createAction('page/decrement')
 export const page_increment = createAction('page/increment')

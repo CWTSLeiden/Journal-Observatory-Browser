@@ -5,6 +5,8 @@ import { ElsewhereCopyrightownerFilter, ElsewhereEmbargoFilter, ElsewhereLicense
 import { CreatorSelect } from "./creator_filter";
 import { ExpandMore } from "@mui/icons-material";
 import { EvaluationAnonymizedFilter, EvaluationCommentsFilter, EvaluationInformationFilter, EvaluationInteractionsFilter, EvaluationPolicyFilter } from "./evaluation_filter";
+import { useAppDispatch } from "../store";
+import * as searchActions from "../actions/search";
 
 
 type FilterBarSectionProps = {
@@ -32,6 +34,7 @@ type FilterBarProps = {
     handleSubmit: React.UIEventHandler;
 };
 const FilterBar = ({ handleSubmit }: FilterBarProps) => {
+    const dispatch = useAppDispatch();
     return (
         <Stack id="filter-bar" spacing={2}>
             <CreatorSelect />
@@ -71,9 +74,18 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
                 <EvaluationCommentsFilter />
             </FilterBarSection>
 
-            <Button variant="outlined" onClick={handleSubmit}>
+            <Stack direction="row" spacing={2}>
+                <Button variant="contained" onClick={handleSubmit} sx={{width: "100%"}}>
                 Filter
             </Button>
+            <Button sx={{width: "100%"}}
+                variant="outlined"
+                onMouseDown={() => dispatch(searchActions.filter_clear())}
+                onMouseUp={handleSubmit}
+            >
+                Clear
+            </Button>
+            </Stack>
         </Stack>
     );
 };

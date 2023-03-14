@@ -143,13 +143,25 @@ const initSearch: SearchState = {
     }
 };
 
+const initFilters = (state: SearchState) => ({
+    ...initSearch,
+    searchstring: state.searchstring,
+    orderasc: state.orderasc,
+    orderprop: state.orderprop,
+    page: state.page,
+    pagesize: state.pagesize
+})
+
 const SearchReducer = createReducer(initSearch, (builder) => {
     builder
     // Search
         .addCase(actions.search_set,
             (state, action) => {state.searchstring = action.payload})
         .addCase(actions.search_clear,
-            () => initSearch )
+            (state) => {state.searchstring = initSearch.searchstring})
+    // Filter
+        .addCase(actions.filter_clear,
+            (state) => initFilters(state))
     // Page
         .addCase(actions.page_decrement,
             (state) => { state.page = Math.max(state.page - 1, 0) })
