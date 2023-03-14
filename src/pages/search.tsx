@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
-import { FilterBar } from "../components/filter";
-import { SearchBar } from "../components/search";
+import { FilterBar } from "../components/filterbar";
+import { SearchBar } from "../components/searchbar";
 import { PadTable, PadTablePagination } from "../components/padtable";
 import { pad_list } from "../query/search";
 import { useAppSelector, useAppDispatch } from "../store";
@@ -8,6 +8,7 @@ import * as padsActions from "../actions/pads";
 import * as searchActions from "../actions/search";
 import { Grid } from "@mui/material";
 import { Stack } from "@mui/system";
+import { order_pads } from "../reducers/pads";
 
 function SearchComponent() {
     const searchState = useAppSelector((s) => s.search);
@@ -21,12 +22,12 @@ function SearchComponent() {
             searchState,
             pagesize * page
         );
-        dispatch(padsActions.set_pads(padlist, orderasc));
-        dispatch(padsActions.set_total(num));
+        dispatch(padsActions.pads_set(order_pads(padlist, orderasc)));
+        dispatch(padsActions.total_set(num));
     }
 
     async function doSearch() {
-        dispatch(searchActions.resetPage());
+        dispatch(searchActions.page_reset());
         loadPads();
     }
 

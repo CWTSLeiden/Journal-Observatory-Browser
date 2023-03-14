@@ -2,9 +2,7 @@ import {
     Card,
     Chip,
     Grid,
-    TableCell,
     TablePagination,
-    TableRow,
     TableSortLabel,
 } from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
@@ -13,7 +11,7 @@ import { useNavigate } from "react-router-dom";
 import * as actions from "../actions/search";
 import { pad_id_norm, ld_to_str } from "../query/display_pad";
 import { useAppDispatch, useAppSelector } from "../store";
-import { creators } from "../config";
+import { labelize } from "../query/labels";
 
 const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
     const orderprop = useAppSelector((store) => store.search.orderprop);
@@ -21,11 +19,11 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
     const dispatch = useAppDispatch()
     const clickHandler = () => {
         if (orderprop === prop) {
-            dispatch(actions.toggle_orderasc())
+            dispatch(actions.order_toggleasc())
         }
         else {
-            dispatch(actions.set_orderasc(true))
-            dispatch(actions.set_orderprop(prop))
+            dispatch(actions.order_setasc(true))
+            dispatch(actions.order_setprop(prop))
         }
     }
     return (
@@ -66,10 +64,10 @@ const PadTablePagination = () => {
                     rowsPerPage={pagesize}
                     rowsPerPageOptions={[20, 50, 100]}
                     onRowsPerPageChange={(e) => {
-                        dispatch(actions.setPagesize(Number(e.target.value)));
+                        dispatch(actions.page_setsize(Number(e.target.value)));
                     }}
                     onPageChange={(_, n) => {
-                        dispatch(actions.setPage(n));
+                        dispatch(actions.page_set(n));
                     }}
                     count={total}
                     colSpan={4}
@@ -158,7 +156,7 @@ const PadCardSources = ({ pad }: PadCardProps) => {
     return (
         <>
             { sources.map((c: string) =>
-                <Grid item key={c}><Chip color="secondary" label={creators[c] || c} /></Grid>) }
+                <Grid item key={c}><Chip color="secondary" label={labelize(c)} /></Grid>) }
             <Cond cond={sources.length == 0}>
                 <Grid item>
                     <Chip label="none" variant="outlined" />

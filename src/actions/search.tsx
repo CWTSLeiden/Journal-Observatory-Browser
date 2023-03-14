@@ -1,83 +1,76 @@
+import { Toggles } from "../reducers/search";
+import { createAction } from "@reduxjs/toolkit";
 export type searchAction = {
     type: string;
-    payload?: searchActionPayload;
-};
-type searchActionPayload = {
-    value: string | boolean | number;
+    payload?: string | boolean | number | Toggles
 };
 
-export const CLEAR = "clear";
-export const SET_EMBARGO = "setEmbargo";
-export const SET_PAGESIZE = "setPagesize";
-export const SET_PAGE = "setPage";
-export const DECREMENT_PAGE = "decrementPage";
-export const INCREMENT_PAGE = "incrementPage";
-export const RESET_PAGE = "resetPage";
-export const SET_SEARCH = "setSearch";
-export const SET_ORDER_PROP = "setOrderProp";
-export const SET_ORDER_ASC = "setOrderAsc";
-export const TOGGLE_ORDER_ASC = "toggleOrderAsc";
-export const TOGGLE_EMBARGO = "toggleEmbargo";
-export const TOGGLE_OPEN_ACCESS = "toggleOpenAccess";
-export const TOGGLE_PUBPOLICY = "togglePubpolicy";
+// Search
+export const search_set = createAction<string>('search/set')
+export const search_clear = createAction('search/clear')
 
-export const decrementPage = (): searchAction => ({
-    type: DECREMENT_PAGE,
-});
-export const incrementPage = (): searchAction => ({
-    type: INCREMENT_PAGE,
-});
-export const setPage = (n: number): searchAction => ({
-    type: SET_PAGE,
-    payload: {
-        value: n,
-    },
-});
-export const setPagesize = (n: number): searchAction => ({
-    type: SET_PAGESIZE,
-    payload: {
-        value: n,
-    },
-});
-export const resetPage = (): searchAction => ({
-    type: RESET_PAGE
-});
-export const clear = (): searchAction => ({
-    type: CLEAR,
-});
-export const set_search = (search: string): searchAction => ({
-    type: SET_SEARCH,
-    payload: {
-        value: search,
-    },
-});
-export const set_orderprop = (prop: string): searchAction => ({
-    type: SET_ORDER_PROP,
-    payload: {
-        value: prop,
-    },
-});
-export const set_orderasc = (bool: boolean): searchAction => ({
-    type: SET_ORDER_ASC,
-    payload: {
-        value: bool,
-    },
-});
-export const toggle_orderasc = (): searchAction => ({
-    type: TOGGLE_ORDER_ASC,
-});
-export const toggle_pubpolicy = (): searchAction => ({
-    type: TOGGLE_PUBPOLICY,
-});
-export const toggle_open_access = (): searchAction => ({
-    type: TOGGLE_OPEN_ACCESS,
-});
-export const toggle_embargo = (): searchAction => ({
-    type: TOGGLE_EMBARGO,
-});
-export const set_embargo = (n: number): searchAction => ({
-    type: SET_EMBARGO,
-    payload: {
-        value: n,
-    },
-});
+// All Filters
+export const filter_clear = createAction('filter/clear')
+
+// Page
+export const page_decrement = createAction('page/decrement')
+export const page_increment = createAction('page/increment')
+export const page_set = createAction<number>('page/set')
+export const page_setsize = createAction<number>('page/setsize');
+export const page_reset = createAction('page/reset');
+
+// Order
+export const order_setprop = createAction<string>('order/setprop');
+export const order_toggleasc = createAction('order/toggleasc');
+export const order_setasc = createAction<boolean>('order/setasc');
+
+// Creators
+export const creators_set = createAction<Toggles>('creators/set');
+export const creators_reset = createAction('creators/reset');
+export const creators_toggleone = createAction<string>('creators/toggleone');
+
+// Publication Policy
+export const publication_toggle = createAction('publication/toggle');
+export const publication_copyrightowners_set = createAction<Toggles>('publication/copyrightowners/set');
+export const publication_copyrightowners_reset = createAction('publication/copyrightowners/reset');
+export const publication_copyrightowners_toggleone = createAction<string>('publication/copyrightowners/toggleone');
+export const publication_apc_set = createAction<number>('publication/apc/set');
+export const publication_apc_toggle = createAction('publication/apc/toggle');
+export const publication_embargo_set = createAction<number>('publication/embargo/set');
+export const publication_embargo_toggle = createAction('publication/embargo/toggle');
+export const publication_licenses_set = createAction<Toggles>('publication/licenses/set');
+export const publication_licenses_reset = createAction('publication/licenses/reset');
+export const publication_licenses_toggleone = createAction<string>('publication/licenses/toggleone');
+export const publication_openaccess_toggle = createAction('publication/openaccess/toggle');
+
+// Publication Elsewhere Policy
+export const elsewhere_toggle = createAction('elsewhere/toggle');
+export const elsewhere_versions_set = createAction<Toggles>('elsewhere/versions/set');
+export const elsewhere_versions_reset = createAction('elsewhere/versions/reset');
+export const elsewhere_versions_toggleone = createAction<string>('elsewhere/versions/toggleone');
+export const elsewhere_locations_set = createAction<Toggles>('elsewhere/location/set');
+export const elsewhere_locations_reset = createAction('elsewhere/location/reset');
+export const elsewhere_locations_toggleone = createAction<string>('elsewhere/location/toggleone');
+export const elsewhere_copyrightowners_set = createAction<Toggles>('elsewhere/copyrightowners/set');
+export const elsewhere_copyrightowners_reset = createAction('elsewhere/copyrightowners/reset');
+export const elsewhere_copyrightowners_toggleone = createAction<string>('elsewhere/copyrightowners/toggleone');
+export const elsewhere_licenses_set = createAction<Toggles>('elsewhere/licenses/set');
+export const elsewhere_licenses_reset = createAction('elsewhere/licenses/reset');
+export const elsewhere_licenses_toggleone = createAction<string>('elsewhere/licenses/toggleone');
+export const elsewhere_embargo_set = createAction<number>('elsewhere/embargo/set');
+export const elsewhere_embargo_toggle = createAction('elsewhere/embargo/toggle');
+
+// Evaluation Policy
+export const evaluation_toggle = createAction('evaluation/toggle');
+export const evaluation_anonymized_set = createAction<Toggles>('evaluation/anonymized/set');
+export const evaluation_anonymized_reset = createAction('evaluation/anonymized/reset');
+export const evaluation_anonymized_toggleone = createAction<string>('evaluation/anonymized/toggleone');
+export const evaluation_interactions_set = createAction<Toggles>('evaluation/interactions/set');
+export const evaluation_interactions_reset = createAction('evaluation/interactions/reset');
+export const evaluation_interactions_toggleone = createAction<string>('evaluation/interactions/toggleone');
+export const evaluation_information_set = createAction<Toggles>('evaluation/information/set');
+export const evaluation_information_reset = createAction('evaluation/information/reset');
+export const evaluation_information_toggleone = createAction<string>('evaluation/information/toggleone');
+export const evaluation_comments_set = createAction<Toggles>('evaluation/comments/set');
+export const evaluation_comments_reset = createAction('evaluation/comments/reset');
+export const evaluation_comments_toggleone = createAction<string>('evaluation/comments/toggleone');

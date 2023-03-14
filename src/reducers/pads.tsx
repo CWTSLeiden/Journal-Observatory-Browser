@@ -1,3 +1,4 @@
+import { createReducer } from "@reduxjs/toolkit";
 import * as actions from "../actions/pads";
 
 export type PadsState = {
@@ -10,26 +11,27 @@ const initPads: PadsState = {
     total: 0,
 };
 
-const sort_pads = (pads: Array<object>, direction: number) => {
-    const sort = (a, b) =>
-        (a["ppo:_ord"] > b["ppo:_ord"] ? 1 : -1) * direction
-    pads.sort(sort)
+export const order_pads = (pads: Array<object>, asc?: boolean) => {
+    const direction = (asc || asc == undefined) ? 1 : -1
+    const ord = (a: object) => a["ppo:_ord"] || ""
+    const ordering = (a: object, b: object) =>
+        (ord(a) > ord(b) ? 1 : -1) * direction
+    pads.sort(ordering)
     return pads
 }
 
-const PadsReducer = (state = initPads, action: actions.padsAction) => {
-    switch (action.type) {
-        case actions.CLEAR:
-            return initPads;
-        case actions.ADD_PADS:
-            return {...state, pads: [...state.pads, ...action.payload.pads]}
-        case actions.SET_PADS:
-            return {...state, pads: sort_pads(action.payload.pads, action.payload.value)}
-        case actions.SET_TOTAL:
-            return {...state, total: action.payload.value }
-        default:
-            return state;
-    }
-};
+const PadsReducer = createReducer(initPads, (builder) => {
+    builder
+        .addCase(actions.pads_clear,
+            () => initPads)
+        .addCase(actions.pads_add,
+            (state, action) => { state.pads = state.pads.concat(action.payload) })
+        .addCase(actions.pads_set,
+            (state, action) => { state.pads = action.payload })
+        .addCase(actions.pads_order,
+            (state, action) => { state.pads = order_pads(state.pads, action.payload) })
+        .addCase(actions.total_set,
+            (state, action) => { state.total = action.payload })
+})
 
 export default PadsReducer

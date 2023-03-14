@@ -1,13 +1,13 @@
 import { Quadstore } from "quadstore";
 import { createContext } from "react";
 
-export type AppContext = {
-    ontologyStore?: Quadstore;
-}
+const defaultOntologyContext: Quadstore = undefined
+export const OntologyContext = createContext(defaultOntologyContext)
 
-const defaultAppContext: AppContext = undefined
-export const AppContext = createContext(defaultAppContext)
-
+export const LabelContext = createContext({})
 
 const defaultPadContext: Quadstore = undefined
 export const PadContext = createContext(defaultPadContext)
+
+const defaultSourcesContext: Array<object> = []
+export const SourcesContext = createContext(defaultSourcesContext)
