@@ -27,6 +27,7 @@ export type SearchState = {
     pub_copyrightowners?: Toggles;
     pub_embargo?: boolean;
     pub_embargoduration?: number;
+    pub_licenses?: Toggles;
     open_access?: boolean;
     elsewhere_policy?: boolean;
     elsewhere_versions?: Toggles;
@@ -66,6 +67,15 @@ const initSearch: SearchState = {
     pub_copyrightowners: {
         "pro:author": false,
         "pro:publisher": false
+    },
+    pub_licenses: {
+        "https://creativecommons.org/publicdomain/zero/1.0/": false,
+        "https://creativecommons.org/licenses/by/4.0/": false,
+        "https://creativecommons.org/licenses/by-nc/4.0/": false,
+        "https://creativecommons.org/licenses/by-nc-nd/4.0/": false,
+        "https://creativecommons.org/licenses/by-nc-sa/4.0/": false,
+        "https://creativecommons.org/licenses/by-nd/4.0/": false,
+        "https://creativecommons.org/licenses/by-sa/4.0/": false
     },
     open_access: false,
     elsewhere_policy: false,
@@ -182,6 +192,12 @@ const SearchReducer = createReducer(initSearch, (builder) => {
             (state, action) => { state.pub_embargoduration = Number(action.payload) })
         .addCase(actions.publication_embargo_toggle,
             (state) => { state.pub_embargo = !state.pub_embargo })
+        .addCase(actions.publication_licenses_set,
+            (state, action) => { state.pub_licenses = action.payload})
+        .addCase(actions.publication_licenses_toggleone,
+            (state, action) => { state.pub_licenses = toggleProp(state.pub_licenses, action.payload)})
+        .addCase(actions.publication_licenses_reset,
+            (state) => { state.pub_licenses = initSearch.pub_licenses})
         .addCase(actions.publication_openaccess_toggle,
             (state) => { state.open_access = !state.open_access })
     // Publication Elsewhere Policy

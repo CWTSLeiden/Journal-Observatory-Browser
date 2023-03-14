@@ -35,6 +35,9 @@ export const publication_apc_set = createAction<number>('publication/apc/set');
 export const publication_apc_toggle = createAction('publication/apc/toggle');
 export const publication_embargo_set = createAction<number>('publication/embargo/set');
 export const publication_embargo_toggle = createAction('publication/embargo/toggle');
+export const publication_licenses_set = createAction<Toggles>('publication/licenses/set');
+export const publication_licenses_reset = createAction('publication/licenses/reset');
+export const publication_licenses_toggleone = createAction<string>('publication/licenses/toggleone');
 export const publication_openaccess_toggle = createAction('publication/openaccess/toggle');
 
 // Publication Elsewhere Policy

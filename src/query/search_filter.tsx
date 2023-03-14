@@ -95,6 +95,19 @@ export const pub_copyrightowner_filter = (search: SearchState) => {
     return filtered.length ? q : "";
 };
 
+export const pub_license_filter = (search: SearchState) => {
+    const filtered = enabled(search.pub_licenses, "uri")
+    const q = `
+        filter exists {
+            ?platform ppo:hasPolicy ?policy .
+            ?policy a ppo:PublicationPolicy ;
+                dcterms:license ?license .
+            filter(?license in (${filtered.join(', ')}))
+        }
+    `;
+    return filtered.length ? q : "";
+};
+
 export const elsewhere_policy_filter = (search: SearchState) => {
     const q = `
         filter exists {

@@ -82,3 +82,25 @@ export const PubCopyrightOwnersFilter = () => {
         />
     )
 }
+
+export const PubLicenseFilter = () => {
+    const toggles = useAppSelector((store: SearchStore) => store.search.pub_licenses)
+    const dispatch = useAppDispatch()
+    return (
+        <DropdownToggles
+            label="License"
+            toggles={toggles}
+            toggle_action={(p: string) => dispatch(searchActions.publication_licenses_toggleone(p))}
+            reset_action={() => dispatch(searchActions.publication_licenses_reset())}
+            labels={{
+                "https://creativecommons.org/publicdomain/zero/1.0/": "CC0",
+                "https://creativecommons.org/licenses/by/4.0/": "CC BY",
+                "https://creativecommons.org/licenses/by-nc/4.0/": "CC BY-NC",
+                "https://creativecommons.org/licenses/by-nc-nd/4.0/": "CC BY-NC-ND",
+                "https://creativecommons.org/licenses/by-nc-sa/4.0/": "CC BY-NC-SA",
+                "https://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND",
+                "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA"
+            }}
+        />
+    )
+}

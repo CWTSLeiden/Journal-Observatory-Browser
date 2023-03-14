@@ -29,6 +29,7 @@ async function pad_list(search: SearchState, offset=0) {
             ${filter.pub_embargo_filter(search)}
             ${filter.pub_apc_filter(search)}
             ${filter.pub_copyrightowner_filter(search)}
+            ${filter.pub_license_filter(search)}
             ${filter.elsewhere_policy_filter(search)}
             ${filter.elsewhere_version_filter(search)}
             ${filter.elsewhere_location_filter(search)}
@@ -71,6 +72,7 @@ async function pad_list(search: SearchState, offset=0) {
                     ${filter.pub_embargo_filter(search)}
                     ${filter.pub_apc_filter(search)}
                     ${filter.pub_copyrightowner_filter(search)}
+                    ${filter.pub_license_filter(search)}
                     ${filter.elsewhere_policy_filter(search)}
                     ${filter.elsewhere_version_filter(search)}
                     ${filter.elsewhere_location_filter(search)}

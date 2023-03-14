@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Button, List, Stack, Typography } from "@mui/material";
-import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubPolicyFilter } from "./pub_filter";
+import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubLicenseFilter, PubPolicyFilter } from "./pub_filter";
 import { ElsewhereCopyrightownerFilter, ElsewhereEmbargoFilter, ElsewhereLicenseFilter, ElsewhereLocationFilter, ElsewherePolicyFilter, ElsewhereVersionFilter } from "./elsewhere_filter";
 import { CreatorSelect } from "./creator_filter";
 import { ExpandMore } from "@mui/icons-material";
@@ -45,6 +45,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
                 <PubEmbargoFilter />
                 <PubApcFilter />
                 <PubCopyrightOwnersFilter />
+                <PubLicenseFilter />
             </FilterBarSection>
 
             <FilterBarSection
