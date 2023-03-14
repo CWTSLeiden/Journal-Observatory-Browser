@@ -10,7 +10,14 @@ export const labels_override = {
     "https://www.ieee.org": "IEEE",
     "https://springernature.com": "Springer",
     "https://www.wiley.com": "Wiley",
-    "https://elifesciences.org": "eLife"
+    "https://elifesciences.org": "eLife",
+    "https://creativecommons.org/publicdomain/zero/1.0/": "CC0",
+    "https://creativecommons.org/licenses/by/4.0/": "CC BY",
+    "https://creativecommons.org/licenses/by-nc/4.0/": "CC BY-NC",
+    "https://creativecommons.org/licenses/by-nc-nd/4.0/": "CC BY-NC-ND",
+    "https://creativecommons.org/licenses/by-nc-sa/4.0/": "CC BY-NC-SA",
+    "https://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND",
+    "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA"
 }
 
 export const endpoint = {
