@@ -45,10 +45,10 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
             >
                 <PubPolicyFilter />
                 <OpenAccessFilter />
-                <PubEmbargoFilter />
                 <PubApcFilter />
-                <PubCopyrightOwnersFilter />
                 <PubLicenseFilter />
+                <PubCopyrightOwnersFilter />
+                <PubEmbargoFilter />
             </FilterBarSection>
 
             <FilterBarSection
