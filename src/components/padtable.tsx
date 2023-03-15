@@ -30,15 +30,15 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
         }
     }
     return (
-        <div>
-            <TableSortLabel
-                active={orderprop === prop}
-                direction={orderasc ? 'asc' : 'desc'}
-                onClick={clickHandler}
-            >
-                <b>{label}</b>
-            </TableSortLabel>
-        </div>
+        <TableSortLabel
+            component="div"
+            active={orderprop === prop}
+            direction={orderasc ? 'asc' : 'desc'}
+            onClick={clickHandler}
+            sx={{marginBottom: 0, paddingBottom: 0 }}
+        >
+            {label}
+        </TableSortLabel>
     )
 }
 
@@ -56,27 +56,28 @@ const PadTablePagination = () => {
     const page = useAppSelector((store) => store.search.page);
     const dispatch = useAppDispatch();
     return (
-        <Grid container sx={{paddingLeft: 2, paddingRight: 2}} spacing={2} alignItems="center">
-            <Grid item xs={4}>
-                <OrderLabel label="Name" prop="schema:name" />
+        <Typography variant="body2" component="div">
+            <Grid container sx={{paddingLeft: 1, paddingRight: 1}} alignItems="center">
+                <Grid item xs={3}>
+                    <OrderLabel label="Name" prop="schema:name" />
+                </Grid>
+                <Grid item xs={9}>
+                    <TablePagination
+                        component="div"
+                        page={page}
+                        rowsPerPage={pagesize}
+                        rowsPerPageOptions={[20, 50, 100]}
+                        onRowsPerPageChange={(e) => {
+                            dispatch(actions.page_setsize(Number(e.target.value)));
+                        }}
+                        onPageChange={(_, n) => {
+                            dispatch(actions.page_set(n));
+                        }}
+                        count={total}
+                    />
+                </Grid>
             </Grid>
-            <Grid item xs={8}>
-                <TablePagination
-                    component="div"
-                    page={page}
-                    rowsPerPage={pagesize}
-                    rowsPerPageOptions={[20, 50, 100]}
-                    onRowsPerPageChange={(e) => {
-                        dispatch(actions.page_setsize(Number(e.target.value)));
-                    }}
-                    onPageChange={(_, n) => {
-                        dispatch(actions.page_set(n));
-                    }}
-                    count={total}
-                    colSpan={4}
-                />
-            </Grid>
-        </Grid>
+        </Typography>
     );
 };
 
