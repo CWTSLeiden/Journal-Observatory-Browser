@@ -28,6 +28,7 @@ export const context = {
     "doap": "http://usefulinc.com/ns/doap#",
     "foaf": "http://xmlns.com/foaf/0.1/",
     "odrl": "http://www.w3.org/ns/odrl/2/",
+    "onto": "http://www.ontotext.com/",
     "org": "http://www.w3.org/ns/org#",
     "owl": "http://www.w3.org/2002/07/owl#",
     "prof": "http://www.w3.org/ns/dx/prof/",

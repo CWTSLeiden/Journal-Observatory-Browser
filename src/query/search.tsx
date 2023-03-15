@@ -50,7 +50,7 @@ async function pad_list(search: SearchState, offset=0) {
         return `limit ${ps} offset ${offset}`;
     };
     const nquery = `
-        select (count(distinct ?pad) as ?count) where {
+        select distinct ?pad from onto:count where {
             ?pad a pad:PAD ; pad:hasAssertion ?assertion .
             graph ?assertion { ?platform a ppo:Platform . }
             ${searchfilter(search.searchstring)}
@@ -88,6 +88,7 @@ async function pad_list(search: SearchState, offset=0) {
         order by asc(?name)
     `;
     console.log("Perform query", Date.now())
+    // console.log(query)
     const result = await query_jsonld(query)
     const num = Number(await query_single(nquery))
     const padlist = Array.isArray(result) ? result : []
