@@ -74,6 +74,8 @@ const PadTablePagination = () => {
                             dispatch(actions.page_set(n));
                         }}
                         count={total}
+                        labelRowsPerPage='Platforms per page:'
+                        labelDisplayedRows={function defaultLabelDisplayedRows({ from, to, count }) { return `Platform ${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`; }}
                     />
                 </Grid>
             </Grid>
