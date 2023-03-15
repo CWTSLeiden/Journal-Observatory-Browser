@@ -1,9 +1,12 @@
 import {
     Card,
+    CardActionArea,
+    CardContent,
     Chip,
     Grid,
     TablePagination,
     TableSortLabel,
+    Typography,
 } from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
 import React, { ReactElement } from "react";
@@ -93,20 +96,24 @@ const PadCard = ({ pad }: PadCardProps) => {
     const name = propToString(pad["schema:name"], true) || "<none>"
     const issn = propToString(pad["prism:issn"], true)
     return (
-        <Card key={pad_id} onClick={handleClick} sx={{padding: 2, cursor: "pointer"}}>
-            <Grid container spacing={2} alignItems="center">
-                <Grid item xs={8}><b>{name}</b></Grid>
-                <Grid item xs={3}>{ issn ? <i>ISSN: {issn}</i> : null }</Grid>
-                <Grid item xs={1}><ArrowForward fontSize="small"/></Grid>
-                <Grid item xs={12} container spacing={2} alignItems="center">
-                    <Grid item xs={1} sx={{minWidth: 80}}>Policies: </Grid>
-                    <PadCardPolicies pad={pad} />
-                </Grid>
-                <Grid item xs={12} container spacing={2} alignItems="center">
-                    <Grid item xs={1} sx={{minWidth: 80}}>Sources: </Grid>
-                    <PadCardSources pad={pad} />
-                </Grid>
-            </Grid>
+        <Card key={pad_id} onClick={handleClick}>
+            <CardActionArea>
+                <CardContent>
+                    <Grid container spacing={2} alignItems="flex-start">
+                        <Grid item xs={8}><Typography variant="subtitle1" component="div" sx={{fontWeight: 'bold'}}>{name}</Typography></Grid>
+                        <Grid item xs={3}>{ issn ? <Typography>ISSN: {issn}</Typography> : null }</Grid>
+                        <Grid item xs={1}><ArrowForward fontSize="small"/></Grid>
+                        <Grid item xs={12} container spacing={2} alignItems="center">
+                            <Grid item xs={1} sx={{minWidth: 80}}><Typography>Policies:</Typography></Grid>
+                            <PadCardPolicies pad={pad} />
+                        </Grid>
+                        <Grid item xs={12} container spacing={2} alignItems="center">
+                            <Grid item xs={1} sx={{minWidth: 80}}><Typography>Sources:</Typography></Grid>
+                            <PadCardSources pad={pad} />
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </CardActionArea>
         </Card>
     );
 };
