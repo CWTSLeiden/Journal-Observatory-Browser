@@ -59,7 +59,7 @@ const PadTablePagination = () => {
         <Typography variant="body2" component="div">
             <Grid container sx={{paddingLeft: 1, paddingRight: 1}} alignItems="center">
                 <Grid item xs={3}>
-                    <OrderLabel label="Name" prop="schema:name" />
+                    <OrderLabel label="Platform title" prop="schema:name" />
                 </Grid>
                 <Grid item xs={9}>
                     <TablePagination
