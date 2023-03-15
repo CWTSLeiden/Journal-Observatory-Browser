@@ -17,7 +17,7 @@ type FilterBarSectionProps = {
 };
 const FilterBarSection = ({ id, title, folded, children }: FilterBarSectionProps ) => (
     <Paper>
-        <Accordion defaultExpanded={!folded} elevation={0}>
+        <Accordion defaultExpanded={!folded} disableGutters={true} elevation={0}>
             <AccordionSummary id={id} expandIcon={<ExpandMore />} >
                 <Typography sx={{ fontWeight: 600 }}>
                     {title}
