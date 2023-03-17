@@ -2,17 +2,28 @@ import React, { ReactElement, ReactNode, useContext, useState } from "react";
 import { LinkItUrl } from "react-linkify-it";
 import PropTypes from "prop-types";
 import {
+    Button,
     Card,
+    CardActions,
     CardContent,
+    CardHeader,
     Chip,
     Dialog,
+    Link,
+    Typography,
 } from "@mui/material";
-import { ld_to_str, graph_to_ul } from "../query/display_pad";
+import { ld_to_str } from "../query/ld";
 import { labelize } from "../query/labels";
 import { SourcesContext } from "../context";
 
 function urlize(thing: ReactNode): ReactElement {
     return <LinkItUrl>{thing}</LinkItUrl>;
+}
+
+export const MaybeLink = ({link, label}: {link: string; label?: string}) => {
+    const ishref = link.match(/^(https|http|www):/)
+    const title = ishref && label ? label : link
+    return ishref ? <Link href={link}>{title}</Link> : <Typography>{link}</Typography>
 }
 
 const LoadingView = () => <div>Loading</div>;
@@ -29,23 +40,36 @@ const SrcView = ({ sources }: SrcViewProps) => {
 };
 SrcView.propTypes = { sources: PropTypes.arrayOf(PropTypes.string).isRequired };
 
+export const todate = (date: string) => {
+    const parse = Date.parse(date)
+    return isNaN(parse) ? date : (new Date(parse)).toISOString().substring(0, 10)
+}
+
 const SrcViewPop = ({ id }: { id?: string }) => {
     const [open, setOpen] = useState(false);
     const sources = useContext(SourcesContext);
     const source = sources.find((s) => s["@id"] == id) || {"@id": id};
-    const creator = ld_to_str(source["dcterms:creator"]);
-    const name = labelize(creator, "undefined")
-    const content = source ? graph_to_ul([source]) : id;
+    const creator = labelize(ld_to_str(source["dcterms:creator"]))
+    const created = todate(ld_to_str(source["dcterms:created"]))
+    const license = ld_to_str(source["dcterms:license"])
+    const license_link = <MaybeLink link={license} label={labelize(license)} />
     return (
         <>
             <Chip
                 size="small"
-                label={name}
+                label={creator}
                 onClick={() => setOpen(!open)}
-            ></Chip>
+            />
             <Dialog open={open} onClose={() => setOpen(false)}>
-                <Card>
-                    <CardContent>{content}</CardContent>
+                <Card sx={{minWidth: 400}}>
+                    <CardHeader title={creator} />
+                    <CardContent sx={{ml: 4}}>
+                        <Typography variant="subtitle1">Created</Typography>
+                        <Typography color="text.secondary" sx={{ml: 2}}>{created}</Typography>
+                        <Typography variant="subtitle1">License</Typography>
+                        <Typography color="text.secondary" sx={{ml: 2}}>{license_link}</Typography>
+                    </CardContent>
+                    <CardActions><Button href={id}>Visit</Button></CardActions>
                 </Card>
             </Dialog>
         </>

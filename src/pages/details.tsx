@@ -1,23 +1,35 @@
 import "../styles.css"
 import "../details.css"
-import React, { useState, useEffect, useContext } from "react";
-import { useParams, Link } from "react-router-dom";
+import React, { useState, useEffect, useContext, ReactElement } from "react";
+import { useParams } from "react-router-dom";
 
 import MetadataComponent from "../components/metadata";
 import { OntologyContext, PadContext, SourcesContext } from "../context";
-import { pad_id_norm } from "../query/display_pad";
-import { query_jsonld, query_single } from "../query/local";
+import { ld_to_str, pad_id_norm } from "../query/ld";
+import { query_jsonld, query_select_first } from "../query/local";
 import { pad_store } from "../query/pad_store"
 import PolicyComponent from "../components/policy";
 import { mergeQuadstores } from "../query/local";
 import { Quadstore } from "quadstore";
+import { AppBar, Badge, Box, Chip, Container, Divider, Drawer, Grid, IconButton, Stack, Toolbar, Typography, useTheme } from "@mui/material";
+import { PadSourcesBar } from "../components/pad_sources";
+import { labelize } from "../query/labels";
+import { blue, indigo, red } from "@mui/material/colors";
+import { PlatformTitle } from "../components/details_title";
+import { PlatformKeywords } from "../components/details_keywords";
+import { colorize } from "../components/theme";
+import { PlatformNames } from "../components/details_names";
+import { PlatformIdentifiers } from "../components/details_identifiers";
+import { ChevronRight } from "@mui/icons-material";
 
 function DetailsComponent() {
     const pad_id = pad_id_norm(useParams().id)
     const ontologyStore = useContext(OntologyContext)
     const [padStore, setPadStore] = useState(undefined)
     const [sources, setSources] = useState([])
-    const [pad_name, setPadName] = useState("loading...");
+    const [drawerState, setDrawerState] = useState<boolean>(true)
+    const drawerWidth = 400
+    const theme = useTheme()
 
     // Set PAD Store
     useEffect(() => {
@@ -32,55 +44,45 @@ function DetailsComponent() {
     // Set Sources
     useEffect(() => {
         const render = async () => {
-            const src = await pad_sources(pad_id, padStore)
+            const src = await pad_sources(padStore)
             setSources(src)
         }
         padStore ? render() : null
     }, [padStore])
 
-    // Set Platform Name
-    useEffect(() => {
-        const render = async () => 
-            setPadName(await pad_names(pad_id, padStore))
-        padStore ? render() : null
-    }, [padStore]);
-
     return (
         <PadContext.Provider value={padStore}>
             <SourcesContext.Provider value={sources}>
-                <section>
-                    <title>{pad_name}</title>
-                    <ul>
-                        <li id="pad_id">
-                            Pad ID: <Link to={`/pad/${pad_id}`}>{pad_id}</Link>
-                        </li>
-                        <li id="pad_doc">
-                            JSON
-                        </li>
-                    </ul>
-                    <input id="docinput" type="checkbox" />
-                </section>
-                <MetadataComponent pad_id={pad_id} />
-                <PolicyComponent pad_id={pad_id} />
+                <Grid component="main" container spacing={2} sx={{pr: drawerState ? `${drawerWidth}px` : 0}}>
+                    <Grid item xs={12}><PlatformTitle /></Grid>
+                    <Grid item xs={12}><PlatformKeywords /></Grid>
+                    <Grid item xs={6}><PlatformNames /></Grid>
+                    <Grid item xs={6}><PlatformIdentifiers /></Grid>
+                </Grid>
+                <Drawer
+                    variant="persistent" 
+                    open={drawerState}
+                    anchor="right"
+                    sx={{
+                        width: drawerWidth,
+                        flexShrink: 0,
+                        [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
+                    }}
+                >
+                    <Toolbar>
+                        <IconButton onClick={() => setDrawerState(!drawerState)}>
+                            <ChevronRight />
+                        </IconButton>
+                    </Toolbar>
+                    <Divider />
+                    <PadSourcesBar />
+                </Drawer>
             </SourcesContext.Provider>
         </PadContext.Provider>
     );
 }
 
-async function pad_names(pad_id: string, store: Quadstore) {
-    const query = `
-        select ?name where {
-            ?pad a pad:PAD ;
-                pad:hasAssertion ?assertion .
-            graph ?assertion { ?s a ppo:Platform ; schema:name ?name }
-        }
-        values (?pad) {(pad:${pad_id})}
-    `;
-    const name = await query_single(query, store)
-    return name || pad_id
-}
-
-async function pad_sources(pad_id: string, store: Quadstore) {
+async function pad_sources(store: Quadstore) {
     const query = `
         construct { ?source ?p ?o }
         where { 
@@ -88,7 +90,6 @@ async function pad_sources(pad_id: string, store: Quadstore) {
             graph ?provenance { ?assertion pad:hasSourceAssertion ?source } .
             graph ?sprovenance { ?source ?p ?o }
         }
-        values (?pad) {(pad:${pad_id})}
     `;
     return await query_jsonld(query, store);
 }

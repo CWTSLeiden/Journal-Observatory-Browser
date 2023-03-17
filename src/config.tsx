@@ -1,3 +1,5 @@
+import { customColor } from "./components/theme";
+
 export const pagesize = 20
 
 export const labels_override = {
@@ -18,6 +20,17 @@ export const labels_override = {
     "https://creativecommons.org/licenses/by-nc-sa/4.0/": "CC BY-NC-SA",
     "https://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND",
     "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA"
+}
+
+export const colors_override: {[key: string]: customColor} = {
+    "https://doaj.org": "custom1",
+    "https://v2.sherpa.ac.uk/romeo": "custom2",
+    "https://www.wikidata.org": "custom3",
+    "https://openalex.org": "custom4",
+    "https://www.ieee.org": "custom5",
+    "https://springernature.com": "custom6",
+    "https://www.wiley.com": "custom7",
+    "https://elifesciences.org": "custom8",
 }
 
 export const endpoint = {
