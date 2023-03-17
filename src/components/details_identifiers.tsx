@@ -2,7 +2,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { LabelContext, PadContext } from "../context";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { Stack } from "@mui/material";
 import { ld_zip_src } from "../query/ld";
 import { DetailsCard, DetailsListItem, SourceWrapper } from "./details";
 import { labelize } from "../query/labels";
@@ -19,11 +18,13 @@ export const PlatformIdentifiers = () => {
     const labels = useContext(LabelContext)
     const padStore = useContext(PadContext)
     const [identifiers, setIdentifiers] = useState([]);
+    const [loading, setLoading] = useState(true);
     useEffect(() => {
         const render = async () => {
             const result = await platform_identifiers(padStore)
             const items = ld_zip_src(result)
             setIdentifiers(items)
+            setLoading(false)
         }
         padStore ? render() : null
     }, [padStore]);
@@ -36,19 +37,17 @@ export const PlatformIdentifiers = () => {
     }
 
     return (
-        <DetailsCard title="Identifiers">
-            <Stack direction="column" spacing={1}>
-                {identifiers.map(([p, n, s]) => (
-                    <SourceWrapper key={n} src={s}>
-                        <DetailsListItem
-                            primary={n.replace(/.*?:/, '')}
-                            secondary={labelize(p, labels)}
-                            avatar={<Fingerprint />}
-                            link={link(p, n)}
-                        />
-                    </SourceWrapper>
-                ))}
-            </Stack>
+        <DetailsCard title="Identifiers" loading={loading}>
+            {identifiers.map(([p, n, s]) => (
+                <SourceWrapper key={n} src={s}>
+                    <DetailsListItem
+                        primary={n.replace(/.*?:/, '')}
+                        secondary={labelize(p, labels)}
+                        avatar={<Fingerprint />}
+                        link={link(p, n)}
+                    />
+                </SourceWrapper>
+            ))}
         </DetailsCard>
     )
 }

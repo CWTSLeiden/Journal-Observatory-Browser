@@ -1,8 +1,9 @@
-import { createTheme } from "@mui/material";
-import { amber, cyan, green, indigo, purple, red, teal, yellow } from "@mui/material/colors";
+import { createTheme, tooltipClasses } from "@mui/material";
+import { amber, cyan, green, grey, indigo, purple, red, teal, yellow } from "@mui/material/colors";
 import { colors_override } from "../config";
 
 export type customColor = 
+    "custom0" |
     "custom1" |
     "custom2" |
     "custom3" |
@@ -22,6 +23,7 @@ export const colorize = (name: string): customColor => {
 
 declare module "@mui/material/styles" {
     interface Palette {
+        custom0: Palette['primary'];
         custom1: Palette['primary'];
         custom2: Palette['primary'];
         custom3: Palette['primary'];
@@ -32,6 +34,7 @@ declare module "@mui/material/styles" {
         custom8: Palette['primary'];
     }
     interface PaletteOptions {
+        custom0: PaletteOptions['primary'];
         custom1: PaletteOptions['primary'];
         custom2: PaletteOptions['primary'];
         custom3: PaletteOptions['primary'];
@@ -45,6 +48,7 @@ declare module "@mui/material/styles" {
 
 declare module "@mui/material/Badge" {
     interface BadgePropsColorOverrides {
+        custom0: true;
         custom1: true;
         custom2: true;
         custom3: true;
@@ -57,6 +61,7 @@ declare module "@mui/material/Badge" {
 }
 declare module "@mui/material/Chip" {
     interface ChipPropsColorOverrides {
+        custom0: true;
         custom1: true;
         custom2: true;
         custom3: true;
@@ -70,6 +75,10 @@ declare module "@mui/material/Chip" {
 
 const theme = createTheme({
     palette: {
+        custom0: {
+            main: grey[700],
+            contrastText: '#fff'
+        },
         custom1: {
             main: red[500],
             contrastText: '#fff'
@@ -121,7 +130,7 @@ const theme = createTheme({
                     margin: 0
                 }
             }
-        }
+        },
     }
 })
 

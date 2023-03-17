@@ -9,13 +9,13 @@ import { query_jsonld } from "../query/local";
 import { pad_store } from "../query/pad_store"
 import { mergeQuadstores } from "../query/local";
 import { Quadstore } from "quadstore";
-import { Divider, Drawer, Grid, IconButton, Toolbar } from "@mui/material";
+import { Divider, Drawer, Fab, Grid, IconButton, Toolbar, useTheme } from "@mui/material";
 import { PadSourcesBar } from "../components/pad_sources";
 import { PlatformTitle } from "../components/details_title";
 import { PlatformKeywords } from "../components/details_keywords";
 import { PlatformNames } from "../components/details_names";
 import { PlatformIdentifiers } from "../components/details_identifiers";
-import { ChevronRight } from "@mui/icons-material";
+import { ChevronLeft } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../store";
 import * as actions from "../actions/details"
 
@@ -24,8 +24,9 @@ function DetailsComponent() {
     const ontologyStore = useContext(OntologyContext)
     const [padStore, setPadStore] = useState(undefined)
     const sidebar = useAppSelector(s => s.details.sidebar)
+    const sidebarwidth = 400
     const dispatch = useAppDispatch()
-    const drawerWidth = 400
+    const theme = useTheme()
 
     // Set PAD Store
     useEffect(() => {
@@ -48,30 +49,20 @@ function DetailsComponent() {
 
     return (
         <PadContext.Provider value={padStore}>
-            <Grid component="main" container spacing={2} sx={{pr: sidebar ? `${drawerWidth}px` : 0}}>
+            <Grid component="main" container spacing={2} sx={{pr: sidebar ? `${sidebarwidth}px` : 0}}>
                 <Grid item xs={12}><PlatformTitle /></Grid>
                 <Grid item xs={12}><PlatformKeywords /></Grid>
                 <Grid item xs={6}><PlatformNames /></Grid>
                 <Grid item xs={6}><PlatformIdentifiers /></Grid>
             </Grid>
-            <Drawer
-                variant="persistent" 
-                open={sidebar}
-                anchor="right"
-                sx={{
-                    width: drawerWidth,
-                    flexShrink: 0,
-                    [`& .MuiDrawer-paper`]: { width: drawerWidth, boxSizing: 'border-box' },
-                }}
+            <PadSourcesBar width={sidebarwidth} />
+            <IconButton
+                color="primary"
+                sx={{ position: 'absolute', top: 12, right: 12 }}
+                onClick={() => dispatch(actions.sidebar_toggle())}
             >
-                <Toolbar>
-                    <IconButton onClick={() => dispatch(actions.sidebar_set(false))}>
-                        <ChevronRight />
-                    </IconButton>
-                </Toolbar>
-                <Divider />
-                <PadSourcesBar />
-            </Drawer>
+                <ChevronLeft sx={{ color: theme.palette.primary.contrastText }}/>
+            </IconButton>
         </PadContext.Provider>
     );
 }
