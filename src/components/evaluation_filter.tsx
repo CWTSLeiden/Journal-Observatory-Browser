@@ -1,17 +1,19 @@
-import React from "react";
+import React, { useContext } from "react";
 import * as searchActions from "../actions/search";
-import { DropdownToggles, CheckboxFilter, DropdownCheckbox, RadioFilter } from "./filter";
+import { DropdownToggles, CheckboxFilter } from "./filter";
 import { labelize } from "../query/labels";
 import { SearchStore, useAppDispatch, useAppSelector } from "../store";
+import { LabelContext } from "../context";
 
 export const EvaluationPolicyFilter = () => {
+    const labels = useContext(LabelContext)
     const state = useAppSelector((store: SearchStore) => store.search.evaluation_policy)
     const dispatch = useAppDispatch()
     return (
         <CheckboxFilter
             state={state}
             action={() => dispatch(searchActions.evaluation_toggle())}
-            label={labelize("ppo:hasEvaluationPolicy", "has Evaluation Policy")}
+            label={labelize("ppo:hasEvaluationPolicy", labels)}
         />
     )
 }

@@ -1,27 +1,26 @@
-import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Chip, Container, Stack, Switch, Typography, useTheme } from "@mui/material"
-import React, { useContext } from "react"
-import { SourcesContext } from "../context"
+import { Avatar, Button, Card, CardActions, CardContent, CardHeader, Stack, Switch, Typography, useTheme } from "@mui/material"
+import React from "react"
 import { ld_to_str } from "../query/ld"
 import { labelize } from "../query/labels"
 import { MaybeLink, todate } from "./pad"
 import { colorize } from "./theme"
 import { Source } from "@mui/icons-material"
+import { useAppSelector } from "../store"
 
 export const PadSourcesBar = () => {
-    const sources = useContext(SourcesContext);
+    const sources = useAppSelector(s => s.details.sources)
     return (
         <Stack spacing={2} sx={{padding: 2, overflow: 'auto'}}>
             <Typography variant="h4">Sources</Typography>
-            {sources.map(s => <PadSourceCard key={s["@id"]} source={s} />)}
+            {Object.keys(sources).map(id => <PadSourceCard key={id} id={id} />)}
         </Stack>
     )
 }
 
-type PadSourceCardProps = {
-    source: object
-}
-export const PadSourceCard = ({source}: PadSourceCardProps) => {
-    const id = ld_to_str(source["@id"])
+export const PadSourceCard = ({id}: {id: string}) => {
+    const sources = useAppSelector(s => s.details.sources)
+    const source = sources[id]
+    if (!source) { return null }
     const creator = ld_to_str(source["dcterms:creator"])
     const created = todate(ld_to_str(source["dcterms:created"]))
     const license = ld_to_str(source["dcterms:license"])

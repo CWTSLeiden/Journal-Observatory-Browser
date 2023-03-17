@@ -2,7 +2,7 @@ import { customColor } from "./components/theme";
 
 export const pagesize = 20
 
-export const labels_override = {
+export const labels = {
     "@id": "Identifier",
     "@type": "Type",
     "https://doaj.org": "DOAJ",

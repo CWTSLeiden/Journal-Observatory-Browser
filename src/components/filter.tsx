@@ -134,7 +134,7 @@ export const DropdownToggles = ({label, toggles, toggle_action, reset_action, la
                     key={p}
                     state={toggles[p]}
                     action={() => toggle_action(p)}
-                    label={labelize(p, labels ? labels[p] : null)}
+                    label={labelize(p, labels)}
                 />)
             }
         </DropdownCheckbox>
@@ -154,7 +154,7 @@ export const RadioFilter = ({option, options, setoption, labels}: RadioFilterPro
         <FormControlLabel
             value={value}
             control={<Radio />}
-            label={labelize(value, labels ? labels[value] : null)}
+            label={labelize(value, labels)}
         />
     return (
         <RadioGroup

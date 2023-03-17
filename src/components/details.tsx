@@ -1,15 +1,15 @@
-import React, { useContext, ReactElement, useState } from "react";
+import React, { ReactElement, useState } from "react";
 import { Avatar, Badge, Box, Card, CardContent, CardHeader, IconButton, ListItem, ListItemAvatar, ListItemText, Paper } from "@mui/material";
 import { ld_to_str } from "../query/ld";
-import { SourcesContext } from "../context";
 import { labelize } from "../query/labels";
 import { colorize } from "./theme";
 import { Link } from "@mui/icons-material";
+import { useAppSelector } from "../store";
 
 export const SourceWrapper = ({src, children}: {src: string[], children?: ReactElement}) => {
     const [state, setState] = useState<boolean>(false)
-    const sources_store = useContext(SourcesContext)
-    const sources = src.map(s => sources_store.find((e) => e["@id"] == s))
+    const sources_store = useAppSelector(s => s.details.sources)
+    const sources = src.map(s => sources_store[s])
     const creators = sources.map(s => ld_to_str(s["dcterms:creator"]))
     return (
         <Box sx={{width: '100%'}}
@@ -50,7 +50,6 @@ type DetailsListItemProps = {
     link?: string;
 }
 export const DetailsListItem = ({primary, secondary, avatar, link}: DetailsListItemProps) => {
-    console.log(link)
     const avatar_component = (
         <ListItemAvatar>
             <Avatar>

@@ -1,16 +1,14 @@
 import React, { useState, useEffect, useContext } from "react";
-import { PadContext } from "../context";
+import { LabelContext, PadContext } from "../context";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { Avatar, Card, List, ListItem, ListItemAvatar, ListItemText, Paper } from "@mui/material";
+import { List } from "@mui/material";
 import { ld_zip_src } from "../query/ld";
 import { DetailsCard, DetailsListItem, SourceWrapper } from "./details";
-import { Fingerprint } from "@mui/icons-material";
-import { labelize } from "../query/labels";
 
 export const PlatformNames = () => {
-    const [names, setNames] = useState([]);
     const padStore = useContext(PadContext)
+    const [names, setNames] = useState([]);
     useEffect(() => {
         const render = async () => {
             const result = await platform_names(padStore)
@@ -26,8 +24,8 @@ export const PlatformNames = () => {
                 {names.map(([p, n, s]) => (
                     <SourceWrapper key={n} src={s} >
                         <DetailsListItem
+                            key={n}
                             primary={n}
-                            secondary={labelize(p)}
                         />
                     </SourceWrapper>
                 ))}

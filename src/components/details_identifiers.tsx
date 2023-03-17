@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useContext } from "react";
-import { PadContext } from "../context";
+import { LabelContext, PadContext } from "../context";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { Avatar, IconButton, List, ListItem, ListItemAvatar, ListItemText, Paper, Stack } from "@mui/material";
+import { Stack } from "@mui/material";
 import { ld_zip_src } from "../query/ld";
 import { DetailsCard, DetailsListItem, SourceWrapper } from "./details";
 import { labelize } from "../query/labels";
-import { Fingerprint, Link } from "@mui/icons-material";
+import { Fingerprint } from "@mui/icons-material";
 import { expand_id } from "../config";
 
 const links = {
@@ -16,8 +16,9 @@ const links = {
 }
 
 export const PlatformIdentifiers = () => {
-    const [identifiers, setIdentifiers] = useState([]);
+    const labels = useContext(LabelContext)
     const padStore = useContext(PadContext)
+    const [identifiers, setIdentifiers] = useState([]);
     useEffect(() => {
         const render = async () => {
             const result = await platform_identifiers(padStore)
@@ -26,6 +27,7 @@ export const PlatformIdentifiers = () => {
         }
         padStore ? render() : null
     }, [padStore]);
+
     const link = (p: string, s: string) => {
         if (links[p]) {
             return `${links[p]}${s}`
@@ -40,7 +42,7 @@ export const PlatformIdentifiers = () => {
                     <SourceWrapper key={n} src={s}>
                         <DetailsListItem
                             primary={n.replace(/.*?:/, '')}
-                            secondary={labelize(p)}
+                            secondary={labelize(p, labels)}
                             avatar={<Fingerprint />}
                             link={link(p, n)}
                         />

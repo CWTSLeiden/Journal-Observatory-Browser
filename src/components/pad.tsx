@@ -14,7 +14,7 @@ import {
 } from "@mui/material";
 import { ld_to_str } from "../query/ld";
 import { labelize } from "../query/labels";
-import { SourcesContext } from "../context";
+import { useAppSelector } from "../store";
 
 function urlize(thing: ReactNode): ReactElement {
     return <LinkItUrl>{thing}</LinkItUrl>;
@@ -47,8 +47,8 @@ export const todate = (date: string) => {
 
 const SrcViewPop = ({ id }: { id?: string }) => {
     const [open, setOpen] = useState(false);
-    const sources = useContext(SourcesContext);
-    const source = sources.find((s) => s["@id"] == id) || {"@id": id};
+    const sources = useAppSelector(s => s.details.sources)
+    const source = sources[id] || {"@id": id};
     const creator = labelize(ld_to_str(source["dcterms:creator"]))
     const created = todate(ld_to_str(source["dcterms:created"]))
     const license = ld_to_str(source["dcterms:license"])
