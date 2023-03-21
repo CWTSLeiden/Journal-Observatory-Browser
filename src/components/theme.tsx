@@ -1,4 +1,4 @@
-import { createTheme, tooltipClasses } from "@mui/material";
+import { createTheme } from "@mui/material";
 import { amber, cyan, green, grey, indigo, purple, red, teal, yellow } from "@mui/material/colors";
 import { colors_override } from "../config";
 
@@ -17,7 +17,7 @@ export const colorize = (name: string): customColor => {
     const lookup = colors_override[name]
     if (lookup) { return lookup }
     const colors: customColor[] = ["custom1", "custom2", "custom3", "custom4", "custom5", "custom6", "custom7", "custom8"]
-    const index = [...name, "0"].map(c => c.charCodeAt(0)).reduce((a, b) => a + b)
+    const index = [...(name + "0")].map(c => c.charCodeAt(0)).reduce((a, b) => a + b)
     return colors[index % 8]
 }
 
@@ -73,7 +73,7 @@ declare module "@mui/material/Chip" {
     }
 }
 
-const theme = createTheme({
+let theme = createTheme({
     palette: {
         custom0: {
             main: grey[700],
@@ -111,7 +111,10 @@ const theme = createTheme({
             main: yellow[500],
             contrastText: '#000'
         }
-    },
+    }
+})
+
+theme = createTheme(theme, {
     components: {
         MuiList: {
             defaultProps: {
@@ -131,6 +134,16 @@ const theme = createTheme({
                 }
             }
         },
+        MuiTooltip: {
+            styleOverrides: {
+                tooltip: {
+                    backgroundColor: theme.palette.common.white,
+                    borderRadius: 10,
+                    border: '1px solid #dadde9',
+                    color: theme.palette.text.secondary,
+                }
+            }
+        }
     }
 })
 

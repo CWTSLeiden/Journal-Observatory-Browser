@@ -9,7 +9,7 @@ import { query_jsonld } from "../query/local";
 import { pad_store } from "../query/pad_store"
 import { mergeQuadstores } from "../query/local";
 import { Quadstore } from "quadstore";
-import { Divider, Drawer, Fab, Grid, IconButton, Toolbar, useTheme } from "@mui/material";
+import { Grid, IconButton, useTheme } from "@mui/material";
 import { PadSourcesBar } from "../components/pad_sources";
 import { PlatformTitle } from "../components/details_title";
 import { PlatformKeywords } from "../components/details_keywords";
@@ -18,6 +18,8 @@ import { PlatformIdentifiers } from "../components/details_identifiers";
 import { ChevronLeft } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../store";
 import * as actions from "../actions/details"
+import { PlatformPublishers } from "../components/details_publishers";
+import { PlatformPubPolicies } from "../components/details_publication_policy";
 
 function DetailsComponent() {
     const pad_id = pad_id_norm(useParams().id)
@@ -50,10 +52,12 @@ function DetailsComponent() {
     return (
         <PadContext.Provider value={padStore}>
             <Grid component="main" container spacing={2} sx={{pr: sidebar ? `${sidebarwidth}px` : 0}}>
-                <Grid item xs={12}><PlatformTitle /></Grid>
+                <Grid item xs={12}><PlatformTitle pad_id={pad_id} /></Grid>
                 <Grid item xs={12}><PlatformKeywords /></Grid>
                 <Grid item xs={6}><PlatformNames /></Grid>
                 <Grid item xs={6}><PlatformIdentifiers /></Grid>
+                <Grid item xs={6}><PlatformPublishers /></Grid>
+                <Grid item xs={6}><PlatformPubPolicies /></Grid>
             </Grid>
             <PadSourcesBar width={sidebarwidth} />
             <IconButton

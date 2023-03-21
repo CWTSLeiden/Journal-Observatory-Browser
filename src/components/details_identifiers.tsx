@@ -64,7 +64,7 @@ async function platform_identifiers(store: Quadstore) {
             ?p rdfs:subPropertyOf dcterms:identifier.
             bind(uuid() as ?b)
             optional { 
-                ?assertion pad:hasSourceAssertion ?source
+                ?a pad:hasSourceAssertion ?source
                 graph ?source { [] a ppo:Platform ; ?p ?o } .
             } .
         }

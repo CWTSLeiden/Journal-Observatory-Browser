@@ -4,7 +4,7 @@ import { query_select_first } from "../query/local";
 import { Quadstore } from "quadstore";
 import { Box, Skeleton, Typography } from "@mui/material";
 
-export const PlatformTitle = () => {
+export const PlatformTitle = ({pad_id}: {pad_id?: string}) => {
     const [name, setName] = useState<string>();
     const [loading, setLoading] = useState(true);
     const padStore = useContext(PadContext)
@@ -22,6 +22,9 @@ export const PlatformTitle = () => {
             <Typography align="center" variant="h3">
                 {!name && loading ? loadingview : name}
             </Typography>
+            <Typography align="center" variant="caption">
+                {!pad_id && loading ? loadingview : pad_id}
+            </Typography>
         </Box>
     )
 }
@@ -31,10 +34,13 @@ async function platform_name(store: Quadstore) {
         select ?name where {
             ?pad a pad:PAD ;
                 pad:hasAssertion ?assertion .
-            graph ?assertion { ?s a ppo:Platform ; schema:name ?name }
+            graph ?assertion {
+                ?s a ppo:Platform ;
+                    schema:name ?name .
+            }
         }
     `;
     const result = await query_select_first(query, store)
-    if (result && result.get("name")) { return result.get("name").value }
-    return "Unnamed Platform"
+    const name = result && result.get("name") ? result.get("name").value : "Unnamed Platform"
+    return name
 }
