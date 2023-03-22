@@ -1,15 +1,17 @@
 import React, { useContext, useState } from "react";
-import { Box, Card, CardActions, Chip, Divider, Grid, IconButton, ListItem, Skeleton, Typography, useTheme } from "@mui/material";
+import { Avatar, Box, Card, CardActions, Chip, Divider, Grid, IconButton, ListItem, Skeleton, Typography, useTheme } from "@mui/material";
 import { zip_ordering } from "../query/ld";
 import { ExpandLess, ExpandMore, Link } from "@mui/icons-material";
 import { LabelContext } from "../context";
 import { labelize } from "../query/labels";
+import { Summary } from "./details_policy_summary";
+import { grey } from "@mui/material/colors";
 
 
 type PolicyDetailsItemProps = {
     id: string;
     items: Array<[string, string, string | string[]]>;
-    summary?: Array<[string, string, React.ReactElement?]>;
+    summary?: Array<Summary>;
     disabled?: boolean;
 }
 export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsItemProps) => {
@@ -102,7 +104,7 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
 }
 
 type PolicyDetailsItemSummaryProps = {
-    items: Array<[string, string, React.ReactElement?]>;
+    items: Summary[];
     disabled: boolean
 }
 export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSummaryProps) => {
@@ -114,18 +116,25 @@ export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSum
         "error": "error"
     }
     const theme = useTheme()
-    const color_chip = (color: string) => disabled ? theme.palette.grey[100] : colors[color]
+    const color_grey = theme.palette.grey[100]
     return (
         <Grid container spacing={1}>
-            {items.map(([text, color, icon]) => (
-                <Grid item key={text}>
-                    <Chip
-                        label={labelize(text, labels)}
-                        color={color_chip(color)}
-                        icon={icon}
-                    />
-                </Grid>
-            ))}
+            {items.map(([text, color, Icon]) => {
+                const safecolor = disabled ? color_grey : colors[color]
+                const icon = (
+                    <Avatar sx={{bgcolor: color_grey}}>
+                        <Icon fontSize="small" color={safecolor} />
+                    </Avatar>
+                )
+                return (
+                    <Grid item key={text}>
+                        <Chip
+                            label={labelize(text, labels)}
+                            color={safecolor}
+                            avatar={Icon ? icon : null}
+                        />
+                    </Grid>
+            )})}
         </Grid>
     )
 }

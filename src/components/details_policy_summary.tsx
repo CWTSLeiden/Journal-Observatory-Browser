@@ -1,4 +1,8 @@
-type Summary = [string, string, React.ReactElement?]
+import { AttachMoney, CheckCircle, CorporateFare, Error, Lock, LockOpen, MoneyOff, Person, RemoveCircle } from "@mui/icons-material"
+import { IconTypeMap } from "@mui/material/Icon"
+import { OverridableComponent } from "@mui/material/OverridableComponent"
+
+export type Summary = [string, string, OverridableComponent<IconTypeMap>?]
 
 const summarize = (data: [string, string, ...any][], summary: (s: string) => Summary) =>
     data.map(([,v,]) => summary(v)).filter(Boolean)
@@ -7,9 +11,9 @@ const summarize = (data: [string, string, ...any][], summary: (s: string) => Sum
 export const openaccess = (value: string): Summary => {
     switch(value) {
         case "true":
-            return ["Open Access", "success"]
+            return ["Open Access", "success", LockOpen]
         case "false":
-            return ["Closed Access", "error"]
+            return ["Closed Access", "error", Lock]
         default:
             return null
     }
@@ -38,16 +42,16 @@ export const license = (value: string): Summary => {
 
 export const apc = (value: string): Summary => {
     const amount = Number(value.split(' ')[0])
-    if (amount == 0) {return [`No APC`, "success"]}
-    else { return [`APC: ${amount}`, "warning"] }
+    if (amount == 0) {return [`No APC`, "success", MoneyOff]}
+    else { return [`APC: ${amount}`, "warning", AttachMoney] }
 }
 
 export const copyright_owner = (value: string): Summary => {
     switch(value) {
         case "pro:author":
-            return [value, "success"]
+            return [value, "success", Person]
         case "pro:publisher":
-            return [value, "warning"]
+            return [value, "warning", CorporateFare]
         default:
             return [value, "default"]
     }
@@ -65,11 +69,11 @@ export const elsewhere_type = (value: string): Summary => {
     }
     switch(typelabel[value]) {
         case "Allowed":
-            return [`Type: ${typelabel[value]}`, "success"]
+            return [`Type: ${typelabel[value]}`, "success", CheckCircle]
         case "Prohibited":
-            return [`Type: ${typelabel[value]}`, "error"]
+            return [`Type: ${typelabel[value]}`, "error", RemoveCircle]
         case "Mandatory":
-            return [`Type: ${typelabel[value]}`, "warning"]
+            return [`Type: ${typelabel[value]}`, "warning", Error]
         default:
             return [value, "default"]
     }
