@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../context";
 import { query_select_first } from "../query/local";
 import { Quadstore } from "quadstore";
-import { Box, Skeleton, Typography } from "@mui/material";
+import { Box, Skeleton, Tooltip, Typography } from "@mui/material";
 
 export const PlatformTitle = ({pad_id}: {pad_id?: string}) => {
     const [name, setName] = useState<string>();
@@ -19,12 +19,11 @@ export const PlatformTitle = ({pad_id}: {pad_id?: string}) => {
 
     return (
         <Box sx={{mt: 8, mb: 4}}>
-            <Typography align="center" variant="h3">
-                {!name && loading ? loadingview : name}
-            </Typography>
-            <Typography align="center" variant="caption">
-                {!pad_id && loading ? loadingview : pad_id}
-            </Typography>
+            <Tooltip title={pad_id} placement="top">
+                <Typography align="center" variant="h3">
+                    {!name && loading ? loadingview : name}
+                </Typography>
+            </Tooltip>
         </Box>
     )
 }

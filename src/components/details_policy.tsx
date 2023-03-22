@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { Avatar, Box, Card, CardActions, Chip, Divider, Grid, IconButton, ListItem, Skeleton, Typography, useTheme } from "@mui/material";
+import { Avatar, Box, Card, CardActions, Chip, Divider, Grid, IconButton, List, ListItem, ListItemButton, Skeleton, Typography, useTheme } from "@mui/material";
 import { zip_ordering } from "../query/ld";
 import { ExpandLess, ExpandMore, Link } from "@mui/icons-material";
 import { LabelContext } from "../context";
@@ -38,8 +38,8 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
         }
     }
     const details = (
-        <>
-            <Box sx={{ml: 1, mr: 1, overflow: 'hidden'}}>
+        <Box sx={{mt: 2}}>
+            <Box sx={{m: 1, overflow: 'hidden'}}>
                 <Typography
                     noWrap
                     color={color_text_sec}
@@ -49,34 +49,41 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
                 </Typography>
             </Box>
             <Divider sx={{mb: 1}} />
-            {items.sort(zip_ordering).map(([prop, val, link]) => {
-                return (
-                    <ListItem component="dl" key={prop + val}
-                        secondaryAction={<MaybeLink link={link} />}
-                        sx={{m: 0}}>
-                        <Grid container spacing={1} alignItems="center">
-                            <Grid item xs={6}>
-                                <Typography
-                                    color={color_text_sec}
-                                    align="right"
-                                    sx={{overflowWrap: 'break-word'}}
-                                >
-                                    {labelize(prop, labels)}
-                                </Typography>
+            <List dense>
+                {items.sort(zip_ordering).map(([prop, val, link]) => {
+                    return (
+                        <ListItem
+                            key={prop + val}
+                            secondaryAction={<MaybeLink link={link} />}
+                        >
+                            <ListItemButton sx={{minHeight: 32, cursor: 'default'}}>
+                            <Grid container spacing={1} alignItems="center">
+                                <Grid item xs={6}>
+                                    <Typography
+                                        variant="body2"
+                                        color={color_text_sec}
+                                        align="right"
+                                        sx={{overflowWrap: 'break-word'}}
+                                    >
+                                        {labelize(prop, labels)}
+                                    </Typography>
+                                </Grid>
+                                <Grid item xs={6}>
+                                    <Typography
+                                        variant="body1"
+                                        color={color_text}
+                                        sx={{overflowWrap: 'break-word'}}
+                                    >
+                                        {labelize(val, labels)}
+                                    </Typography>
+                                </Grid>
                             </Grid>
-                            <Grid item xs={6}>
-                                <Typography component="dd"
-                                    color={color_text}
-                                    sx={{overflowWrap: 'break-word'}}
-                                >
-                                    {labelize(val, labels)}
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </ListItem>
-                )
-            })}
-        </>
+                        </ListItemButton>
+                        </ListItem>
+                    )
+                })}
+            </List>
+        </Box>
     )
     const summary_component = (
         <PolicyDetailsSummaryItem
@@ -86,15 +93,14 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
 )
     return (
         <Card variant="outlined" sx={{width: '100%', bgcolor: color_card, p: 1}}>
-            {!state && summary && summary.length > 0 ? summary_component : details}
+            {summary && summary.length > 0 ? summary_component : null}
+            {summary && summary.length > 0 && !state ? null : details}
             {summary && summary.length > 0 ? (
                 <CardActions
                     onClick={() => setState(!state)}
                     disableSpacing
                     sx={{p: 0, cursor: 'pointer'}}>
-                    <IconButton
-                        sx={{p: 0, ml: 'auto'}}
-                    >
+                    <IconButton sx={{p: 0, ml: 'auto'}} >
                         { state ? <ExpandLess /> : <ExpandMore /> }
                     </IconButton>
                 </CardActions>

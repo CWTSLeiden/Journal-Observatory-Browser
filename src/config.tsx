@@ -19,7 +19,24 @@ export const labels = {
     "https://creativecommons.org/licenses/by-nc-nd/4.0/": "CC BY-NC-ND",
     "https://creativecommons.org/licenses/by-nc-sa/4.0/": "CC BY-NC-SA",
     "https://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND",
-    "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA"
+    "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA",
+    "non_commercial_institutional_repository": "Non Commercial Institutional Repository",
+    "non_commercial_subject_repository": "Non Commercial Subject Repository",
+    "non_commercial_social_network": "Non Commercial Social Network",
+    "this_journal": "This Journal",
+    "named_repository": "Named Repository",
+    "any_website": "Any Website",
+    "preprint_repository": "Preprint Repository",
+    "institutional_website": "Institutional Website",
+    "named_academic_social_network": "Named Academic Social Network",
+    "any_repository": "Any Repository",
+    "non_commercial_repository": "Non Commercial Repository",
+    "non_commercial_website": "Non Commercial Website",
+    "institutional_repository": "Institutional Repository",
+    "authors_homepage": "Authors Homepage",
+    "funder_designated_location": "Funder Designated Location",
+    "subject_repository": "Subject Repository",
+    "academic_social_network": "Academic Social Network",
 }
 
 export const colors_override: {[key: string]: customColor} = {
