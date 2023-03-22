@@ -45,6 +45,5 @@ async function platform_keywords(store: Quadstore) {
             }
         }
     `;
-    console.log("Perform query", Date.now())
     return await query_jsonld(query, store);
 }

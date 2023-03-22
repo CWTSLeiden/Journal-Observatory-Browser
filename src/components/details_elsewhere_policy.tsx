@@ -5,7 +5,9 @@ import { Quadstore } from "quadstore";
 import { first, ld_cons_src, zip_prop } from "../query/ld";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
-import { PolicyDetailsItem } from "./policy_details";
+import { PolicyDetailsItem } from "./details_policy";
+import * as summary from "./details_policy_summary"
+import summarize from "./details_policy_summary"
 
 export const PlatformElsewherePolicies = () => {
     const padStore = useContext(PadContext)
@@ -15,7 +17,6 @@ export const PlatformElsewherePolicies = () => {
         const render = async () => {
             const result = await platform_elsewhere_policies(padStore)
             const fold = fold_graph(result, 1).filter(g => g["@type"].includes("ppo:PublicationElsewherePolicy"))
-            console.log(fold)
             setPolicies(ld_cons_src(fold))
             setLoading(false)
         }
@@ -41,12 +42,9 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
     const condition = zip("ppo:publicationCondition")
     const location = zip("ppo:publicationLocation")
 
-    const version_summary = version.map(([,v,]) =>
-        versionSummary(v)).filter(Boolean)
-    const license_summary = license.map(([,v,]) =>
-        licenseSummary(v)).filter(Boolean)
-    const type_summary = type.map(([,v,]) =>
-        typeSummary(v)).filter(Boolean)
+    const version_summary = summarize(version, summary.version)
+    const license_summary = summarize(license, summary.license)
+    const type_summary = summarize(type, summary.elsewhere_type)
 
     return (
         <SourceWrapper key={policy["@id"]} src={src}>
@@ -106,43 +104,3 @@ async function platform_elsewhere_policies(store: Quadstore) {
     return await query_jsonld(query, store);
 }
 
-const versionSummary = (value: string) => {
-    return [value, "default"]
-}
-const licenseSummary = (value: string) => {
-    switch(value) {
-        case "https://creativecommons.org/publicdomain/zero/1.0/":
-            return [value, "success"]
-        case "https://creativecommons.org/licenses/by/4.0/":
-            return [value, "warning"]
-        case "https://creativecommons.org/licenses/by-nc/4.0/":
-            return [value, "warning"]
-        case "https://creativecommons.org/licenses/by-nc-nd/4.0/":
-            return [value, "warning"]
-        case "https://creativecommons.org/licenses/by-nc-sa/4.0/":
-            return [value, "warning"]
-        case "https://creativecommons.org/licenses/by-nd/4.0/":
-            return [value, "warning"]
-        case "https://creativecommons.org/licenses/by-sa/4.0/":
-            return [value, "warning"]
-        default:
-            return [value, "default"]
-    }
-}
-const typelabel = {
-    "ppo:PublicationElsewhereAllowedPolicy": "Allowed",
-    "ppo:PublicationElsewhereProhibitedPolicy": "Prohibited",
-    "ppo:PublicationElsewhereMandatoryPolicy": "Mandatory"
-}
-const typeSummary = (value: string) => {
-    switch(typelabel[value]) {
-        case "Allowed":
-            return [`Type: ${typelabel[value]}`, "success"]
-        case "Prohibited":
-            return [`Type: ${typelabel[value]}`, "error"]
-        case "Mandatory":
-            return [`Type: ${typelabel[value]}`, "warning"]
-        default:
-            return [value, "default"]
-    }
-}

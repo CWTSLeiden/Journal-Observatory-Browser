@@ -5,7 +5,9 @@ import { Quadstore } from "quadstore";
 import { first, ld_cons_src, zip_prop } from "../query/ld";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
-import { PolicyDetailsItem } from "./policy_details";
+import { PolicyDetailsItem } from "./details_policy";
+import * as summary from "./details_policy_summary"
+import summarize from "./details_policy_summary"
 
 export const PlatformPubPolicies = () => {
     const padStore = useContext(PadContext)
@@ -15,7 +17,6 @@ export const PlatformPubPolicies = () => {
         const render = async () => {
             const result = await platform_publication_policies(padStore)
             const fold = fold_graph(result, 1).filter(g => g["@type"] == "ppo:PublicationPolicy")
-            console.log(fold)
             setPolicies(ld_cons_src(fold))
             setLoading(false)
         }
@@ -48,12 +49,10 @@ const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
         return [prop, pricecurrency, url]
     })
 
-    const isopenaccesssummary = isopenaccess.map(([,v,]) =>
-        openaccessSummary(v)).filter(Boolean)
-    const licensesummary = license.map(([,v,]) =>
-        licenseSummary(v)).filter(Boolean)
-    const apcsummary = apcmap.map(([,v,]) =>
-        apcSummary(v)).filter(Boolean)
+    const isopenaccess_summary = summarize(isopenaccess, summary.openaccess)
+    const license_summary = summarize(license, summary.license)
+    const apc_summary = summarize(apcmap, summary.apc)
+    const owner_summary = summarize(owner, summary.copyright_owner)
 
     return (
         <SourceWrapper key={policy["@id"]} src={src}>
@@ -68,9 +67,10 @@ const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
                     ...apcmap
                 ]}
                 summary={[
-                    ...isopenaccesssummary,
-                    ...licensesummary,
-                    ...apcsummary
+                    ...isopenaccess_summary,
+                    ...license_summary,
+                    ...owner_summary,
+                    ...apc_summary
                 ]}
             />
         </SourceWrapper>
@@ -117,38 +117,3 @@ async function platform_publication_policies(store: Quadstore) {
     return await query_jsonld(query, store);
 }
 
-const openaccessSummary = (value: string) => {
-    switch(value) {
-        case "true":
-            return ["Open Access", "success"]
-        case "false":
-            return ["Closed Access", "error"]
-        default:
-            return null
-    }
-}
-const licenseSummary = (value: string) => {
-    switch(value) {
-        case "https://creativecommons.org/publicdomain/zero/1.0/":
-            return [value, "success"]
-        case "https://creativecommons.org/licenses/by/4.0/":
-            return [value, "warning"]
-        case "https://creativecommons.org/licenses/by-nc/4.0/":
-            return [value, "warning"]
-        case "https://creativecommons.org/licenses/by-nc-nd/4.0/":
-            return [value, "warning"]
-        case "https://creativecommons.org/licenses/by-nc-sa/4.0/":
-            return [value, "warning"]
-        case "https://creativecommons.org/licenses/by-nd/4.0/":
-            return [value, "warning"]
-        case "https://creativecommons.org/licenses/by-sa/4.0/":
-            return [value, "warning"]
-        default:
-            return [value, "default"]
-    }
-}
-const apcSummary = (value: string) => {
-    const amount = Number(value.split(' ')[0])
-    if (amount == 0) {return [`APC: none`, "success"]}
-    else { return [`APC: ${amount}`, "warning"] }
-}
