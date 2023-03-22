@@ -7,14 +7,14 @@ import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
 import { PolicyDetailsItem } from "./policy_details";
 
-export const PlatformPubPolicies = () => {
+export const PlatformElsewherePolicies = () => {
     const padStore = useContext(PadContext)
     const [policies, setPolicies] = useState([]);
     const [loading, setLoading] = useState(true);
     useEffect(() => {
         const render = async () => {
-            const result = await platform_publication_policies(padStore)
-            const fold = fold_graph(result, 1).filter(g => g["@type"] == "ppo:PublicationPolicy")
+            const result = await platform_elsewhere_policies(padStore)
+            const fold = fold_graph(result, 1).filter(g => g["@type"].includes("ppo:PublicationElsewherePolicy"))
             console.log(fold)
             setPolicies(ld_cons_src(fold))
             setLoading(false)
@@ -23,91 +23,80 @@ export const PlatformPubPolicies = () => {
     }, [padStore]);
 
     return (
-        <DetailsCard title="Publication Policies" loading={loading}>
+        <DetailsCard title="Publication Elsewhere Policies" loading={loading}>
             {policies.map(([p, s]) => (
-                <PlatformPubPolicy key={p["@id"]} policy={p} src={s} />
+                <PlatformElsewherePolicy key={p["@id"]} policy={p} src={s} />
             ))}
         </DetailsCard>
     )
 }
 
-const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
+const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]}) => {
     const zip = zip_prop(policy)
+    const type = zip("@type").filter(([,v,]) => v != "ppo:PublicationElsewherePolicy")
     const version = zip("ppo:appliesToVersion")
-    const isopenaccess = zip("ppo:isOpenAccess")
     const license = zip("dcterms:license", true)
     const embargo = zip("fabio:hasEmbargoDuration")
     const owner = zip("ppo:hasCopyrightOwner")
-    const apc = policy["ppo:hasArticlePublishingCharges"] || []
-    const apcmap = apc.map(a => {
-        const prop = "ppo:hasArticlePublishingCharges"
-        const price = first(a, "schema:price")
-        const currency = first(a, "schema:priceCurrency")
-        const url = first(a, "schema:url")
-        const pricecurrency = [price, currency].join(' ')
-        return [prop, pricecurrency, url]
-    })
+    const condition = zip("ppo:publicationCondition")
+    const location = zip("ppo:publicationLocation")
 
-    const isopenaccesssummary = isopenaccess.map(([,v,]) =>
-        openaccessSummary(v)).filter(Boolean)
-    const licensesummary = license.map(([,v,]) =>
+    const version_summary = version.map(([,v,]) =>
+        versionSummary(v)).filter(Boolean)
+    const license_summary = license.map(([,v,]) =>
         licenseSummary(v)).filter(Boolean)
-    const apcsummary = apcmap.map(([,v,]) =>
-        apcSummary(v)).filter(Boolean)
+    const type_summary = type.map(([,v,]) =>
+        typeSummary(v)).filter(Boolean)
 
     return (
         <SourceWrapper key={policy["@id"]} src={src}>
             <PolicyDetailsItem 
                 id={policy["@id"]}
                 items={[
+                    ...type,
                     ...version,
-                    ...isopenaccess,
                     ...license,
                     ...embargo,
                     ...owner,
-                    ...apcmap
+                    ...condition,
+                    ...location
                 ]}
                 summary={[
-                    ...isopenaccesssummary,
-                    ...licensesummary,
-                    ...apcsummary
+                    ...type_summary,
+                    ...version_summary,
+                    ...license_summary,
                 ]}
             />
         </SourceWrapper>
     )
 }
 
-async function platform_publication_policies(store: Quadstore) {
+async function platform_elsewhere_policies(store: Quadstore) {
     const query = `
         construct {
-            ?policy a ppo:PublicationPolicy .
+            ?policy a ppo:PublicationElsewherePolicy .
+            ?policy a ?elsewherepolicy .
+            ?policy ppo:publicationLocation ?location .
             ?policy ppo:appliesToVersion ?version .
-            ?policy ppo:isOpenAccess ?isopenaccess .
-            ?policy dcterms:license ?license .
             ?policy fabio:hasEmbargoDuration ?embargo .
+            ?policy ppo:publicationCondition ?condition .
+            ?policy dcterms:license ?license .
             ?policy ppo:hasCopyrightOwner ?copyrightowner .
-            ?policy ppo:hasArticlePublishingCharges ?apc .
-            ?apc a ppo:ArticlePublishingCharges .
-            ?apc schema:price ?apcprice .
-            ?apc schema:priceCurrency ?apccurrency .
-            ?apc schema:url ?apcurl .
             ?policy ppo:_src ?source .
         }
         where { 
             ?pad pad:hasAssertion ?assertion .
             graph ?assertion {
                 ?platform a ppo:Platform ; ppo:hasPolicy ?policy .
-                ?policy a ppo:PublicationPolicy .
+                ?policy a ?elsewherepolicy .
+                optional { ?policy ppo:publicationLocation ?location } .
                 optional { ?policy ppo:appliesToVersion ?version } .
-                optional { ?policy ppo:isOpenAccess ?isopenaccess } .
-                optional { ?policy ?haslicense ?license . ?haslicense rdfs:subPropertyOf* dcterms:license } .
                 optional { ?policy fabio:hasEmbargoDuration ?embargo } .
+                optional { ?policy ppo:publicationCondition ?condition } .
+                optional { ?policy ?haslicense ?license . ?haslicense rdfs:subPropertyOf* dcterms:license } .
                 optional { ?policy ppo:hasCopyrightOwner [ a ?copyrightowner ] } .
-                optional { ?policy ppo:hasArticlePublishingCharges ?apc } .
-                optional { ?apc schema:price ?apcprice } .
-                optional { ?apc schema:priceCurrency ?apccurrency } .
-                optional { ?apc schema:url ?apcurl } .
             }
+            ?elsewherepolicy rdfs:subClassOf* ppo:PublicationElsewherePolicy .
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
                 graph ?source { [] a ppo:Platform ; ppo:hasPolicy ?policy } .
@@ -117,15 +106,8 @@ async function platform_publication_policies(store: Quadstore) {
     return await query_jsonld(query, store);
 }
 
-const openaccessSummary = (value: string) => {
-    switch(value) {
-        case "true":
-            return ["Open Access", "success"]
-        case "false":
-            return ["Closed Access", "error"]
-        default:
-            return null
-    }
+const versionSummary = (value: string) => {
+    return [value, "default"]
 }
 const licenseSummary = (value: string) => {
     switch(value) {
@@ -147,8 +129,20 @@ const licenseSummary = (value: string) => {
             return [value, "default"]
     }
 }
-const apcSummary = (value: string) => {
-    const amount = Number(value.split(' ')[0])
-    if (amount == 0) {return [`APC: none`, "success"]}
-    else { return [`APC: ${amount}`, "warning"] }
+const typelabel = {
+    "ppo:PublicationElsewhereAllowedPolicy": "Allowed",
+    "ppo:PublicationElsewhereProhibitedPolicy": "Prohibited",
+    "ppo:PublicationElsewhereMandatoryPolicy": "Mandatory"
+}
+const typeSummary = (value: string) => {
+    switch(typelabel[value]) {
+        case "Allowed":
+            return [`Type: ${typelabel[value]}`, "success"]
+        case "Prohibited":
+            return [`Type: ${typelabel[value]}`, "error"]
+        case "Mandatory":
+            return [`Type: ${typelabel[value]}`, "warning"]
+        default:
+            return [value, "default"]
+    }
 }

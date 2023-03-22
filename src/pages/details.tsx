@@ -20,6 +20,7 @@ import { useAppDispatch, useAppSelector } from "../store";
 import * as actions from "../actions/details"
 import { PlatformPublishers } from "../components/details_publishers";
 import { PlatformPubPolicies } from "../components/details_publication_policy";
+import { PlatformElsewherePolicies } from "../components/details_elsewhere_policy";
 
 function DetailsComponent() {
     const pad_id = pad_id_norm(useParams().id)
@@ -58,6 +59,7 @@ function DetailsComponent() {
                 <Grid item xs={6}><PlatformIdentifiers /></Grid>
                 <Grid item xs={6}><PlatformPublishers /></Grid>
                 <Grid item xs={6}><PlatformPubPolicies /></Grid>
+                <Grid item xs={6}><PlatformElsewherePolicies /></Grid>
             </Grid>
             <PadSourcesBar width={sidebarwidth} />
             <IconButton

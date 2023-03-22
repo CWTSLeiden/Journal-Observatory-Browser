@@ -7,7 +7,6 @@ import { colorize } from "./theme"
 import { ChevronRight, Source } from "@mui/icons-material"
 import { useAppDispatch, useAppSelector } from "../store"
 import * as actions from "../actions/details"
-import { grey } from "@mui/material/colors"
 import { expand_id } from "../config"
 
 export const PadSourcesBar = ({width}: {width: number}) => {

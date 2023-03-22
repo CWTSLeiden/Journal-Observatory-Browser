@@ -9,7 +9,7 @@ import { labelize } from "../query/labels";
 type PolicyDetailsItemProps = {
     id: string;
     items: Array<[string, string, string | string[]]>;
-    summary?: Array<[string, string]>;
+    summary?: Array<[string, string, React.ReactElement?]>;
     disabled?: boolean;
 }
 export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsItemProps) => {
@@ -102,7 +102,7 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
 }
 
 type PolicyDetailsItemSummaryProps = {
-    items: Array<[string, string]>;
+    items: Array<[string, string, React.ReactElement?]>;
     disabled: boolean
 }
 export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSummaryProps) => {
@@ -117,11 +117,12 @@ export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSum
     const color_chip = (color: string) => disabled ? theme.palette.grey[100] : colors[color]
     return (
         <Grid container spacing={1}>
-            {items.map(([text, color]) => (
+            {items.map(([text, color, icon]) => (
                 <Grid item key={text}>
                     <Chip
                         label={labelize(text, labels)}
                         color={color_chip(color)}
+                        icon={icon}
                     />
                 </Grid>
             ))}
