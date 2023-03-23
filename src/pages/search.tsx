@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { FilterBar } from "../components/filterbar";
 import { SearchBar } from "../components/searchbar";
-import { PadList, PadListPagination } from "../components/search_list";
+import { PadList, PadListPagination, PadListProgress } from "../components/search_list";
 import { pad_list } from "../query/search";
 import { useAppSelector, useAppDispatch } from "../store";
 import * as padsActions from "../store/pads";
@@ -50,6 +50,7 @@ function SearchComponent() {
                 <Grid item xs={12} sm={12} md={9} container id="results">
                     <Stack direction="column" spacing={1} sx={{width: "100%"}}>
                         <PadListPagination />
+                        <PadListProgress loading={loading} />
                         <PadList loading={loading} />
                         <PadListPagination />
                     </Stack>
