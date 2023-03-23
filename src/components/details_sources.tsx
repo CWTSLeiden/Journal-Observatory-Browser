@@ -1,6 +1,6 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Drawer, IconButton, Stack, Switch, Toolbar, Typography, useTheme } from "@mui/material"
 import React from "react"
-import { ld_to_str, todate } from "../query/ld"
+import { first, ld_to_str, todate } from "../query/ld"
 import { labelize } from "../query/labels"
 import { MaybeLink } from "./details"
 import { colorize } from "./theme"
@@ -8,6 +8,18 @@ import { ChevronRight, Source } from "@mui/icons-material"
 import { useAppDispatch, useAppSelector } from "../store"
 import * as actions from "../store/details"
 import { expand_id } from "../config"
+
+const sort_sources_keys = (sources: object) => {
+    const key_date = Object.entries(sources).map(([id, source]) => [id, first(source, "dcterms:created")])
+    const sort_tuple = (t1: [string, string], t2: [string, string]) => {
+        const [,d1] = t1
+        const [,d2] = t2
+        if (d1 < d2) { return 1 }
+        if (d1 > d2) { return -1 }
+        return 0
+    }
+    return key_date.sort(sort_tuple).map(([id,]) => id)
+}
 
 export const PadSourcesBar = ({width}: {width: number}) => {
     const sources = useAppSelector(s => s.details.sources)
@@ -28,7 +40,7 @@ export const PadSourcesBar = ({width}: {width: number}) => {
             <Divider />
             <Stack spacing={2} sx={{padding: 2, overflow: 'auto'}}>
                 <Typography variant="h4">Sources</Typography>
-                {Object.keys(sources).map(id => <PadSourceCard key={id} id={id} />)}
+                {sort_sources_keys(sources).map(id => <PadSourceCard key={id} id={id} />)}
             </Stack>
         </Drawer>
     )
