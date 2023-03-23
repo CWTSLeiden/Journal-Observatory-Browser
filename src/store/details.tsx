@@ -1,6 +1,6 @@
-import { createReducer } from "@reduxjs/toolkit";
-import * as actions from "../actions/details"
+import { createAction, createReducer } from "@reduxjs/toolkit";
 
+// Types
 export type Sources = {[id: string]: object}
 
 export type DetailsState = {
@@ -9,6 +9,20 @@ export type DetailsState = {
     sources_disabled: string[];
 }
 
+export type detailsAction = {
+    type: string;
+    payload?: string | boolean | number | Sources
+}
+
+// Actions
+export const sidebar_toggle = createAction('sidebar/toggle')
+export const sidebar_set = createAction<boolean>('sidebar/set')
+
+export const sources_set = createAction<Sources>('sources/set')
+export const source_enable = createAction<string>('source/enable')
+export const source_disable = createAction<string>('source/disable')
+
+// Reducer
 const initDetails: DetailsState = {
     sidebar: true,
     sources: {},
@@ -17,15 +31,15 @@ const initDetails: DetailsState = {
 
 const DetailsReducer = createReducer(initDetails, (builder) => {
     builder
-        .addCase(actions.sidebar_toggle,
+        .addCase(sidebar_toggle,
             (state) => {state.sidebar = !state.sidebar})
-        .addCase(actions.sidebar_set,
+        .addCase(sidebar_set,
             (state, action) => {state.sidebar = action.payload})
-        .addCase(actions.sources_set,
+        .addCase(sources_set,
             (state, action) => {state.sources = action.payload})
-        .addCase(actions.source_enable,
+        .addCase(source_enable,
             (state, action) => {state.sources_disabled = state.sources_disabled.filter((source) => source !== action.payload)})
-        .addCase(actions.source_disable,
+        .addCase(source_disable,
             (state, action) => {state.sources_disabled.push(action.payload)})
 })
 

@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
-import { LabelContext, PadContext } from "../context";
+import { PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { ld_cons_src, ld_zip_src } from "../query/ld";
+import { ld_cons_src } from "../query/ld";
 import { DetailsCard, DetailsListItem, SourceWrapper } from "./details";
 
 export const PlatformNames = () => {

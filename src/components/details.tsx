@@ -1,9 +1,9 @@
 import React, { ReactElement } from "react";
-import { Avatar, Badge, Card, CardContent, CardHeader, Chip, Divider, Grid, IconButton, ListItem, ListItemAvatar, ListItemText, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import { Avatar, Badge, Card, CardContent, CardHeader, Chip, Divider, Grid, IconButton, Link, ListItem, ListItemAvatar, ListItemText, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import { ld_to_str } from "../query/ld";
 import { labelize } from "../query/labels";
 import { colorize } from "./theme";
-import { Link } from "@mui/icons-material";
+import { Link as LinkIcon } from "@mui/icons-material";
 import { useAppSelector } from "../store";
 
 export const SourceWrapper = ({src, children}: {src: string[], children?: ReactElement}) => {
@@ -110,17 +110,10 @@ export const DetailsListItem = ({primary, secondary, avatar, link, disabled}: De
             </Avatar>
         </ListItemAvatar>
     )
-    const href = Array.isArray(link) ? link.find(Boolean) : link
-    const ishref = typeof(href) === "string" ? href.match(/^(https|http|www):/) : null
-    const link_component = ishref ? (
-        <IconButton edge="end" href={href} target="_blank">
-            <Link />
-        </IconButton>
-    ) : null
     return (
         <Card variant="outlined" sx={{width: '100%', bgcolor: color_card}}>
             <ListItem
-                secondaryAction={link ? link_component : null}
+                secondaryAction={<MaybeLinkIcon link={link}/>}
                 sx={{minHeight: 60, pl: 1, pr: 1}}>
                 {avatar ? avatar_component : null}
                 <ListItemText sx={{ml: avatar ? 0 : 2}}
@@ -167,3 +160,22 @@ export const ChipsSkeleton = ({n}: {n?: number}) => (
     </>
 )
 
+export const MaybeLink = ({link, label}: {link: string | string[]; label?: string}) => {
+    const href = Array.isArray(link) ? link.find(Boolean) : link
+    const ishref = href ? href.match(/^(https|http|www):/) : null
+    const title = <Typography>{ishref && label ? label : link}</Typography>
+    if (!ishref) { return title }
+    return <Link href={href} target="_blank">{title}</Link>
+}
+
+export const MaybeLinkIcon = ({link}: {link: string | string[]}) => {
+    const href = Array.isArray(link) ? link.find(Boolean) : link
+    const ishref = href ? href.match(/^(https|http|www):/) : null
+    if (ishref) {
+        return (
+            <IconButton edge="end" href={href} target="_blank">
+                <LinkIcon />
+            </IconButton>
+        )
+    }
+}

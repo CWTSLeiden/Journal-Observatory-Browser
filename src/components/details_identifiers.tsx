@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { LabelContext, PadContext } from "../context";
+import { LabelContext, PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
 import { ld_zip_src } from "../query/ld";

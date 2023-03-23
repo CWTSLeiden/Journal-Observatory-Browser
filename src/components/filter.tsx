@@ -1,4 +1,4 @@
-import React, { ReactElement, useEffect, useState } from "react";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
 import {
     Badge,
     Checkbox,
@@ -14,8 +14,9 @@ import {
     Slider,
 } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
-import { enabledToggles, Toggles } from "../reducers/search";
+import { enabledToggles, Toggles } from "../store/search";
 import { labelize } from "../query/labels";
+import { LabelContext } from "../store";
 
 type CheckboxFilterParams = {
     state: boolean;
@@ -110,6 +111,7 @@ type DropdownTogglesProps = {
     labels?: { [key: string]: string };
 }
 export const DropdownToggles = ({label, toggles, toggle_action, reset_action, labels}: DropdownTogglesProps) => {
+    const clabels = useContext(LabelContext)
     const [open, setOpen] = useState(false)
     const amount = enabledToggles(toggles).length
     const icon = (
@@ -134,7 +136,7 @@ export const DropdownToggles = ({label, toggles, toggle_action, reset_action, la
                     key={p}
                     state={toggles[p]}
                     action={() => toggle_action(p)}
-                    label={labelize(p, labels)}
+                    label={labelize(p, {...clabels, ...labels})}
                 />)
             }
         </DropdownCheckbox>
@@ -148,13 +150,14 @@ type RadioFilterProps = {
     labels?: { [key: string]: string };
 }
 export const RadioFilter = ({option, options, setoption, labels}: RadioFilterProps) => {
+    const clabels = useContext(LabelContext)
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
         setoption(event.target.value)
     const Option = ({value}: {value: string}) =>
         <FormControlLabel
             value={value}
             control={<Radio />}
-            label={labelize(value, labels)}
+            label={labelize(value, {...clabels, ...labels})}
         />
     return (
         <RadioGroup

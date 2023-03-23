@@ -1,12 +1,12 @@
 import React, { ReactElement } from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Button, List, Stack, Typography } from "@mui/material";
-import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubLicenseFilter, PubPolicyFilter } from "./pub_filter";
-import { ElsewhereCopyrightownerFilter, ElsewhereEmbargoFilter, ElsewhereLicenseFilter, ElsewhereLocationFilter, ElsewherePolicyFilter, ElsewhereVersionFilter } from "./elsewhere_filter";
-import { CreatorSelect } from "./creator_filter";
+import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubLicenseFilter, PubPolicyFilter } from "./filter_publication";
+import { ElsewhereCopyrightownerFilter, ElsewhereEmbargoFilter, ElsewhereLicenseFilter, ElsewhereLocationFilter, ElsewherePolicyFilter, ElsewhereVersionFilter } from "./filter_elsewhere";
+import { CreatorSelect } from "./filter_creator";
 import { ExpandMore } from "@mui/icons-material";
-import { EvaluationAnonymizedFilter, EvaluationCommentsFilter, EvaluationInformationFilter, EvaluationInteractionsFilter, EvaluationPolicyFilter } from "./evaluation_filter";
+import { EvaluationAnonymizedFilter, EvaluationCommentsFilter, EvaluationInformationFilter, EvaluationInteractionsFilter, EvaluationPolicyFilter } from "./filter_evaluation";
 import { useAppDispatch } from "../store";
-import * as searchActions from "../actions/search";
+import * as searchActions from "../store/search";
 
 
 type FilterBarSectionProps = {

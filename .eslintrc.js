@@ -22,5 +22,6 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
+        "@typescript-eslint/no-explicit-any": ["error", { "ignoreRestArgs": true }]
     }
 }

@@ -3,21 +3,21 @@ import "../details.css"
 import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 
-import { OntologyContext, PadContext } from "../context";
+import { OntologyContext, PadContext } from "../store";
 import { ld_to_str, pad_id_norm } from "../query/ld";
 import { query_jsonld } from "../query/local";
 import { pad_store } from "../query/pad_store"
 import { mergeQuadstores } from "../query/local";
 import { Quadstore } from "quadstore";
 import { Grid, IconButton, useTheme } from "@mui/material";
-import { PadSourcesBar } from "../components/pad_sources";
+import { PadSourcesBar } from "../components/details_sources";
 import { PlatformTitle } from "../components/details_title";
 import { PlatformKeywords } from "../components/details_keywords";
 import { PlatformNames } from "../components/details_names";
 import { PlatformIdentifiers } from "../components/details_identifiers";
 import { ChevronLeft } from "@mui/icons-material";
 import { useAppDispatch, useAppSelector } from "../store";
-import * as actions from "../actions/details"
+import * as actions from "../store/details"
 import { PlatformPublishers } from "../components/details_publishers";
 import { PlatformPubPolicies } from "../components/details_publication_policy";
 import { PlatformElsewherePolicies } from "../components/details_elsewhere_policy";

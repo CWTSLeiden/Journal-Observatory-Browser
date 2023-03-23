@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import * as searchActions from "../actions/search";
+import * as searchActions from "../store/search";
 import { DropdownCheckbox, DropdownToggles, CheckboxFilter, SliderFilter } from "./filter";
 import { labelize } from "../query/labels";
 import { SearchStore, useAppDispatch, useAppSelector } from "../store";
-import { LabelContext } from "../context";
+import { LabelContext } from "../store";
 
 export const ElsewherePolicyFilter = () => {
     const labels = useContext(LabelContext)
@@ -113,7 +113,7 @@ export const ElsewhereEmbargoFilter = () => {
         <DropdownCheckbox
             state={state}
             toggle={() => dispatch(searchActions.elsewhere_embargo_toggle())}
-            label={labelize("ppo:hasEmbargo", labels)}
+            label={labelize("fabio:hasEmbargoDuration", labels)}
         >
             <SliderFilter
                 state={state}

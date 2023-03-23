@@ -1,16 +1,24 @@
-import { createReducer } from "@reduxjs/toolkit";
-import * as actions from "../actions/pads";
+import { createAction, createReducer } from "@reduxjs/toolkit";
+
+// Types
+export type padsAction = {
+    type: string;
+    payload?: object[] | number;
+};
 
 export type PadsState = {
     pads: Array<object>;
     total: number;
 };
 
-const initPads: PadsState = {
-    pads: [],
-    total: 0,
-};
+// Actions
+export const pads_clear = createAction('pads/clear')
+export const pads_add = createAction<object[]>('pads/add')
+export const pads_set = createAction<object[]>('pads/set')
+export const pads_order = createAction<boolean>('pads/order')
+export const total_set = createAction<number>('total/set')
 
+// Utility
 export const order_pads = (pads: Array<object>, asc?: boolean) => {
     const direction = (asc || asc == undefined) ? 1 : -1
     const ord = (a: object) => a["ppo:_ord"] || ""
@@ -20,17 +28,23 @@ export const order_pads = (pads: Array<object>, asc?: boolean) => {
     return pads
 }
 
+// Reducer
+const initPads: PadsState = {
+    pads: [],
+    total: 0,
+};
+
 const PadsReducer = createReducer(initPads, (builder) => {
     builder
-        .addCase(actions.pads_clear,
+        .addCase(pads_clear,
             () => initPads)
-        .addCase(actions.pads_add,
+        .addCase(pads_add,
             (state, action) => { state.pads = state.pads.concat(action.payload) })
-        .addCase(actions.pads_set,
+        .addCase(pads_set,
             (state, action) => { state.pads = action.payload })
-        .addCase(actions.pads_order,
+        .addCase(pads_order,
             (state, action) => { state.pads = order_pads(state.pads, action.payload) })
-        .addCase(actions.total_set,
+        .addCase(total_set,
             (state, action) => { state.total = action.payload })
 })
 

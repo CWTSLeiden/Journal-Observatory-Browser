@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../store";
-import * as searchActions from "../actions/search";
+import * as searchActions from "../store/search";
 import { Button, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 

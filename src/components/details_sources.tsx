@@ -1,12 +1,12 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Drawer, IconButton, Stack, Switch, Toolbar, Typography, useTheme } from "@mui/material"
 import React from "react"
-import { ld_to_str } from "../query/ld"
+import { ld_to_str, todate } from "../query/ld"
 import { labelize } from "../query/labels"
-import { MaybeLink, todate } from "./pad"
+import { MaybeLink } from "./details"
 import { colorize } from "./theme"
 import { ChevronRight, Source } from "@mui/icons-material"
 import { useAppDispatch, useAppSelector } from "../store"
-import * as actions from "../actions/details"
+import * as actions from "../store/details"
 import { expand_id } from "../config"
 
 export const PadSourcesBar = ({width}: {width: number}) => {

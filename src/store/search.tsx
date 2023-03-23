@@ -1,18 +1,7 @@
-import { createReducer } from "@reduxjs/toolkit";
-import * as actions from "../actions/search"
+import { createAction, createReducer } from "@reduxjs/toolkit";
 
+// Types
 export type Toggles = { [key: string]: boolean }
-
-export const enabledToggles = (t: Toggles) =>
-    Object.entries(t).filter(([,v]) => v).map(([k,]) => k)
-
-function toggleProp(toggles: Toggles, prop: string | boolean | number): Toggles {
-    const new_toggles = {...toggles}
-    const str_prop = String(prop)
-    new_toggles[str_prop] = !new_toggles[str_prop]
-    return new_toggles
-}
-
 
 export type SearchState = {
     searchstring?: string;
@@ -43,6 +32,94 @@ export type SearchState = {
     evaluation_comments?: Toggles;
 };
 
+// Actions
+export type searchAction = {
+    type: string;
+    payload?: string | boolean | number | Toggles
+};
+
+/// Search
+export const search_set = createAction<string>('search/set')
+export const search_clear = createAction('search/clear')
+
+/// All Filters
+export const filter_clear = createAction('filter/clear')
+
+/// Page
+export const page_decrement = createAction('page/decrement')
+export const page_increment = createAction('page/increment')
+export const page_set = createAction<number>('page/set')
+export const page_setsize = createAction<number>('page/setsize');
+export const page_reset = createAction('page/reset');
+
+/// Order
+export const order_setprop = createAction<string>('order/setprop');
+export const order_toggleasc = createAction('order/toggleasc');
+export const order_setasc = createAction<boolean>('order/setasc');
+
+/// Creators
+export const creators_set = createAction<Toggles>('creators/set');
+export const creators_reset = createAction('creators/reset');
+export const creators_toggleone = createAction<string>('creators/toggleone');
+
+/// Publication Policy
+export const publication_toggle = createAction('publication/toggle');
+export const publication_copyrightowners_set = createAction<Toggles>('publication/copyrightowners/set');
+export const publication_copyrightowners_reset = createAction('publication/copyrightowners/reset');
+export const publication_copyrightowners_toggleone = createAction<string>('publication/copyrightowners/toggleone');
+export const publication_apc_set = createAction<number>('publication/apc/set');
+export const publication_apc_toggle = createAction('publication/apc/toggle');
+export const publication_embargo_set = createAction<number>('publication/embargo/set');
+export const publication_embargo_toggle = createAction('publication/embargo/toggle');
+export const publication_licenses_set = createAction<Toggles>('publication/licenses/set');
+export const publication_licenses_reset = createAction('publication/licenses/reset');
+export const publication_licenses_toggleone = createAction<string>('publication/licenses/toggleone');
+export const publication_openaccess_toggle = createAction('publication/openaccess/toggle');
+
+/// Publication Elsewhere Policy
+export const elsewhere_toggle = createAction('elsewhere/toggle');
+export const elsewhere_versions_set = createAction<Toggles>('elsewhere/versions/set');
+export const elsewhere_versions_reset = createAction('elsewhere/versions/reset');
+export const elsewhere_versions_toggleone = createAction<string>('elsewhere/versions/toggleone');
+export const elsewhere_locations_set = createAction<Toggles>('elsewhere/location/set');
+export const elsewhere_locations_reset = createAction('elsewhere/location/reset');
+export const elsewhere_locations_toggleone = createAction<string>('elsewhere/location/toggleone');
+export const elsewhere_copyrightowners_set = createAction<Toggles>('elsewhere/copyrightowners/set');
+export const elsewhere_copyrightowners_reset = createAction('elsewhere/copyrightowners/reset');
+export const elsewhere_copyrightowners_toggleone = createAction<string>('elsewhere/copyrightowners/toggleone');
+export const elsewhere_licenses_set = createAction<Toggles>('elsewhere/licenses/set');
+export const elsewhere_licenses_reset = createAction('elsewhere/licenses/reset');
+export const elsewhere_licenses_toggleone = createAction<string>('elsewhere/licenses/toggleone');
+export const elsewhere_embargo_set = createAction<number>('elsewhere/embargo/set');
+export const elsewhere_embargo_toggle = createAction('elsewhere/embargo/toggle');
+
+/// Evaluation Policy
+export const evaluation_toggle = createAction('evaluation/toggle');
+export const evaluation_anonymized_set = createAction<Toggles>('evaluation/anonymized/set');
+export const evaluation_anonymized_reset = createAction('evaluation/anonymized/reset');
+export const evaluation_anonymized_toggleone = createAction<string>('evaluation/anonymized/toggleone');
+export const evaluation_interactions_set = createAction<Toggles>('evaluation/interactions/set');
+export const evaluation_interactions_reset = createAction('evaluation/interactions/reset');
+export const evaluation_interactions_toggleone = createAction<string>('evaluation/interactions/toggleone');
+export const evaluation_information_set = createAction<Toggles>('evaluation/information/set');
+export const evaluation_information_reset = createAction('evaluation/information/reset');
+export const evaluation_information_toggleone = createAction<string>('evaluation/information/toggleone');
+export const evaluation_comments_set = createAction<Toggles>('evaluation/comments/set');
+export const evaluation_comments_reset = createAction('evaluation/comments/reset');
+export const evaluation_comments_toggleone = createAction<string>('evaluation/comments/toggleone');
+
+// Utility
+export const enabledToggles = (t: Toggles) =>
+    Object.entries(t).filter(([,v]) => v).map(([k,]) => k)
+
+const toggleProp = (toggles: Toggles, prop: string | boolean | number): Toggles => {
+    const new_toggles = {...toggles}
+    const str_prop = String(prop)
+    new_toggles[str_prop] = !new_toggles[str_prop]
+    return new_toggles
+}
+
+// Reducer
 const initSearch: SearchState = {
     searchstring: "",
     orderasc: true,
@@ -155,120 +232,120 @@ const initFilters = (state: SearchState) => ({
 const SearchReducer = createReducer(initSearch, (builder) => {
     builder
     // Search
-        .addCase(actions.search_set,
+        .addCase(search_set,
             (state, action) => {state.searchstring = action.payload})
-        .addCase(actions.search_clear,
+        .addCase(search_clear,
             (state) => {state.searchstring = initSearch.searchstring})
     // Filter
-        .addCase(actions.filter_clear,
+        .addCase(filter_clear,
             (state) => initFilters(state))
     // Page
-        .addCase(actions.page_decrement,
+        .addCase(page_decrement,
             (state) => { state.page = Math.max(state.page - 1, 0) })
-        .addCase(actions.page_increment,
+        .addCase(page_increment,
             (state) => { state.page = state.page + 1 })
-        .addCase(actions.page_set,
+        .addCase(page_set,
             (state, action) => { state.page = Number(action.payload) })
-        .addCase(actions.page_setsize,
+        .addCase(page_setsize,
             (state, action) => { state.pagesize = Number(action.payload) })
-        .addCase(actions.page_reset,
+        .addCase(page_reset,
             (state) => { state.page = initSearch.page })
     // Order
-        .addCase(actions.order_setprop,
+        .addCase(order_setprop,
             (state, action) => { state.orderprop = String(action.payload) })
-        .addCase(actions.order_toggleasc,
+        .addCase(order_toggleasc,
             (state) => { state.orderasc = !state.orderasc })
-        .addCase(actions.order_setasc,
+        .addCase(order_setasc,
             (state, action) => { state.orderasc = Boolean(action.payload) })
     // Creators
-        .addCase(actions.creators_set,
+        .addCase(creators_set,
             (state, action) => { state.creators = action.payload })
-        .addCase(actions.creators_toggleone,
+        .addCase(creators_toggleone,
             (state, action) => { state.creators[action.payload] = !state.creators[action.payload]})
-        .addCase(actions.creators_reset,
+        .addCase(creators_reset,
             (state) => { state.creators = initSearch.creators })
     // Publication Policy
-        .addCase(actions.publication_toggle,
+        .addCase(publication_toggle,
             (state) => { state.pub_policy = !state.pub_policy })
-        .addCase(actions.publication_copyrightowners_set,
+        .addCase(publication_copyrightowners_set,
             (state, action) => { state.pub_copyrightowners = action.payload})
-        .addCase(actions.publication_copyrightowners_toggleone,
+        .addCase(publication_copyrightowners_toggleone,
             (state, action) => { state.pub_copyrightowners = toggleProp(state.pub_copyrightowners, action.payload)})
-        .addCase(actions.publication_copyrightowners_reset,
+        .addCase(publication_copyrightowners_reset,
             (state) => { state.pub_copyrightowners = initSearch.pub_copyrightowners})
-        .addCase(actions.publication_apc_set,
+        .addCase(publication_apc_set,
             (state, action) => { state.pub_apcamount = Number(action.payload) })
-        .addCase(actions.publication_apc_toggle,
+        .addCase(publication_apc_toggle,
             (state) => { state.pub_apc = !state.pub_apc })
-        .addCase(actions.publication_embargo_set,
+        .addCase(publication_embargo_set,
             (state, action) => { state.pub_embargoduration = Number(action.payload) })
-        .addCase(actions.publication_embargo_toggle,
+        .addCase(publication_embargo_toggle,
             (state) => { state.pub_embargo = !state.pub_embargo })
-        .addCase(actions.publication_licenses_set,
+        .addCase(publication_licenses_set,
             (state, action) => { state.pub_licenses = action.payload})
-        .addCase(actions.publication_licenses_toggleone,
+        .addCase(publication_licenses_toggleone,
             (state, action) => { state.pub_licenses = toggleProp(state.pub_licenses, action.payload)})
-        .addCase(actions.publication_licenses_reset,
+        .addCase(publication_licenses_reset,
             (state) => { state.pub_licenses = initSearch.pub_licenses})
-        .addCase(actions.publication_openaccess_toggle,
+        .addCase(publication_openaccess_toggle,
             (state) => { state.open_access = !state.open_access })
     // Publication Elsewhere Policy
-        .addCase(actions.elsewhere_toggle,
+        .addCase(elsewhere_toggle,
             (state) => { state.elsewhere_policy = !state.elsewhere_policy })
-        .addCase(actions.elsewhere_versions_set,
+        .addCase(elsewhere_versions_set,
             (state, action) => { state.elsewhere_versions = action.payload})
-        .addCase(actions.elsewhere_versions_toggleone,
+        .addCase(elsewhere_versions_toggleone,
             (state, action) => { state.elsewhere_versions = toggleProp(state.elsewhere_versions, action.payload)})
-        .addCase(actions.elsewhere_versions_reset,
+        .addCase(elsewhere_versions_reset,
             (state) => { state.elsewhere_versions = initSearch.elsewhere_versions})
-        .addCase(actions.elsewhere_locations_set,
+        .addCase(elsewhere_locations_set,
             (state, action) => { state.elsewhere_locations = action.payload})
-        .addCase(actions.elsewhere_locations_toggleone,
+        .addCase(elsewhere_locations_toggleone,
             (state, action) => { state.elsewhere_locations = toggleProp(state.elsewhere_locations, action.payload)})
-        .addCase(actions.elsewhere_locations_reset,
+        .addCase(elsewhere_locations_reset,
             (state) => { state.elsewhere_locations = initSearch.elsewhere_locations})
-        .addCase(actions.elsewhere_copyrightowners_set,
+        .addCase(elsewhere_copyrightowners_set,
             (state, action) => { state.elsewhere_copyrightowners = action.payload})
-        .addCase(actions.elsewhere_copyrightowners_toggleone,
+        .addCase(elsewhere_copyrightowners_toggleone,
             (state, action) => { state.elsewhere_copyrightowners = toggleProp(state.elsewhere_copyrightowners, action.payload)})
-        .addCase(actions.elsewhere_copyrightowners_reset,
+        .addCase(elsewhere_copyrightowners_reset,
             (state) => { state.elsewhere_copyrightowners = initSearch.elsewhere_copyrightowners})
-        .addCase(actions.elsewhere_licenses_set,
+        .addCase(elsewhere_licenses_set,
             (state, action) => { state.elsewhere_licenses = action.payload})
-        .addCase(actions.elsewhere_licenses_toggleone,
+        .addCase(elsewhere_licenses_toggleone,
             (state, action) => { state.elsewhere_licenses = toggleProp(state.elsewhere_licenses, action.payload)})
-        .addCase(actions.elsewhere_licenses_reset,
+        .addCase(elsewhere_licenses_reset,
             (state) => { state.elsewhere_licenses = initSearch.elsewhere_licenses})
-        .addCase(actions.elsewhere_embargo_set,
+        .addCase(elsewhere_embargo_set,
             (state, action) => { state.elsewhere_embargoduration = Number(action.payload) })
-        .addCase(actions.elsewhere_embargo_toggle,
+        .addCase(elsewhere_embargo_toggle,
             (state) => { state.elsewhere_embargo = !state.elsewhere_embargo })
     // Evaluation Policy
-        .addCase(actions.evaluation_toggle,
+        .addCase(evaluation_toggle,
             (state) => { state.evaluation_policy = !state.evaluation_policy })
-        .addCase(actions.evaluation_anonymized_set,
+        .addCase(evaluation_anonymized_set,
             (state, action) => { state.evaluation_anonymized = action.payload})
-        .addCase(actions.evaluation_anonymized_toggleone,
+        .addCase(evaluation_anonymized_toggleone,
             (state, action) => { state.evaluation_anonymized = toggleProp(state.evaluation_anonymized, action.payload)})
-        .addCase(actions.evaluation_anonymized_reset,
+        .addCase(evaluation_anonymized_reset,
             (state) => { state.evaluation_anonymized = initSearch.evaluation_anonymized})
-        .addCase(actions.evaluation_interactions_set,
+        .addCase(evaluation_interactions_set,
             (state, action) => { state.evaluation_interactions = action.payload})
-        .addCase(actions.evaluation_interactions_toggleone,
+        .addCase(evaluation_interactions_toggleone,
             (state, action) => { state.evaluation_interactions = toggleProp(state.evaluation_interactions, action.payload)})
-        .addCase(actions.evaluation_interactions_reset,
+        .addCase(evaluation_interactions_reset,
             (state) => { state.evaluation_interactions = initSearch.evaluation_interactions})
-        .addCase(actions.evaluation_information_set,
+        .addCase(evaluation_information_set,
             (state, action) => { state.evaluation_information = action.payload})
-        .addCase(actions.evaluation_information_toggleone,
+        .addCase(evaluation_information_toggleone,
             (state, action) => { state.evaluation_information = toggleProp(state.evaluation_information, action.payload)})
-        .addCase(actions.evaluation_information_reset,
+        .addCase(evaluation_information_reset,
             (state) => { state.evaluation_information = initSearch.evaluation_information})
-        .addCase(actions.evaluation_comments_set,
+        .addCase(evaluation_comments_set,
             (state, action) => { state.evaluation_comments = action.payload})
-        .addCase(actions.evaluation_comments_toggleone,
+        .addCase(evaluation_comments_toggleone,
             (state, action) => { state.evaluation_comments = toggleProp(state.evaluation_comments, action.payload)})
-        .addCase(actions.evaluation_comments_reset,
+        .addCase(evaluation_comments_reset,
             (state) => { state.evaluation_comments = initSearch.evaluation_comments})
     //
         .addDefaultCase((state) => state)

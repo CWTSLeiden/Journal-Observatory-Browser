@@ -1,5 +1,5 @@
 import { query_jsonld, query_single } from "../query/remote";
-import { SearchState } from "../reducers/search";
+import { SearchState } from "../store/search";
 import * as filter from "./search_filter"
 
 const limit = (search: SearchState, offset: number) =>

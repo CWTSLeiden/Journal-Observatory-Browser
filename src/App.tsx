@@ -7,7 +7,7 @@ import { Provider } from "react-redux";
 import AppHeader from "./components/header";
 import AppRouter from "./AppRouter";
 import store from "./store";
-import { LabelContext, OntologyContext } from "./context";
+import { LabelContext, OntologyContext } from "./store";
 import { ontology_store } from "./query/pad_store";
 import { get_labels_dict } from "./query/labels";
 import theme from "./components/theme";
@@ -21,11 +21,11 @@ function App() {
     useEffect(() => {
         const render = async () => setOntology(await ontology_store())
         !ontology ? render() : null
-    }, []);
+    }, [ontology]);
     useEffect(() => {
         const render = async () => setLabels(await get_labels_dict(ontology))
         ontology && !labels ? render() : null
-    }, [ontology]);
+    }, [ontology, labels]);
     
     return (
         <Stack spacing={2}>

@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import * as searchActions from "../actions/search";
+import * as searchActions from "../store/search";
 import { DropdownToggles, CheckboxFilter } from "./filter";
 import { labelize } from "../query/labels";
 import { SearchStore, useAppDispatch, useAppSelector } from "../store";
-import { LabelContext } from "../context";
+import { LabelContext } from "../store";
 
 export const EvaluationPolicyFilter = () => {
     const labels = useContext(LabelContext)
@@ -72,11 +72,6 @@ export const EvaluationCommentsFilter = () => {
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.evaluation_comments_toggleone(p))}
             reset_action={() => dispatch(searchActions.evaluation_comments_reset())}
-            labels={{
-                "ppo:postPublicationCommentingOpen": "Open",
-                "ppo:postPublicationCommentingOnInvitation": "On Invitation",
-                "ppo:postPublicationCommentingClosed": "Closed"
-            }}
         />
     )
 }

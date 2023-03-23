@@ -5,7 +5,7 @@ function fold_graph(graph: Array<object>, depth=10): Array<object> {
     });
 }
 
-function fold_object(obj: object, topgraph: Array<object>, depth: number) {
+function fold_object(obj: object, topgraph: Array<object>, depth: number): object {
     if (depth < 0) { return undefined }
     for (const [k, v] of Object.entries(obj)) {
         const new_value = fold_value(v, topgraph, depth-1);

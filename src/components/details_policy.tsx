@@ -1,16 +1,17 @@
 import React, { useContext, useState } from "react";
 import { Avatar, Box, Card, CardActions, Chip, Divider, Grid, IconButton, List, ListItem, ListItemButton, Skeleton, Typography, useTheme } from "@mui/material";
 import { zip_ordering } from "../query/ld";
-import { ExpandLess, ExpandMore, Link } from "@mui/icons-material";
-import { LabelContext } from "../context";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { LabelContext } from "../store";
 import { labelize } from "../query/labels";
 import { Summary } from "./details_policy_summary";
-import { grey } from "@mui/material/colors";
+import { MaybeLink } from "./details";
 
+export type Item = [string, string, string?]
 
 type PolicyDetailsItemProps = {
     id: string;
-    items: Array<[string, string, string | string[]]>;
+    items: Array<Item>;
     summary?: Array<Summary>;
     disabled?: boolean;
 }
@@ -22,21 +23,6 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
     const color_text_sec = disabled ? theme.palette.grey[400] : theme.palette.text.secondary
     const color_card = disabled ? theme.palette.grey[100] : null
 
-    const href = (link: string | string[]) => {
-        const ref = Array.isArray(link) ? link.find(Boolean) : link
-        const isref = typeof(ref) === "string" ? ref.match(/^(https|http|www):/) : null
-        return isref ? ref : null
-    }
-    const MaybeLink = ({link}: {link: string | string[]}) => {
-        const ref = href(link)
-        if (ref) {
-            return (
-                <IconButton edge="end" href={ref} target="_blank">
-                    <Link />
-                </IconButton>
-            )
-        }
-    }
     const details = (
         <Box sx={{mt: 2}}>
             <Box sx={{m: 1, overflow: 'hidden'}}>
@@ -50,7 +36,10 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
             </Box>
             <Divider sx={{mb: 1}} />
             <List dense>
-                {items.sort(zip_ordering).map(([prop, val, link]) => {
+                {items
+                    .filter(Boolean)
+                    .sort(zip_ordering)
+                    .map(([prop, val, link]) => {
                     return (
                         <ListItem
                             key={prop + val}
@@ -116,6 +105,8 @@ type PolicyDetailsItemSummaryProps = {
 export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSummaryProps) => {
     const labels = useContext(LabelContext)
     const colors = {
+        "primary" :"primary",
+        "secondary" :"secondary",
         "warning" :"warning",
         "default" :"default",
         "success" :"success",
@@ -125,7 +116,7 @@ export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSum
     const color_grey = theme.palette.grey[100]
     return (
         <Grid container spacing={1}>
-            {items.map(([text, color, Icon]) => {
+            {items.filter(Boolean).map(([text, color, Icon]) => {
                 const safecolor = disabled ? color_grey : colors[color]
                 const icon = (
                     <Avatar sx={{bgcolor: color_grey}}>
@@ -138,6 +129,10 @@ export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSum
                             label={labelize(text, labels)}
                             color={safecolor}
                             avatar={Icon ? icon : null}
+                            sx={{
+                                "& .MuiChip-avatarColorPrimary": {backgroundColor: color_grey},
+                                "& .MuiChip-avatarColorSecondary": {backgroundColor: color_grey}
+                            }}
                         />
                     </Grid>
             )})}

@@ -1,11 +1,11 @@
-import { AttachMoney, CheckCircle, CorporateFare, Error, Lock, LockOpen, MoneyOff, Person, RemoveCircle } from "@mui/icons-material"
+import { AttachMoney, CheckCircle, CorporateFare, Error, Lock, LockOpen, MoneyOff, Person, RemoveCircle, Visibility, VisibilityOff } from "@mui/icons-material"
 import { IconTypeMap } from "@mui/material/Icon"
 import { OverridableComponent } from "@mui/material/OverridableComponent"
 
 export type Summary = [string, string, OverridableComponent<IconTypeMap>?]
 
-const summarize = (data: [string, string, ...any][], summary: (s: string) => Summary) =>
-    data.map(([,v,]) => summary(v)).filter(Boolean)
+const summarize = (data: [string, string, ...unknown[]][], summary: (s: string) => Summary) =>
+    data.map(([,v]) => summary(v)).filter(Boolean)
 
 
 export const openaccess = (value: string): Summary => {
@@ -78,5 +78,33 @@ export const elsewhere_type = (value: string): Summary => {
             return [value, "default"]
     }
 }
+
+export const anonymized = (value: string): Summary => {
+    switch(value) {
+        case "Single":
+            return [`${value} Anonymized`, "primary", VisibilityOff]
+        case "Double":
+            return [`${value} Anonymized`, "primary", VisibilityOff]
+        case "Triple":
+            return [`${value} Anonymized`, "primary", VisibilityOff]
+        case "All Identities Visible":
+            return ["All Identities Visible", "success", Visibility]
+        default:
+            return null
+    }
+}
+
+export const accessible = (obj: [string, string, string?]): Summary => {
+    const [label, value] = obj
+    switch(value) {
+        case "ppo:Accessible":
+            return [label, "default", Visibility]
+        default:
+            return null
+    }
+}
+export const no_accessible = (label: string): Summary => 
+    [label, "error", VisibilityOff]
+
 
 export default summarize

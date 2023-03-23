@@ -11,11 +11,15 @@ export const ld_to_str = (obj: string | object | Array<object> | Array<string>):
     return Array.isArray(obj) ? obj.map(to_str).join(", ") : to_str(obj)
 }
 
-export const zip_ordering = (a: [string, string, ...any[]], b: [string, string, ...any[]]) => {
+export const zip_ordering = (a: [string, string, ...unknown[]], b: [string, string, ...unknown[]]) => {
     const [aprop, avalue, ] = a
     const [bprop, bvalue, ] = b
+    if (bprop == null) { return 1 }
+    if (aprop == null) { return -1 }
     if (aprop.toLowerCase() > bprop.toLowerCase()) { return 1 }
     if (aprop.toLowerCase() < bprop.toLowerCase()) { return -1 }
+    if (bvalue == null) { return 1 }
+    if (avalue == null) { return -1 }
     if (avalue.toLowerCase() > bvalue.toLowerCase()) { return 1 }
     if (avalue.toLowerCase() < bvalue.toLowerCase()) { return -1 }
     return 0
@@ -23,9 +27,9 @@ export const zip_ordering = (a: [string, string, ...any[]], b: [string, string, 
 
 export const ld_zip_src = (obj: object[], prop?: string) => {
     const zip = []
-    const add = (prop: string, items, src: string[]) => {
+    const add = (prop: string, items: object[] | object | string, src: string[]) => {
         if (Array.isArray(items)) {
-            items.map(item => zip.push([prop, ld_to_str(item), src]))
+            items.map((item: object) => zip.push([prop, ld_to_str(item), src]))
         }
     }
     obj.map((o: object) => {
@@ -62,6 +66,9 @@ export const zip_prop = (obj: object) => (prop: string, link?: string | boolean)
 export const first = (o: object, p: string) =>
     Array.isArray(o[p]) ? o[p].find(Boolean) : o[p]
 
+export const ld_contains = (prop: string, find: string) => (obj: object) : boolean =>
+    (obj[prop] || []).map(ld_to_str).includes(find)
+
 const cons_ordering = (a: [object, string[]], b: [object, string[]]) => {
     const [aobj,] = a
     const [bobj,] = b
@@ -77,4 +84,9 @@ export const ld_cons_src = (obj: object[]) => {
         zip.push([o, sources])
     })
     return zip.sort(cons_ordering)
+}
+
+export const todate = (date: string) => {
+    const parse = Date.parse(date)
+    return isNaN(parse) ? date : (new Date(parse)).toISOString().substring(0, 10)
 }

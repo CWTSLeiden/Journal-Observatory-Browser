@@ -12,6 +12,7 @@ export const labels = {
     "https://www.ieee.org": "IEEE",
     "https://springernature.com": "Springer",
     "https://www.wiley.com": "Wiley",
+    "https://www.wiley.com/": "Wiley",
     "https://elifesciences.org": "eLife",
     "https://creativecommons.org/publicdomain/zero/1.0/": "CC0",
     "https://creativecommons.org/licenses/by/4.0/": "CC BY",
@@ -37,6 +38,12 @@ export const labels = {
     "funder_designated_location": "Funder Designated Location",
     "subject_repository": "Subject Repository",
     "academic_social_network": "Academic Social Network",
+    "ppo:hasPublicationPolicy": "has Publication Policy",
+    "ppo:hasPublicationElsewherePolicy": "has Publication Elsewhere Policy",
+    "ppo:hasEvaluationPolicy": "has Evaluation Policy",
+    "ppo:postPublicationCommentingOpen": "Open",
+    "ppo:postPublicationCommentingOnInvitation": "On Invitation",
+    "ppo:postPublicationCommentingClosed": "Closed"
 }
 
 export const colors_override: {[key: string]: customColor} = {

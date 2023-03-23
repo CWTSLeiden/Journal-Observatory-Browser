@@ -6,8 +6,8 @@ import { labels as labels_override } from "../config";
 async function get_labels(store: Quadstore) {
     const query = `
         select ?property ?label where { 
-        ?property rdfs:label ?label
-        filter(str(?label) != "")
+            ?property rdfs:label ?label
+            filter(str(?label) != "")
         }
     `;
     return await query_select(query, store);

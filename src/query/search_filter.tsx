@@ -1,4 +1,4 @@
-import { enabledToggles, SearchState, Toggles } from "../reducers/search";
+import { enabledToggles, SearchState, Toggles } from "../store/search";
 
 export const enabled = (toggles: Toggles, post_processing?: string) => {
     const filtered = enabledToggles(toggles)
