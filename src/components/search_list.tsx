@@ -2,6 +2,7 @@ import {
     Card,
     Chip,
     Grid,
+    Skeleton,
     TablePagination,
     TableSortLabel,
 } from "@mui/material";
@@ -39,15 +40,30 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
     )
 }
 
-const PadTable = () => {
+export const PadList = ({loading}: {loading: boolean}) => {
     const pads = useAppSelector((store) => store.pads.pads);
+    const pagesize = useAppSelector((store) => store.search.pagesize);
+    if (loading) {
+        return <PadCardSkeleton n={pagesize} />
+    }
     if (pads.length < 1) {
         return <Card sx={{padding: 2}}>No Results</Card>
     }
     return <>{pads.map((pad) => <PadCard key={pad["@id"]} pad={pad} />)}</>
 };
 
-const PadTablePagination = () => {
+export const PadCardSkeleton = ({n}: {n?: number}) => (
+    <>
+        {Array.from(Array(n == undefined ? 1 : n).keys()).map(n => (
+            <Grid key={n} item>
+                <Skeleton variant="rounded" height={125} sx={{padding: 2}} />
+            </Grid>
+        )
+        )}
+    </>
+)
+
+export const PadListPagination = () => {
     const total = useAppSelector((store) => store.pads.total);
     const pagesize = useAppSelector((store) => store.search.pagesize);
     const page = useAppSelector((store) => store.search.page);
@@ -93,7 +109,7 @@ const PadCard = ({ pad }: PadCardProps) => {
     const name = propToString(pad["schema:name"], true) || "<none>"
     const issn = propToString(pad["prism:issn"], true)
     return (
-        <Card key={pad_id} onClick={handleClick} sx={{padding: 2, cursor: "pointer"}}>
+        <Card key={pad_id} onClick={handleClick} sx={{padding: 2, cursor: "pointer", minHeight: '125px'}}>
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={8}><b>{name}</b></Grid>
                 <Grid item xs={3}>{ issn ? <i>ISSN: {issn}</i> : null }</Grid>
@@ -165,5 +181,3 @@ const PadCardSources = ({ pad }: PadCardProps) => {
         </>
     )
 }
-
-export { PadTable, PadTablePagination };

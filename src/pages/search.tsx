@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { FilterBar } from "../components/filterbar";
 import { SearchBar } from "../components/searchbar";
-import { PadTable, PadTablePagination } from "../components/search_list";
+import { PadList, PadListPagination } from "../components/search_list";
 import { pad_list } from "../query/search";
 import { useAppSelector, useAppDispatch } from "../store";
 import * as padsActions from "../store/pads";
@@ -16,14 +16,17 @@ function SearchComponent() {
     const pagesize = useAppSelector((s) => s.search.pagesize);
     const orderasc = useAppSelector((s) => s.search.orderasc);
     const dispatch = useAppDispatch();
+    const [loading, setLoading] = useState(true)
 
     const loadPads = useCallback(async (page: number) => {
+        setLoading(true)
         const { padlist, num } = await pad_list(
             searchState,
             pagesize * page
         );
         dispatch(padsActions.pads_set(order_pads(padlist, orderasc)));
         dispatch(padsActions.total_set(num));
+        setLoading(false)
     }, [dispatch, orderasc, pagesize, searchState])
 
     async function doSearch() {
@@ -46,9 +49,9 @@ function SearchComponent() {
                 </Grid>
                 <Grid item xs={12} sm={12} md={9} container id="results">
                     <Stack direction="column" spacing={1} sx={{width: "100%"}}>
-                        <PadTablePagination />
-                        <PadTable />
-                        <PadTablePagination />
+                        <PadListPagination />
+                        <PadList loading={loading} />
+                        <PadListPagination />
                     </Stack>
                 </Grid>
             </Grid>
