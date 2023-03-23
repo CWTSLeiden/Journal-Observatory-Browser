@@ -43,7 +43,6 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
     const editors = people.filter((p: object) => p["@type"] == "pro:editor")
     const editors_id = accessible(editors, "Editor identity")
     const people_id = [authors_id, reviewers_id, editors_id].filter(Boolean)
-    console.log(people_id)
     const anonymized = is_anonymized(authors, reviewers)
 
     const reports = documents.filter((p: object) => p["@type"] == "ppo:ReviewReport")

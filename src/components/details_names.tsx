@@ -12,7 +12,7 @@ export const PlatformNames = () => {
     useEffect(() => {
         const render = async () => {
             const result = await platform_names(padStore)
-            setNames(ld_cons_src(result))
+            setNames(names_expand(result))
             setLoading(false)
         }
         padStore ? render() : null
@@ -52,4 +52,16 @@ async function platform_names(store: Quadstore) {
         }
     `;
     return await query_jsonld(query, store)
+}
+
+const names_expand = (obj: object[]) => {
+    const cons_src = ld_cons_src(obj)
+    const expanded = cons_src.map(([n, src]) => {
+        const names = n["schema:name"] || []
+        if (Array.isArray(names)) {
+            return names.map(name => [{...n, "schema:name": name}, src])
+        }
+        return [[{...n, "schema:name": names}, src]]
+    })
+    return expanded.flat()
 }
