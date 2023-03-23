@@ -118,17 +118,17 @@ export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSum
         <Grid container spacing={1}>
             {items.filter(Boolean).map(([text, color, Icon]) => {
                 const safecolor = disabled ? color_grey : colors[color]
-                const icon = (
+                const icon = Icon ? (
                     <Avatar sx={{bgcolor: color_grey}}>
                         <Icon fontSize="small" color={safecolor} />
                     </Avatar>
-                )
+                ) : null
                 return (
                     <Grid item key={text}>
                         <Chip
                             label={labelize(text, labels)}
                             color={safecolor}
-                            avatar={Icon ? icon : null}
+                            avatar={icon}
                             sx={{
                                 "& .MuiChip-avatarColorPrimary": {backgroundColor: color_grey},
                                 "& .MuiChip-avatarColorSecondary": {backgroundColor: color_grey}

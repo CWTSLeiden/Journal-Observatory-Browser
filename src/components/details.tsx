@@ -163,9 +163,8 @@ export const ChipsSkeleton = ({n}: {n?: number}) => (
 export const MaybeLink = ({link, label}: {link: string | string[]; label?: string}) => {
     const href = Array.isArray(link) ? link.find(Boolean) : link
     const ishref = href ? href.match(/^(https|http|www):/) : null
-    const title = <Typography>{ishref && label ? label : link}</Typography>
-    if (!ishref) { return title }
-    return <Link href={href} target="_blank">{title}</Link>
+    const title = ishref && label ? label : link
+    return ishref ? <Link href={href} target="_blank">{title}</Link> : <div>title</div>
 }
 
 export const MaybeLinkIcon = ({link}: {link: string | string[]}) => {
