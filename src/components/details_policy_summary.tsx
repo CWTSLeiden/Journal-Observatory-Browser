@@ -1,4 +1,4 @@
-import { AttachMoney, CheckCircle, CorporateFare, Error, Lock, LockOpen, MoneyOff, Person, RemoveCircle, Visibility, VisibilityOff } from "@mui/icons-material"
+import { AttachMoney, CheckCircle, CorporateFare, Error, HistoryEdu, Lock, LockOpen, MoneyOff, Person, RemoveCircle, Visibility, VisibilityOff } from "@mui/icons-material"
 import { IconTypeMap } from "@mui/material/Icon"
 import { OverridableComponent } from "@mui/material/OverridableComponent"
 
@@ -22,21 +22,21 @@ export const openaccess = (value: string): Summary => {
 export const license = (value: string): Summary => {
     switch(value) {
         case "https://creativecommons.org/publicdomain/zero/1.0/":
-            return [value, "success"]
+            return [value, "success", HistoryEdu]
         case "https://creativecommons.org/licenses/by/4.0/":
-            return [value, "warning"]
+            return [value, "warning", HistoryEdu]
         case "https://creativecommons.org/licenses/by-nc/4.0/":
-            return [value, "warning"]
+            return [value, "warning", HistoryEdu]
         case "https://creativecommons.org/licenses/by-nc-nd/4.0/":
-            return [value, "warning"]
+            return [value, "warning", HistoryEdu]
         case "https://creativecommons.org/licenses/by-nc-sa/4.0/":
-            return [value, "warning"]
+            return [value, "warning", HistoryEdu]
         case "https://creativecommons.org/licenses/by-nd/4.0/":
-            return [value, "warning"]
+            return [value, "warning", HistoryEdu]
         case "https://creativecommons.org/licenses/by-sa/4.0/":
-            return [value, "warning"]
+            return [value, "warning", HistoryEdu]
         default:
-            return [value, "default"]
+            return [value, "default", HistoryEdu]
     }
 }
 
