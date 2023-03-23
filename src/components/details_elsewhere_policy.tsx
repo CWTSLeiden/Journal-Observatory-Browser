@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../context";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { first, ld_cons_src, zip_prop } from "../query/ld";
+import { ld_cons_src, zip_prop } from "../query/ld";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
 import { PolicyDetailsItem } from "./details_policy";
