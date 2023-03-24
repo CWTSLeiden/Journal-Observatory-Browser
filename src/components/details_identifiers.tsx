@@ -2,11 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { LabelContext, PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { ld_zip_src } from "../query/ld";
+import { ld_zip_src } from "../query/jsonld_helpers";
 import { DetailsCard, DetailsListItem, SourceWrapper } from "./details";
 import { labelize } from "../query/labels";
 import { Fingerprint } from "@mui/icons-material";
-import { expand_id } from "../config";
+import { expand_id } from "../query/jsonld_helpers";
 
 const links = {
     "prism:issn": "https://portal.issn.org/resource/ISSN/",

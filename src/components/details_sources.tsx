@@ -1,13 +1,13 @@
 import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Drawer, IconButton, Stack, Switch, Toolbar, Typography, useTheme } from "@mui/material"
 import React from "react"
-import { first, ld_to_str, todate } from "../query/ld"
+import { first, ld_to_str, todate } from "../query/jsonld_helpers"
 import { labelize } from "../query/labels"
 import { MaybeLink } from "./details"
 import { colorize } from "./theme"
 import { ChevronRight, Source } from "@mui/icons-material"
 import { useAppDispatch, useAppSelector } from "../store"
 import * as actions from "../store/details"
-import { expand_id } from "../config"
+import { expand_id } from "../query/jsonld_helpers"
 
 const sort_sources_keys = (sources: object) => {
     const key_date = Object.entries(sources).map(([id, source]) => [id, first(source, "dcterms:created")])

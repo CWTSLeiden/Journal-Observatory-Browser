@@ -1,6 +1,6 @@
 import React, { ReactElement } from "react";
 import { Avatar, Badge, Card, CardContent, CardHeader, Chip, Divider, Grid, IconButton, Link, ListItem, ListItemAvatar, ListItemText, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
-import { ld_to_str } from "../query/ld";
+import { ld_to_str } from "../query/jsonld_helpers";
 import { labelize } from "../query/labels";
 import { colorize } from "./theme";
 import { Link as LinkIcon } from "@mui/icons-material";

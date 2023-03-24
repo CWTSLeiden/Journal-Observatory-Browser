@@ -3,7 +3,7 @@ import { ArrowForward } from "@mui/icons-material";
 import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
 import * as actions from "../store/search";
-import { pad_id_norm, ld_to_str } from "../query/ld";
+import { pad_id_norm, ld_to_str } from "../query/jsonld_helpers";
 import { useAppDispatch, useAppSelector } from "../store";
 import { labelize } from "../query/labels";
 

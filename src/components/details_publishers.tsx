@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { LabelContext, PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { ld_cons_src } from "../query/ld";
+import { ld_cons_src } from "../query/jsonld_helpers";
 import { DetailsCard, DetailsListItem, SourceWrapper } from "./details";
 import { labelize } from "../query/labels";
 import { CorporateFare } from "@mui/icons-material";

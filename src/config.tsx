@@ -110,21 +110,3 @@ export const context = {
     "wdt": "http://www.wikidata.org/prop/direct/",
     "wikibase": "http://wikiba.se/ontology#"
 };
-
-export const compact_id = (id: string) => {
-    for (const [k, v] of Object.entries(context)) {
-        if (id.indexOf(v) == 0) {
-            return id.replace(v, `${k}:`)
-        }
-    }
-    return id
-}
-
-export const expand_id = (id: string) =>  {
-    for (const [k, v] of Object.entries(context)) {
-        if (id.indexOf(`${k}:`) == 0) {
-            return id.replace(`${k}:`, v)
-        }
-    }
-    return id
-}

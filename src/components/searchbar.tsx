@@ -8,7 +8,7 @@ type SearchBarProps = {
     handleSubmit: () => void;
 };
 const SearchBar = ({ handleSubmit }: SearchBarProps) => {
-    const state = useAppSelector((state) => state.search.searchstring);
+    const state = useAppSelector((store) => store.search.searchstring);
     const [input, setInput] = useState(state)
     useEffect(() => setInput(state), [state])
     const dispatch = useAppDispatch();

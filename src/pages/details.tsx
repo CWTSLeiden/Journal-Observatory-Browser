@@ -4,7 +4,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useParams } from "react-router-dom";
 
 import { OntologyContext, PadContext } from "../store";
-import { ld_to_str, pad_id_norm } from "../query/ld";
+import { ld_to_str, pad_id_norm } from "../query/jsonld_helpers";
 import { query_jsonld } from "../query/local";
 import { pad_store } from "../query/pad_store"
 import { mergeQuadstores } from "../query/local";

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { Avatar, Box, Card, CardActions, Chip, Divider, Grid, IconButton, List, ListItem, ListItemButton, Skeleton, Typography, useTheme } from "@mui/material";
-import { zip_ordering } from "../query/ld";
+import { zip_ordering } from "../query/jsonld_helpers";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { LabelContext } from "../store";
 import { labelize } from "../query/labels";

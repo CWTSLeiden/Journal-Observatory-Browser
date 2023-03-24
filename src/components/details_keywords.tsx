@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../store";
 import { Quadstore } from "quadstore";
 import { Chip } from "@mui/material";
-import { ld_zip_src } from "../query/ld";
+import { ld_zip_src } from "../query/jsonld_helpers";
 import { DetailsChips, SourceWrapper } from "./details";
 import { query_jsonld } from "../query/local";
 

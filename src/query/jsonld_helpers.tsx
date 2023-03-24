@@ -1,4 +1,22 @@
-import { expand_id } from "../config";
+import { context } from "../config";
+
+export const compact_id = (id: string) => {
+    for (const [k, v] of Object.entries(context)) {
+        if (id.indexOf(v) == 0) {
+            return id.replace(v, `${k}:`)
+        }
+    }
+    return id
+}
+
+export const expand_id = (id: string) =>  {
+    for (const [k, v] of Object.entries(context)) {
+        if (id.indexOf(`${k}:`) == 0) {
+            return id.replace(`${k}:`, v)
+        }
+    }
+    return id
+}
 
 export function pad_id_norm(pad_id: string) {
     const regex = /([A-Za-z0-9-]+)$/i
