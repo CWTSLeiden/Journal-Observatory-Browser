@@ -45,6 +45,7 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
     const version_summary = summarize(version, summary.version)
     const license_summary = summarize(license, summary.license)
     const type_summary = summarize(type, summary.elsewhere_type)
+    const owner_summary = summarize(owner, summary.copyright_owner)
 
     return (
         <SourceWrapper key={policy["@id"]} src={src}>
@@ -63,6 +64,7 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
                     ...type_summary,
                     ...version_summary,
                     ...license_summary,
+                    ...owner_summary,
                 ]}
             />
         </SourceWrapper>
