@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FilterBar } from "../components/filterbar";
 import { SearchBar } from "../components/searchbar";
 import { PadList, PadListPagination, PadListProgress } from "../components/search_list";
@@ -18,16 +18,13 @@ function SearchComponent() {
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true)
 
-    const loadPads = useCallback(async (page: number) => {
+    const loadPads = async (page: number) => {
         setLoading(true)
-        const { padlist, num } = await pad_list(
-            searchState,
-            pagesize * page
-        );
+        const { padlist, num } = await pad_list(searchState, pagesize * page);
         dispatch(padsActions.pads_set(order_pads(padlist, orderasc)));
         dispatch(padsActions.total_set(num));
         setLoading(false)
-    }, [dispatch, orderasc, pagesize, searchState])
+    }
 
     async function doSearch() {
         dispatch(searchActions.page_reset());
@@ -36,7 +33,7 @@ function SearchComponent() {
 
     useEffect(() => {
         loadPads(page);
-    }, [page, pagesize, loadPads]);
+    }, [page, pagesize]);
 
     return (
         <Grid container direction="column" spacing={2} id="search">
