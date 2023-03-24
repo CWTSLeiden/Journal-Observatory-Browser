@@ -5,7 +5,7 @@ import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { LabelContext } from "../store";
 import { labelize } from "../query/labels";
 import { Summary } from "./details_policy_summary";
-import { MaybeLink } from "./details";
+import { MaybeLink, MaybeLinkIcon } from "./details";
 
 export type Item = [string, string, string?]
 
@@ -43,7 +43,7 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
                     return (
                         <ListItem
                             key={prop + val}
-                            secondaryAction={<MaybeLink link={link} />}
+                            secondaryAction={<MaybeLinkIcon link={link} />}
                         >
                             <ListItemButton sx={{minHeight: 32, cursor: 'default'}}>
                             <Grid container spacing={1} alignItems="center">

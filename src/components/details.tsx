@@ -164,12 +164,13 @@ export const MaybeLink = ({link, label}: {link: string | string[]; label?: strin
     const href = Array.isArray(link) ? link.find(Boolean) : link
     const ishref = href ? href.match(/^(https|http|www):/) : null
     const title = ishref && label ? label : link
-    return ishref ? <Link href={href} target="_blank">{title}</Link> : <div>title</div>
+    return ishref ? <Link href={href} target="_blank">{title}</Link> : <div>{title}</div>
 }
 
 export const MaybeLinkIcon = ({link}: {link: string | string[]}) => {
     const href = Array.isArray(link) ? link.find(Boolean) : link
     const ishref = href ? href.match(/^(https|http|www):/) : null
+    console.log(ishref, href)
     if (ishref) {
         return (
             <IconButton edge="end" href={href} target="_blank">
