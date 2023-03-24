@@ -170,7 +170,6 @@ export const MaybeLink = ({link, label}: {link: string | string[]; label?: strin
 export const MaybeLinkIcon = ({link}: {link: string | string[]}) => {
     const href = Array.isArray(link) ? link.find(Boolean) : link
     const ishref = href ? href.match(/^(https|http|www):/) : null
-    console.log(ishref, href)
     if (ishref) {
         return (
             <IconButton edge="end" href={href} target="_blank">

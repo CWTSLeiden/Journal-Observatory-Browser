@@ -1,4 +1,4 @@
-import { AttachMoney, CheckCircle, CorporateFare, Error, HistoryEdu, Lock, LockOpen, MoneyOff, Person, RemoveCircle, Visibility, VisibilityOff } from "@mui/icons-material"
+import { AttachMoney, Attribution, CheckCircle, Copyright, Error, Lock, LockOpen, MoneyOff, RemoveCircle, Visibility, VisibilityOff } from "@mui/icons-material"
 import { IconTypeMap } from "@mui/material/Icon"
 import { OverridableComponent } from "@mui/material/OverridableComponent"
 
@@ -20,23 +20,24 @@ export const openaccess = (value: string): Summary => {
 }
 
 export const license = (value: string): Summary => {
+    const icon = Attribution
     switch(value) {
         case "https://creativecommons.org/publicdomain/zero/1.0/":
-            return [value, "success", HistoryEdu]
+            return [value, "success", icon]
         case "https://creativecommons.org/licenses/by/4.0/":
-            return [value, "warning", HistoryEdu]
+            return [value, "warning", icon]
         case "https://creativecommons.org/licenses/by-nc/4.0/":
-            return [value, "warning", HistoryEdu]
+            return [value, "warning", icon]
         case "https://creativecommons.org/licenses/by-nc-nd/4.0/":
-            return [value, "warning", HistoryEdu]
+            return [value, "warning", icon]
         case "https://creativecommons.org/licenses/by-nc-sa/4.0/":
-            return [value, "warning", HistoryEdu]
+            return [value, "warning", icon]
         case "https://creativecommons.org/licenses/by-nd/4.0/":
-            return [value, "warning", HistoryEdu]
+            return [value, "warning", icon]
         case "https://creativecommons.org/licenses/by-sa/4.0/":
-            return [value, "warning", HistoryEdu]
+            return [value, "warning", icon]
         default:
-            return [value, "default", HistoryEdu]
+            return [value, "default", icon]
     }
 }
 
@@ -47,13 +48,14 @@ export const apc = (value: string): Summary => {
 }
 
 export const copyright_owner = (value: string): Summary => {
+    const icon = Copyright
     switch(value) {
         case "pro:author":
-            return [value, "success", Person]
+            return [value, "success", icon]
         case "pro:publisher":
-            return [value, "warning", CorporateFare]
+            return [value, "warning", icon]
         default:
-            return [value, "default"]
+            return [value, "default", icon]
     }
 }
 
