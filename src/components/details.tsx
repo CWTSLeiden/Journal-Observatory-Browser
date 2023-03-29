@@ -5,28 +5,36 @@ import { labelize } from "../query/labels";
 import { colorize } from "./theme";
 import { Link as LinkIcon } from "@mui/icons-material";
 import { useAppSelector } from "../store";
+import { sort_sources_keys } from "./details_sources";
+
 
 export const SourceWrapper = ({src, children}: {src: string[], children?: ReactElement}) => {
     const sources_store = useAppSelector(s => s.details.sources)
-    const sources_disabled = useAppSelector(s => s.details.sources_disabled)
-    const sources_enabled = src.filter(s => !(sources_disabled.includes(s)))
-    const sources = sources_enabled.map(s => sources_store[s]).filter(Boolean)
-    const creators = sources.map(s => ld_to_str(s ? s["dcterms:creator"] : "?"))
-    const creators_chips = creators.map(c => (
-        <Grid item key={c}>
-            <Chip size="small" color={colorize(c)} label={labelize(c)} />
-        </Grid>
-    ))
+    const sources_sorted = sort_sources_keys(sources_store)
+    const disabled = useAppSelector(s => s.details.sources_disabled)
+    const enabled = sources_sorted.filter(s => src.includes(s) && !(disabled.includes(s)))
+    const creators_chips = enabled.map(id => {
+        const source = sources_store[id]
+        if (source) {
+            const creator = ld_to_str(source["dcterms:creator"] || "?")
+            return (
+                <Grid item key={id}>
+                    <Chip size="small" color={colorize(creator)} label={labelize(creator)} />
+                </Grid>
+            )
+        }
+    })
+    const color = enabled.length == 1 ? colorize(ld_to_str(sources_store[enabled[0]]["dcterms:creator"])) : "custom0"
     return (
         <Tooltip
             placement="top-end"
             title={<Grid container spacing={1}>{creators_chips}</Grid>}
         >
             <Badge
-                badgeContent={sources.length}
-                color={sources.length == 1 ? colorize(creators.find(Boolean)) : "custom0" }
-                variant={sources.length > 1 ? "standard" : "dot"}
-                invisible={sources.length < 1}
+                badgeContent={enabled.length}
+                color={color}
+                variant={enabled.length > 1 ? "standard" : "dot"}
+                invisible={enabled.length < 1}
             >
                 {children}
             </Badge>

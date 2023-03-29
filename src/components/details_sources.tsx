@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from "../store"
 import * as actions from "../store/details"
 import { expand_id } from "../query/jsonld_helpers"
 
-const sort_sources_keys = (sources: object) => {
+export const sort_sources_keys = (sources: object) => {
     const key_date = Object.entries(sources).map(([id, source]) => [id, first(source, "dcterms:created")])
     const sort_tuple = (t1: [string, string], t2: [string, string]) => {
         const [,d1] = t1
