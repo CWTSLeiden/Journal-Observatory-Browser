@@ -79,17 +79,13 @@ export async function pad_store(pad_id: string): Promise<Quadstore> {
             {
                 ?pad pad:hasAssertion ?a .
                 ?a pad:hasSourceAssertion ?g .
-                service <repository:pad> {graph ?g { ?s ?p ?o }}
+                service <repository:pad> { graph ?g { ?s ?p ?o } }
             }
             union
             {
                 ?pad pad:hasAssertion ?a .
-                ?a pad:hasSourceAssertion ?sa .
-                service <repository:pad> {
-                    ?spad pad:hasAssertion ?sa ;
-                        pad:hasProvenance ?g .
-                    graph ?g { ?s ?p ?o }
-                }
+                ?a pad:hasSourceAssertion ?s .
+                graph ?g { ?s ?p ?o }
             }
         }
         values (?pad) {(pad:${pad_id})}
