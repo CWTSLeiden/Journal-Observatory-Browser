@@ -19,9 +19,7 @@ async function pad_list(search: SearchState, offset=0) {
     const nquery = `
         select (count(distinct ?pad) as ?count) where {
             ?pad a pad:PAD ; pad:hasAssertion ?assertion .
-            optional { ?assertion pad:hasSourceAssertion ?source .
-                service <repository:pad> { ?source dcterms:creator ?creator } }
-            graph ?assertion { ?platform a ppo:Platform . }
+            graph ?assertion { ?platform a ppo:Platform } .
             ${filter.creator_filter(search)}
             ${filter.search_filter(search.searchstring)}
             ${filter.pub_policy_filter(search)}
@@ -50,20 +48,15 @@ async function pad_list(search: SearchState, offset=0) {
                 prism:issn ?issnu ;
                 schema:name ?name ;
                 ?policytype ?policy ;
-                ppo:hasKeyword ?keyword ;
                 ppo:isOpenAccess ?openaccess ;
                 dcterms:creator ?creator ;
                 ppo:_ord ?order .
         }
         where {
             {
-                select ?pad ?platform ?creator ?order where {
+                select ?pad ?assertion ?platform ?order where {
                     ?pad a pad:PAD ; pad:hasAssertion ?assertion .
-                    optional { ?assertion pad:hasSourceAssertion ?source .
-                        service <repository:pad> { ?source dcterms:creator ?creator } }
-                    graph ?assertion {
-                        ?platform a ppo:Platform .
-                    }
+                    graph ?assertion { ?platform a ppo:Platform } .
                     ${orderprop(search)}
                     ${filter.creator_filter(search)}
                     ${filter.search_filter(search.searchstring)}
@@ -88,13 +81,13 @@ async function pad_list(search: SearchState, offset=0) {
                 ${order(search)}
                 ${limit(search, offset)}
             }
+            optional { ?assertion pad:hasSourceAssertion [ dcterms:creator ?creator ] }
             optional { ?platform schema:name ?name . }
             optional { ?platform dcterms:identifier ?id . bind(str(?id) as ?sid) . }
             optional { ?platform fabio:ISSNL ?issnl . }
             optional { ?platform prism:issn ?issn . }
             optional { ?platform prism:eIssn ?eissn . }
             bind(coalesce(?issnl, ?issn, ?eissn) as ?issnu) .
-            optional { ?platform ppo:hasKeyword ?keyword . }
             optional {
                 ?platform ppo:hasPolicy ?policy .
                 ?policy a ?policytype .
@@ -103,7 +96,6 @@ async function pad_list(search: SearchState, offset=0) {
         }
     `;
     console.log("Perform query", Date.now())
-    // console.log(query)
     const result = await query_jsonld(query)
     const num = Number(await query_single(nquery))
     const padlist = Array.isArray(result) ? result : []
