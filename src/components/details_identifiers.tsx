@@ -41,7 +41,7 @@ export const PlatformIdentifiers = () => {
             {identifiers.map(([p, n, s]) => (
                 <SourceWrapper key={n} src={s}>
                     <DetailsListItem
-                        primary={n.replace(/.*?:/, '')}
+                        primary={display_id(n)}
                         secondary={labelize(p, labels)}
                         avatar={<Fingerprint />}
                         link={link(p, n)}
@@ -70,4 +70,9 @@ async function platform_identifiers(store: Quadstore) {
         }
     `;
     return await query_jsonld(query, store);
+}
+
+const display_id = (id: string) => {
+    const isurl = id ? id.match(/^(https|http|www):/) : null
+    return isurl ? id.replace(/.*?([^/]+)$/,"$1") : id.replace(/.*?:/, '')
 }

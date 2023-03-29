@@ -35,19 +35,19 @@ export const PlatformNames = () => {
 async function platform_names(store: Quadstore) {
     const query = `
         construct {
-            ?s schema:name ?o .
-            ?s ppo:_src ?source .
-            ?s schema:url ?url .
+            ?platform schema:name ?name .
+            ?platform schema:url ?url .
+            ?platform ppo:_src ?source .
         }
         where {
-            ?pad pad:hasAssertion ?a . 
-            graph ?a {
-                ?s a ppo:Platform ; schema:name ?o .
-                optional { ?s schema:url ?url } .
+            ?pad pad:hasAssertion ?assertion . 
+            graph ?assertion {
+                ?p a ppo:Platform ; schema:name ?name .
+                optional { ?p schema:url ?url } .
             }
             optional {
-                ?a pad:hasSourceAssertion ?source
-                graph ?source { ?_ schema:name ?o }
+                ?assertion pad:hasSourceAssertion ?source
+                graph ?source { ?platform schema:name ?name }
             }
         }
     `;

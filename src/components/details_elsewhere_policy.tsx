@@ -5,9 +5,8 @@ import { Quadstore } from "quadstore";
 import { ld_cons_src, zip_prop } from "../query/jsonld_helpers";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
-import { PolicyDetailsItem } from "./details_policy";
+import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
-import summarize from "./details_policy_summary"
 
 export const PlatformElsewherePolicies = () => {
     const padStore = useContext(PadContext)
@@ -33,19 +32,19 @@ export const PlatformElsewherePolicies = () => {
 }
 
 const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]}) => {
-    const zip = zip_prop(policy)
-    const type = zip("@type").filter(([,v,]) => v != "ppo:PublicationElsewherePolicy")
+    const zip = zip_policy_prop(policy)
+    const type = zip("@type")
+        .filter(item => item.value != "ppo:PublicationElsewherePolicy")
+        .map(summary.elsewhere_type)
     const version = zip("ppo:appliesToVersion")
-    const license = zip("dcterms:license", true)
+        .map(summary.version)
+    const license = zip("dcterms:license")
+        .map(linkify_policy_item)
+        .map(summary.license)
     const embargo = zip("fabio:hasEmbargoDuration")
-    const owner = zip("ppo:hasCopyrightOwner")
+    const owner = zip("ppo:hasCopyrightOwner").map(summary.copyright_owner)
     const condition = zip("ppo:publicationCondition")
     const location = zip("ppo:publicationLocation")
-
-    const version_summary = summarize(version, summary.version)
-    const license_summary = summarize(license, summary.license)
-    const type_summary = summarize(type, summary.elsewhere_type)
-    const owner_summary = summarize(owner, summary.copyright_owner)
 
     return (
         <SourceWrapper key={policy["@id"]} src={src}>
@@ -59,12 +58,6 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
                     ...owner,
                     ...condition,
                     ...location
-                ]}
-                summary={[
-                    ...type_summary,
-                    ...version_summary,
-                    ...license_summary,
-                    ...owner_summary,
                 ]}
             />
         </SourceWrapper>

@@ -5,7 +5,7 @@ import { Quadstore } from "quadstore";
 import { ld_cons_src, ld_contains, ld_to_str } from "../query/jsonld_helpers";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
-import { Item, PolicyDetailsItem } from "./details_policy";
+import { PolicyDetailsItem, PolicyItem } from "./details_policy";
 import * as summary from "./details_policy_summary"
 
 export const PlatformEvaluationPolicies = () => {
@@ -32,40 +32,42 @@ export const PlatformEvaluationPolicies = () => {
 }
 
 const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}) => {
+    const id = ld_to_str(policy["@id"])
     const people = policy["ppo:involves"] || []
     const documents = policy["ppo:covers"] || []
 
     const authors = people.filter((p: object) => p["@type"] == "pro:author")
-    const authors_id = accessible(authors, "Author identity")
+    const authors_id = accessible(id, "Author identity", authors)
     const reviewers = people.filter((p: object) => p["@type"] == "pro:peer-reviewer")
-    const reviewers_id = accessible(reviewers, "Reviewer identity")
-    const reviewer_interacts = interacts(reviewers, "Reviewer interacts with")
+    const reviewers_id = accessible(id, "Reviewer identity", reviewers)
+    const reviewer_interacts = interacts(id, "Reviewer interacts with", reviewers)
     const editors = people.filter((p: object) => p["@type"] == "pro:editor")
-    const editors_id = accessible(editors, "Editor identity")
-    const people_id = [authors_id, reviewers_id, editors_id].filter(Boolean)
-    const anonymized = is_anonymized(authors, reviewers)
+    const editors_id = accessible(id, "Editor identity", editors)
+    const people_id = [authors_id, reviewers_id, editors_id]
+        .filter(Boolean)
+        .map(summary.accessible)
+    const anonymized = summary.anonymized(is_anonymized(id, reviewers, authors))
 
     const reports = documents.filter((p: object) => p["@type"] == "ppo:ReviewReport")
-    const report_id = accessible(reports, "ppo:ReviewReport")
+    const report_id = accessible(id, "ppo:ReviewReport", reports)
     const summaries = documents.filter((p: object) => p["@type"] == "ppo:ReviewSummary")
-    const summary_id = accessible(summaries, "ppo:ReviewSummary")
+    const summary_id = accessible(id, "ppo:ReviewSummary", summaries)
     const manuscripts = documents.filter((p: object) => p["@type"] == "ppo:SubmittedManuscript")
-    const manuscript_id = accessible(manuscripts, "ppo:SubmittedManuscript")
+    const manuscript_id = accessible(id, "ppo:SubmittedManuscript", manuscripts)
     const communication = documents.filter((p: object) => p["@type"] == "ppo:AuthorEditorCommunication")
-    const communication_id = accessible(communication, "ppo:AuthorEditorCommunication")
-    const documents_id = [report_id, summary_id, manuscript_id, communication_id].filter(Boolean)
+    const communication_id = accessible(id, "ppo:AuthorEditorCommunication", communication)
+    const documents_id = [report_id, summary_id, manuscript_id, communication_id]
+        .filter(Boolean)
+        .map(summary.accessible)
 
     const commenting = documents.filter((p: object) => p["@type"] == "ppo:postPublicationCommenting")
-    const commenting_id = ppc(commenting)
+    const commenting_id = ppc(id, commenting)
 
-    const anonymized_summary = summary.anonymized(anonymized ? anonymized[1] : null)
-    const people_id_summary = people_id.map(summary.accessible).filter(Boolean)
-    const documents_id_summary = documents_id.map(summary.accessible).filter(Boolean)
-    if (people_id_summary.length == 0) {
-        documents_id_summary.push(summary.no_accessible("No Identities Published"))
+    if (people_id.length == 0) {
+        people_id.push(summary.no_accessible(id, "No Identities Published"))
     }
-    if (documents_id_summary.length == 0) {
-        documents_id_summary.push(summary.no_accessible("No Review Documents Published"))
+    if (documents_id.length == 0) {
+        people_id.push(summary.no_accessible(id, "No Review Documents Published"))
     }
 
     return (
@@ -74,20 +76,10 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
                 id={policy["@id"]}
                 items={[
                     anonymized,
-                    authors_id,
-                    reviewers_id,
-                    editors_id,
-                    report_id,
-                    summary_id,
-                    manuscript_id,
-                    communication_id,
+                    ...people_id,
+                    ...documents_id,
                     ...commenting_id,
                     ...reviewer_interacts
-                ]}
-                summary={[
-                    anonymized_summary,
-                    ...people_id_summary,
-                    ...documents_id_summary,
                 ]}
             />
         </SourceWrapper>
@@ -134,8 +126,8 @@ async function platform_evaluation_policies(store: Quadstore) {
 }
 
 
-const is_anonymized = (authors: object[], reviewers: object[]): Item => {
-    const label = "Anonymized"
+const is_anonymized = (id: string, authors: object[], reviewers: object[]): PolicyItem => {
+    const item: PolicyItem = {id: id, type: "Anonymized"}
     const anonymous = (persons: object[], type: string) => {
         if (persons.length == 0) { return false }
         const anonymous = persons.every(ld_contains("ppo:anonymousTo", type))
@@ -147,40 +139,42 @@ const is_anonymized = (authors: object[], reviewers: object[]): Item => {
     const author_editor = anonymous(authors, "pro:editor")
     const reviewer_editor = anonymous(reviewers, "pro:editor")
     if (reviewer_author && author_reviewer && author_editor && reviewer_editor) {
-        return [label, "Triple"]
+        item.value = "Triple"
     }
     if (reviewer_author && author_reviewer) {
-        return [label, "Double"]
+        item.value = "Double"
     }
     if (reviewer_author) {
-        return [label, "Single"]
+        item.value = "Single"
     }
     if (!reviewer_author && !author_reviewer && !author_editor && !reviewer_editor) {
-        return [label, "All Identities Visible"]
+        item.value = "All Identities Visible"
     }
-    return null
+    return item.value ? item : null
 }
 
-const accessible = (obj: object[], label: string): Item => {
+const accessible = (id: string, type: string, obj: object[]): PolicyItem => {
     if (obj.length == 0) { return null }
+    const item: PolicyItem = {id: id, type: type}
     if (obj.some(ld_contains("ppo:publiclyAccessible", "ppo:Accessible"))) {
-        return [label, "ppo:Accessible"]
+        item.value = "ppo:Accessible"
     }
     if (obj.every(ld_contains("ppo:publiclyAccessible", "ppo:NotAccessible"))) {
-        return [label, "ppo:NotAccessible"]
+        item.value = "ppo:NotAccessible"
     }
     if (obj.some(ld_contains("ppo:publiclyAccessible", "ppo:OptIn"))) {
-        return [label, "ppo:OptIn"]
+        item.value = "ppo:OptIn"
     }
-    return null
+    return item.value ? item : null
 }
 
-const ppc = (obj: object[]): Item[] => {
-    const label = "Commenting"
-    return obj.map(o => ([label, ld_to_str(o["@id"])] as Item)).filter(([,id]) => id)
+const ppc = (id: string, obj: object[]): PolicyItem[] => {
+    const item: PolicyItem = {id: id, type: "Commenting"}
+    return obj.map(o => ({...item, value: ld_to_str(o["@id"])})).filter(item => item.value)
 }
 
-const interacts = (obj: object[], label: string): Item[] => {
+const interacts = (id: string, type: string, obj: object[]): PolicyItem[] => {
+    const item: PolicyItem = {id: id, type: type}
     const interactions = obj.map(o => (o["ppo:interactsWith"] || []).map(ld_to_str))
-    return interactions.flat().map(i => [label, i] as Item)
+    return interactions.flat().map(i => ({...item, value: i}))
 }

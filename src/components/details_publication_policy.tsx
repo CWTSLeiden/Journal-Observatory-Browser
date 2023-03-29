@@ -2,12 +2,11 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { first, ld_cons_src, zip_prop } from "../query/jsonld_helpers";
+import { first, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
-import { PolicyDetailsItem } from "./details_policy";
+import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
-import summarize from "./details_policy_summary"
 
 export const PlatformPubPolicies = () => {
     const padStore = useContext(PadContext)
@@ -33,26 +32,27 @@ export const PlatformPubPolicies = () => {
 }
 
 const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
-    const zip = zip_prop(policy)
+    const zip = zip_policy_prop(policy)
     const version = zip("ppo:appliesToVersion")
     const isopenaccess = zip("ppo:isOpenAccess")
-    const license = zip("dcterms:license", true)
+        .map(summary.openaccess)
+    const license = zip("dcterms:license")
+        .map(linkify_policy_item)
+        .map(summary.license)
     const embargo = zip("fabio:hasEmbargoDuration")
     const owner = zip("ppo:hasCopyrightOwner")
-    const apc = policy["ppo:hasArticlePublishingCharges"] || []
-    const apcmap = apc.map(a => {
-        const prop = "ppo:hasArticlePublishingCharges"
-        const price = first(a, "schema:price")
-        const currency = first(a, "schema:priceCurrency")
-        const url = first(a, "schema:url")
-        const pricecurrency = [price, currency].join(' ')
-        return [prop, pricecurrency, url]
-    })
-
-    const isopenaccess_summary = summarize(isopenaccess, summary.openaccess)
-    const license_summary = summarize(license, summary.license)
-    const apc_summary = summarize(apcmap, summary.apc)
-    const owner_summary = summarize(owner, summary.copyright_owner)
+        .map(summary.copyright_owner)
+    const apc = (policy["ppo:hasArticlePublishingCharges"] || [])
+        .map((apc: object) => ({
+            id: ld_to_str(apc["@id"]),
+            type: "ppo:hasArticlePublishingCharges",
+            value: [
+                first(apc, "schema:price") || "0",
+                first(apc, "schema:priceCurrency")
+            ].join(' '),
+            url: first(apc, "schema:url")
+        }))
+        .map(summary.apc)
 
     return (
         <SourceWrapper key={policy["@id"]} src={src}>
@@ -64,13 +64,7 @@ const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
                     ...license,
                     ...embargo,
                     ...owner,
-                    ...apcmap
-                ]}
-                summary={[
-                    ...isopenaccess_summary,
-                    ...license_summary,
-                    ...owner_summary,
-                    ...apc_summary
+                    ...apc
                 ]}
             />
         </SourceWrapper>

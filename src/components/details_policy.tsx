@@ -1,27 +1,64 @@
 import React, { useContext, useState } from "react";
-import { Avatar, Box, Card, CardActions, Chip, Divider, Grid, IconButton, List, ListItem, ListItemButton, Skeleton, Typography, useTheme } from "@mui/material";
-import { zip_ordering } from "../query/jsonld_helpers";
+import { Avatar, Box, Card, CardActions, Chip, Divider, Grid, IconButton, IconTypeMap, List, ListItem, ListItemButton, Skeleton, Typography, useTheme } from "@mui/material";
+import { expand_id, ld_to_str } from "../query/jsonld_helpers";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { LabelContext } from "../store";
 import { labelize } from "../query/labels";
-import { Summary } from "./details_policy_summary";
-import { MaybeLink, MaybeLinkIcon } from "./details";
+import { MaybeLinkIcon } from "./details";
+import { OverridableComponent } from "@mui/material/OverridableComponent";
 
-export type Item = [string, string, string?]
+export type PolicyItem = {
+    id: string,
+    type: string,
+    value?: string,
+    url?: string,
+    summary?: string,
+    color?: string,
+    Icon?: OverridableComponent<IconTypeMap>
+}
+
+export const zip_policy_prop = (policy: object) => (prop: string): PolicyItem[] => {
+    const val = Array.isArray(policy[prop]) ? policy[prop] : [policy[prop]]
+    return val
+        .filter(Boolean)
+        .map((v: object) => ({
+            id: ld_to_str(policy["@id"]),
+            type: prop,
+            value: ld_to_str(v),
+        } as PolicyItem))
+}
+
+export const linkify_policy_item = (item: PolicyItem): PolicyItem => {
+    return {...item, url: expand_id(item.value)}
+}
+
+export const policy_item_ordering = (a: PolicyItem, b: PolicyItem) => {
+    if (b.type == null) { return 1 }
+    if (a.type == null) { return -1 }
+    if (a.type.toLowerCase() > b.type.toLowerCase()) { return 1 }
+    if (a.type.toLowerCase() < b.type.toLowerCase()) { return -1 }
+    if (b.value == null) { return 1 }
+    if (a.value == null) { return -1 }
+    if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1 }
+    if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1 }
+    return 0
+}
 
 type PolicyDetailsItemProps = {
     id: string;
-    items: Array<Item>;
-    summary?: Array<Summary>;
+    items: PolicyItem[];
     disabled?: boolean;
 }
-export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsItemProps) => {
+export const PolicyDetailsItem = ({id, items, disabled}: PolicyDetailsItemProps) => {
     const labels = useContext(LabelContext)
     const [state, setState] = useState(false)
     const theme = useTheme()
     const color_text = disabled ? theme.palette.grey[400] : theme.palette.text.primary
     const color_text_sec = disabled ? theme.palette.grey[400] : theme.palette.text.secondary
     const color_card = disabled ? theme.palette.grey[100] : null
+
+    const details_items = items.filter(Boolean).filter(i => i.value)
+    const summary_items = items.filter(Boolean).filter(i => i.summary)
 
     const details = (
         <Box sx={{mt: 2}}>
@@ -36,14 +73,13 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
             </Box>
             <Divider sx={{mb: 1}} />
             <List dense>
-                {items
-                    .filter(Boolean)
-                    .sort(zip_ordering)
-                    .map(([prop, val, link]) => {
+                {details_items
+                    .sort(policy_item_ordering)
+                    .map(item => {
                     return (
                         <ListItem
-                            key={prop + val}
-                            secondaryAction={<MaybeLinkIcon link={link} />}
+                            key={item.id + item.type + item.value}
+                            secondaryAction={<MaybeLinkIcon link={item.url} />}
                         >
                             <ListItemButton sx={{minHeight: 32, cursor: 'default'}}>
                             <Grid container spacing={1} alignItems="center">
@@ -54,7 +90,7 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
                                         align="right"
                                         sx={{overflowWrap: 'break-word'}}
                                     >
-                                        {labelize(prop, labels)}
+                                        {labelize(item.type, labels)}
                                     </Typography>
                                 </Grid>
                                 <Grid item xs={6}>
@@ -63,7 +99,7 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
                                         color={color_text}
                                         sx={{overflowWrap: 'break-word'}}
                                     >
-                                        {labelize(val, labels)}
+                                        {labelize(item.value, labels)}
                                     </Typography>
                                 </Grid>
                             </Grid>
@@ -76,15 +112,15 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
     )
     const summary_component = (
         <PolicyDetailsSummaryItem
-            items={summary}
+            items={summary_items}
             disabled={disabled}
         />
 )
     return (
         <Card variant="outlined" sx={{width: '100%', bgcolor: color_card, p: 1}}>
-            {summary && summary.length > 0 ? summary_component : null}
-            {summary && summary.length > 0 && !state ? null : details}
-            {summary && summary.length > 0 ? (
+            {summary_items.length > 0 ? summary_component : null}
+            {summary_items.length > 0 && !state ? null : details}
+            {summary_items.length > 0 ? (
                 <CardActions
                     onClick={() => setState(!state)}
                     disableSpacing
@@ -99,7 +135,7 @@ export const PolicyDetailsItem = ({id, items, summary, disabled}: PolicyDetailsI
 }
 
 type PolicyDetailsItemSummaryProps = {
-    items: Summary[];
+    items: PolicyItem[];
     disabled: boolean
 }
 export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSummaryProps) => {
@@ -116,17 +152,17 @@ export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSum
     const color_grey = theme.palette.grey[100]
     return (
         <Grid container spacing={1}>
-            {items.filter(Boolean).map(([text, color, Icon]) => {
-                const safecolor = disabled ? color_grey : colors[color]
-                const icon = Icon ? (
+            {items.map(item => {
+                const safecolor = disabled ? color_grey : colors[item.color]
+                const icon = item.Icon ? (
                     <Avatar sx={{bgcolor: color_grey}}>
-                        <Icon fontSize="small" color={safecolor} />
+                        <item.Icon fontSize="small" color={safecolor} />
                     </Avatar>
                 ) : null
                 return (
-                    <Grid item key={text}>
+                    <Grid item key={item.id + item.type + item.summary}>
                         <Chip
-                            label={labelize(text, labels)}
+                            label={labelize(item.summary, labels)}
                             color={safecolor}
                             avatar={icon}
                             sx={{
