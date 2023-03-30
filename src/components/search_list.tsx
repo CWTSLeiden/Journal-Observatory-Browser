@@ -1,4 +1,4 @@
-import {Box, Card, Chip, Grid, LinearProgress, Skeleton, TablePagination, TableSortLabel,} from "@mui/material";
+import {Box, Card, Chip, Grid, LinearProgress, Skeleton, TablePagination, TableSortLabel, Typography,} from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
 import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
@@ -45,10 +45,23 @@ export const PadList = ({loading}: {loading: boolean}) => {
     return <>{pads.map((pad) => <PadCard key={pad["@id"]} pad={pad} />)}</>
 };
 
-export const PadListProgress = ({loading}: {loading: boolean}) => (
-    <Box sx={{height: '5px'}}>
-        {loading ? <LinearProgress sx={{borderRadius: 5}} /> : null }
-    </Box>
+export const PadListProgress = ({loading, status}: {loading: boolean, status: number}) => (
+    <Grid container alignItems="center" justifyItems="center" sx={{height: '15px'}}>
+        {!loading && (status != 200) ? <Error /> : null }
+        {loading ? <Loading /> : null }
+    </Grid>
+)
+
+const Loading = () => <Grid item xs={12}><LinearProgress sx={{borderRadius: 5}} /></Grid>
+const Error = () => (
+    <>
+        <Grid item xs={1}>
+            <Typography align="center" variant="body2" color="error">error</Typography>
+        </Grid>
+        <Grid item xs={11}>
+            <LinearProgress variant="determinate" color="error" value={100} sx={{borderRadius: 5}} />
+        </Grid>
+    </>
 )
 
 export const PadCardSkeleton = ({n}: {n?: number}) => (

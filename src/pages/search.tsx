@@ -17,12 +17,21 @@ function SearchComponent() {
     const orderasc = useAppSelector((s) => s.search.orderasc);
     const dispatch = useAppDispatch();
     const [loading, setLoading] = useState(true)
+    const [status, setStatus] = useState(200)
 
     const loadPads = async (page: number) => {
+        setStatus(200)
         setLoading(true)
-        const { padlist, num } = await pad_list(searchState, pagesize * page);
-        dispatch(padsActions.pads_set(order_pads(padlist, orderasc)));
-        dispatch(padsActions.total_set(num));
+        try {
+            const { padlist, num } = await pad_list(searchState, pagesize * page);
+            dispatch(padsActions.pads_set(order_pads(padlist, orderasc)));
+            dispatch(padsActions.total_set(num));
+        } catch(err) {
+            console.log(err)
+            dispatch(padsActions.pads_clear());
+            dispatch(padsActions.total_set(0));
+            setStatus(500)
+        }
         setLoading(false)
     }
 
@@ -47,7 +56,7 @@ function SearchComponent() {
                 <Grid item xs={12} sm={12} md={9} container id="results">
                     <Stack direction="column" spacing={1} sx={{width: "100%"}}>
                         <PadListPagination />
-                        <PadListProgress loading={loading} />
+                        <PadListProgress loading={loading} status={status} />
                         <PadList loading={loading} />
                         <PadListPagination />
                     </Stack>

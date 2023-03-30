@@ -61,6 +61,7 @@ export const endpoint = {
     type: "sparql",
     value: "https://sparql.boomen.net/repositories/job"
 };
+export const endpoint_timeout = 20_000
 
 export const context = {
     "brick": "https://brickschema.org/schema/Brick#",
@@ -98,6 +99,7 @@ export const context = {
     "pad": "https://journalobservatory.org/pad/",
     "ppo": "http://purl.org/cwts/ppo/",
     "loc": "http://id.loc.gov/ontologies/bibframe/",
+    "onto": "http://www.ontotext.com/",
     "openalex": "https://docs.openalex.org/about-the-data/venue#",
     "prism": "http://prismstandard.org/namespaces/basic/2.0/",
     "pro": "http://purl.org/spar/pro/",
