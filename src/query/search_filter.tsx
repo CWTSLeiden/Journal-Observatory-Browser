@@ -13,15 +13,11 @@ export const enabled = (toggles: Toggles, post_processing?: string) => {
 
 export const search_filter = (s?: string) => {
     const q = `
-        filter exists {
-            optional { ?platform schema:name ?name . }
-            optional { ?platform dcterms:identifier ?id . }
-            optional { ?platform ppo:hasKeyword ?keyword . } 
-            filter(contains(lcase(str(?name)), lcase("${s}"))
-                || contains(lcase(str(?id)), lcase("${s}"))
-                || contains(lcase(str(?keyword)), lcase("${s}"))
-            ) 
-        }
+        ?platform ?searchprop ?search .
+        ?search onto:fts "${s}"
+        filter(?searchprop in (schema:name) 
+            || ?searchprop in (dcterms:identifier)
+            && contains(?search, "${s}"))
     `;
     return s ? q : "";
 };
@@ -74,7 +70,7 @@ export const pub_apc_filter = (search: SearchState) => {
             ?policy a ppo:PublicationPolicy ;
                 ppo:hasArticlePublishingCharges [
                     schema:price ?price ;
-                    # schema:priceCurrency "USD" .
+                    schema:priceCurrency "USD" ;
                 ] .
             filter(?price <= ${search.pub_apcamount})
         }

@@ -57,9 +57,9 @@ async function pad_list(search: SearchState, offset=0) {
                 select ?pad ?assertion ?platform ?order where {
                     ?pad a pad:PAD ; pad:hasAssertion ?assertion .
                     graph ?assertion { ?platform a ppo:Platform } .
+                    ${filter.search_filter(search.searchstring)}
                     ${orderprop(search)}
                     ${filter.creator_filter(search)}
-                    ${filter.search_filter(search.searchstring)}
                     ${filter.pub_policy_filter(search)}
                     ${filter.pub_open_access_filter(search)}
                     ${filter.pub_embargo_filter(search)}
@@ -96,6 +96,7 @@ async function pad_list(search: SearchState, offset=0) {
         }
     `;
     console.log("Perform query", Date.now())
+    console.log(query.replace(/( *\n)+/g, '\n'))
     const result = await query_jsonld(query)
     const num = Number(await query_single(nquery))
     const padlist = Array.isArray(result) ? result : []
