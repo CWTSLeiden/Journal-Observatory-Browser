@@ -58,7 +58,6 @@ async function pad_list(search: SearchState, offset=0) {
                     ?pad a pad:PAD ; pad:hasAssertion ?assertion .
                     graph ?assertion { ?platform a ppo:Platform } .
                     ${filter.search_filter(search.searchstring)}
-                    ${orderprop(search)}
                     ${filter.creator_filter(search)}
                     ${filter.pub_policy_filter(search)}
                     ${filter.pub_open_access_filter(search)}
@@ -77,6 +76,7 @@ async function pad_list(search: SearchState, offset=0) {
                     ${filter.evaluation_interaction_filter(search)}
                     ${filter.evaluation_information_filter(search)}
                     ${filter.evaluation_comment_filter(search)}
+                    ${orderprop(search)}
                 }
                 ${order(search)}
                 ${limit(search, offset)}

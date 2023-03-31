@@ -25,7 +25,8 @@ export const search_filter = (s?: string) => {
 export const creator_filter = (search: SearchState) => {
     const filtered = enabled(search.creators, "uri")
     const q = `
-        filter(?creator in (${filtered.join(', ')}))
+        ?assertion pad:hasSourceAssertion [ dcterms:creator ?screator ] .
+        filter(?screator in (${filtered.join(', ')}))
     `
     return filtered.length ? q : ""
 }
