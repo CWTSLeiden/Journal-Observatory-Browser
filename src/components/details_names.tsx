@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { ld_cons_src } from "../query/jsonld_helpers";
+import { first, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
 import { DetailsCard, DetailsListItem, SourceWrapper } from "./details";
 
 export const PlatformNames = () => {
@@ -12,7 +12,7 @@ export const PlatformNames = () => {
     useEffect(() => {
         const render = async () => {
             const result = await platform_names(padStore)
-            setNames(names_expand(result))
+            setNames(ld_cons_src(result))
             setLoading(false)
         }
         padStore ? render() : null
@@ -20,12 +20,10 @@ export const PlatformNames = () => {
     return (
         <DetailsCard title="Names" loading={loading}>
             {names.map(([n, s]) => (
-                <SourceWrapper key={n["schema:name"]} src={s} >
+                <SourceWrapper key={ld_to_str(n["@id"])} src={s} >
                     <DetailsListItem
-                        key={n["schema:name"]}
-                        primary={n["schema:name"]}
-                        secondary={n["schema:url"]}
-                        link={n["schema:url"]}
+                        primary={ld_to_str(n["schema:name"])}
+                        link={ld_to_str(first(n, "schema:url"))}
                     />
                 </SourceWrapper>
             )).filter(Boolean)}
@@ -36,9 +34,9 @@ export const PlatformNames = () => {
 async function platform_names(store: Quadstore) {
     const query = `
         construct {
-            ?platform schema:name ?name .
-            ?platform schema:url ?url .
-            ?platform ppo:_src ?source .
+            ?name schema:name ?name .
+            ?name schema:url ?url .
+            ?name ppo:_src ?source .
         }
         where {
             ?pad pad:hasAssertion ?assertion . 
@@ -53,16 +51,4 @@ async function platform_names(store: Quadstore) {
         }
     `;
     return await query_jsonld(query, store)
-}
-
-const names_expand = (obj: object[]) => {
-    const cons_src = ld_cons_src(obj)
-    const expanded = cons_src.map(([n, src]) => {
-        const names = n["schema:name"] || []
-        if (Array.isArray(names)) {
-            return names.map(name => [{...n, "schema:name": name}, src])
-        }
-        return [[{...n, "schema:name": names}, src]]
-    })
-    return expanded.flat()
 }
