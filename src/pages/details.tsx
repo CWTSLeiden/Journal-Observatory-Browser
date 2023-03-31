@@ -45,6 +45,7 @@ function DetailsComponent() {
     // Set Sources
     useEffect(() => {
         const render = async () => {
+            dispatch(actions.sources_clear())
             const src = await pad_sources(padStore)
             dispatch(actions.sources_set(src))
         }
