@@ -28,8 +28,13 @@ export async function query_select(query: string, store: Quadstore) {
         format_query(query),
         { unionDefaultGraph: true }
     )
-    const quads = response2array(response)
-    return quads
+    const bindings = response2array(response)
+    return bindings
+}
+
+export async function query_select_first(query: string, store: Quadstore) {
+    const bindings = await query_select(`${query} limit 1`, store)
+    return bindings.find(Boolean)
 }
 
 export async function query_quads(query: string, store: Quadstore) {
@@ -42,7 +47,7 @@ export async function query_quads(query: string, store: Quadstore) {
     return quads
 }
 
-export async function query_jsonld(query: string, store: Quadstore) {
+export async function query_jsonld(query: string, store: Quadstore): Promise<Array<object>> {
     const quads = await query_quads(query, store)
     const document = await fromRDF(quads);
     const document_flat = await flatten(document, context);

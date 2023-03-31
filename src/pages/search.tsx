@@ -1,14 +1,14 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { FilterBar } from "../components/filterbar";
 import { SearchBar } from "../components/searchbar";
-import { PadTable, PadTablePagination } from "../components/padtable";
+import { PadList, PadListPagination, PadListProgress } from "../components/search_list";
 import { pad_list } from "../query/search";
 import { useAppSelector, useAppDispatch } from "../store";
-import * as padsActions from "../actions/pads";
-import * as searchActions from "../actions/search";
+import * as padsActions from "../store/pads";
+import * as searchActions from "../store/search";
 import { Grid } from "@mui/material";
 import { Stack } from "@mui/system";
-import { order_pads } from "../reducers/pads";
+import { order_pads } from "../store/pads";
 
 function SearchComponent() {
     const searchState = useAppSelector((s) => s.search);
@@ -16,23 +16,32 @@ function SearchComponent() {
     const pagesize = useAppSelector((s) => s.search.pagesize);
     const orderasc = useAppSelector((s) => s.search.orderasc);
     const dispatch = useAppDispatch();
+    const [loading, setLoading] = useState(true)
+    const [status, setStatus] = useState(200)
 
-    async function loadPads() {
-        const { padlist, num } = await pad_list(
-            searchState,
-            pagesize * page
-        );
-        dispatch(padsActions.pads_set(order_pads(padlist, orderasc)));
-        dispatch(padsActions.total_set(num));
+    const loadPads = async (page: number) => {
+        setStatus(200)
+        setLoading(true)
+        try {
+            const { padlist, num } = await pad_list(searchState, pagesize * page);
+            dispatch(padsActions.pads_set(order_pads(padlist, orderasc)));
+            dispatch(padsActions.total_set(num));
+        } catch(err) {
+            console.log(err)
+            dispatch(padsActions.pads_clear());
+            dispatch(padsActions.total_set(0));
+            setStatus(500)
+        }
+        setLoading(false)
     }
 
     async function doSearch() {
         dispatch(searchActions.page_reset());
-        loadPads();
+        loadPads(0);
     }
 
     useEffect(() => {
-        loadPads();
+        loadPads(page);
     }, [page, pagesize]);
 
     return (
@@ -46,9 +55,10 @@ function SearchComponent() {
                 </Grid>
                 <Grid item xs={12} sm={12} md={9} container id="results">
                     <Stack direction="column" spacing={1} sx={{width: "100%"}}>
-                        <PadTablePagination />
-                        <PadTable />
-                        <PadTablePagination />
+                        <PadListPagination />
+                        <PadListProgress loading={loading} status={status} />
+                        <PadList loading={loading} />
+                        <PadListPagination />
                     </Stack>
                 </Grid>
             </Grid>

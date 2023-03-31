@@ -1,17 +1,19 @@
-import React from "react";
-import * as searchActions from "../actions/search";
+import React, { useContext } from "react";
+import * as searchActions from "../store/search";
 import { DropdownCheckbox, DropdownToggles, CheckboxFilter, SliderFilter } from "./filter";
 import { labelize } from "../query/labels";
 import { SearchStore, useAppDispatch, useAppSelector } from "../store";
+import { LabelContext } from "../store";
 
 export const ElsewherePolicyFilter = () => {
+    const labels = useContext(LabelContext)
     const state = useAppSelector((store: SearchStore) => store.search.elsewhere_policy)
     const dispatch = useAppDispatch()
     return (
         <CheckboxFilter
             state={state}
             action={() => dispatch(searchActions.elsewhere_toggle())}
-            label={labelize("ppo:hasPublicationElsewherePolicy", "has Publication Elsewhere Policy")}
+            label={labelize("ppo:hasPublicationElsewherePolicy", labels)}
         />
     )
 }
@@ -89,11 +91,12 @@ export const ElsewhereLicenseFilter = () => {
 }
 
 export const ElsewhereCopyrightownerFilter = () => {
+    const labels = useContext(LabelContext)
     const toggles = useAppSelector((store: SearchStore) => store.search.elsewhere_copyrightowners)
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label={labelize("ppo:hasCopyrightOwner", "has Copyright Owners")}
+            label={labelize("ppo:hasCopyrightOwner", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.elsewhere_copyrightowners_toggleone(p))}
             reset_action={() => dispatch(searchActions.elsewhere_copyrightowners_reset())}
@@ -102,6 +105,7 @@ export const ElsewhereCopyrightownerFilter = () => {
 }
 
 export const ElsewhereEmbargoFilter = () => {
+    const labels = useContext(LabelContext)
     const state = useAppSelector((store: SearchStore) => store.search.elsewhere_embargo)
     const amount = useAppSelector((store: SearchStore) => store.search.elsewhere_embargoduration)
     const dispatch = useAppDispatch()
@@ -109,7 +113,7 @@ export const ElsewhereEmbargoFilter = () => {
         <DropdownCheckbox
             state={state}
             toggle={() => dispatch(searchActions.elsewhere_embargo_toggle())}
-            label={labelize("ppo:hasEmbargo", "has Embargo")}
+            label={labelize("fabio:hasEmbargoDuration", labels)}
         >
             <SliderFilter
                 state={state}

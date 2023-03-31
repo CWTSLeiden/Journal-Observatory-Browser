@@ -1,12 +1,17 @@
+import { Quadstore } from "quadstore";
+import { createContext } from "react";
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
-import SearchReducer from "../reducers/search";
-import PadsReducer from "../reducers/pads";
+import SearchReducer from "../store/search";
+import PadsReducer from "../store/pads";
+import DetailsReducer from "../store/details";
 
+// Redux
 const store = configureStore({
     reducer: {
         search: SearchReducer,
-        pads: PadsReducer
+        pads: PadsReducer,
+        details: DetailsReducer
     },
     devTools: true
 });
@@ -20,3 +25,12 @@ type AppDispatch = typeof store.dispatch
 
 export const useAppDispatch: () => AppDispatch = useDispatch
 export const useAppSelector: TypedUseSelectorHook<SearchStore> = useSelector
+
+// React Context
+const defaultOntologyContext: Quadstore = undefined
+export const OntologyContext = createContext(defaultOntologyContext)
+
+export const LabelContext = createContext({})
+
+const defaultPadContext: Quadstore = undefined
+export const PadContext = createContext(defaultPadContext)

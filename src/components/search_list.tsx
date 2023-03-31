@@ -1,15 +1,9 @@
-import {
-    Card,
-    Chip,
-    Grid,
-    TablePagination,
-    TableSortLabel,
-} from "@mui/material";
+import {Box, Card, Chip, Grid, LinearProgress, Skeleton, TablePagination, TableSortLabel, Typography,} from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
 import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
-import * as actions from "../actions/search";
-import { pad_id_norm, ld_to_str } from "../query/display_pad";
+import * as actions from "../store/search";
+import { pad_id_norm, ld_to_str } from "../query/jsonld_helpers";
 import { useAppDispatch, useAppSelector } from "../store";
 import { labelize } from "../query/labels";
 
@@ -39,15 +33,49 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
     )
 }
 
-const PadTable = () => {
+export const PadList = ({loading}: {loading: boolean}) => {
     const pads = useAppSelector((store) => store.pads.pads);
+    const pagesize = useAppSelector((store) => store.search.pagesize);
+    if (pads.length < 1 && loading) {
+        return <PadCardSkeleton n={pagesize} />
+    }
     if (pads.length < 1) {
         return <Card sx={{padding: 2}}>No Results</Card>
     }
     return <>{pads.map((pad) => <PadCard key={pad["@id"]} pad={pad} />)}</>
 };
 
-const PadTablePagination = () => {
+export const PadListProgress = ({loading, status}: {loading: boolean, status: number}) => (
+    <Grid container alignItems="center" justifyItems="center" sx={{height: '15px'}}>
+        {!loading && (status != 200) ? <Error /> : null }
+        {loading ? <Loading /> : null }
+    </Grid>
+)
+
+const Loading = () => <Grid item xs={12}><LinearProgress sx={{borderRadius: 5}} /></Grid>
+const Error = () => (
+    <>
+        <Grid item xs={1}>
+            <Typography align="center" variant="body2" color="error">error</Typography>
+        </Grid>
+        <Grid item xs={11}>
+            <LinearProgress variant="determinate" color="error" value={100} sx={{borderRadius: 5}} />
+        </Grid>
+    </>
+)
+
+export const PadCardSkeleton = ({n}: {n?: number}) => (
+    <>
+        {Array.from(Array(n == undefined ? 1 : n).keys()).map(n => (
+            <Grid key={n} item>
+                <Skeleton variant="rounded" height={125} sx={{padding: 2}} />
+            </Grid>
+        )
+        )}
+    </>
+)
+
+export const PadListPagination = () => {
     const total = useAppSelector((store) => store.pads.total);
     const pagesize = useAppSelector((store) => store.search.pagesize);
     const page = useAppSelector((store) => store.search.page);
@@ -93,7 +121,7 @@ const PadCard = ({ pad }: PadCardProps) => {
     const name = propToString(pad["schema:name"], true) || "<none>"
     const issn = propToString(pad["prism:issn"], true)
     return (
-        <Card key={pad_id} onClick={handleClick} sx={{padding: 2, cursor: "pointer"}}>
+        <Card key={pad_id} onClick={handleClick} sx={{padding: 2, cursor: "pointer", minHeight: '125px'}}>
             <Grid container spacing={2} alignItems="center">
                 <Grid item xs={8}><b>{name}</b></Grid>
                 <Grid item xs={3}>{ issn ? <i>ISSN: {issn}</i> : null }</Grid>
@@ -165,5 +193,3 @@ const PadCardSources = ({ pad }: PadCardProps) => {
         </>
     )
 }
-
-export { PadTable, PadTablePagination };

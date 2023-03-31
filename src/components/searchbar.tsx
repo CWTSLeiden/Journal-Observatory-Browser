@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../store";
-import * as searchActions from "../actions/search";
+import * as searchActions from "../store/search";
 import { Button, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 
@@ -8,7 +8,7 @@ type SearchBarProps = {
     handleSubmit: () => void;
 };
 const SearchBar = ({ handleSubmit }: SearchBarProps) => {
-    const state = useAppSelector((state) => state.search.searchstring);
+    const state = useAppSelector((store) => store.search.searchstring);
     const [input, setInput] = useState(state)
     useEffect(() => setInput(state), [state])
     const dispatch = useAppDispatch();

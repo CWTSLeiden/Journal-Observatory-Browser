@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import * as searchActions from "../actions/search";
+import * as searchActions from "../store/search";
 import { useAppDispatch, useAppSelector } from "../store";
 import { Button, Checkbox, FormControl, InputLabel, ListItemText, MenuItem, OutlinedInput, Select } from "@mui/material";
-import { enabledToggles, Toggles } from "../reducers/search";
+import { enabledToggles, Toggles } from "../store/search";
 import { labelize } from "../query/labels";
 
 export const CreatorSelect = () => { 

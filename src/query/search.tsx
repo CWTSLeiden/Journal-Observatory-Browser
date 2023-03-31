@@ -1,5 +1,5 @@
 import { query_jsonld, query_single } from "../query/remote";
-import { SearchState } from "../reducers/search";
+import { SearchState } from "../store/search";
 import * as filter from "./search_filter"
 
 const limit = (search: SearchState, offset: number) =>
@@ -19,9 +19,7 @@ async function pad_list(search: SearchState, offset=0) {
     const nquery = `
         select (count(distinct ?pad) as ?count) where {
             ?pad a pad:PAD ; pad:hasAssertion ?assertion .
-            optional { ?assertion pad:hasSourceAssertion ?source .
-                service <repository:pad> { ?source dcterms:creator ?creator } }
-            graph ?assertion { ?platform a ppo:Platform . }
+            graph ?assertion { ?platform a ppo:Platform } .
             ${filter.creator_filter(search)}
             ${filter.search_filter(search.searchstring)}
             ${filter.pub_policy_filter(search)}
@@ -50,23 +48,17 @@ async function pad_list(search: SearchState, offset=0) {
                 prism:issn ?issnu ;
                 schema:name ?name ;
                 ?policytype ?policy ;
-                ppo:hasKeyword ?keyword ;
                 ppo:isOpenAccess ?openaccess ;
                 dcterms:creator ?creator ;
                 ppo:_ord ?order .
         }
         where {
             {
-                select ?pad ?platform ?creator ?order where {
+                select ?pad ?assertion ?platform ?order where {
                     ?pad a pad:PAD ; pad:hasAssertion ?assertion .
-                    optional { ?assertion pad:hasSourceAssertion ?source .
-                        service <repository:pad> { ?source dcterms:creator ?creator } }
-                    graph ?assertion {
-                        ?platform a ppo:Platform .
-                    }
-                    ${orderprop(search)}
-                    ${filter.creator_filter(search)}
+                    graph ?assertion { ?platform a ppo:Platform } .
                     ${filter.search_filter(search.searchstring)}
+                    ${filter.creator_filter(search)}
                     ${filter.pub_policy_filter(search)}
                     ${filter.pub_open_access_filter(search)}
                     ${filter.pub_embargo_filter(search)}
@@ -84,17 +76,18 @@ async function pad_list(search: SearchState, offset=0) {
                     ${filter.evaluation_interaction_filter(search)}
                     ${filter.evaluation_information_filter(search)}
                     ${filter.evaluation_comment_filter(search)}
+                    ${orderprop(search)}
                 }
                 ${order(search)}
                 ${limit(search, offset)}
             }
+            optional { ?assertion pad:hasSourceAssertion [ dcterms:creator ?creator ] }
             optional { ?platform schema:name ?name . }
             optional { ?platform dcterms:identifier ?id . bind(str(?id) as ?sid) . }
             optional { ?platform fabio:ISSNL ?issnl . }
             optional { ?platform prism:issn ?issn . }
             optional { ?platform prism:eIssn ?eissn . }
             bind(coalesce(?issnl, ?issn, ?eissn) as ?issnu) .
-            optional { ?platform ppo:hasKeyword ?keyword . }
             optional {
                 ?platform ppo:hasPolicy ?policy .
                 ?policy a ?policytype .
@@ -103,7 +96,7 @@ async function pad_list(search: SearchState, offset=0) {
         }
     `;
     console.log("Perform query", Date.now())
-    console.log(query)
+    console.log(query.replace(/( *\n)+/g, '\n'))
     const result = await query_jsonld(query)
     const num = Number(await query_single(nquery))
     const padlist = Array.isArray(result) ? result : []

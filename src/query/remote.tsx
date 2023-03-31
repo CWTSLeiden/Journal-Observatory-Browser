@@ -1,7 +1,7 @@
 import { QueryEngine } from "@comunica/query-sparql";
 import { IDataSource } from "@comunica/types";
 import { fromRDF, compact, flatten } from "jsonld";
-import { context, endpoint } from "../config";
+import { context, endpoint, endpoint_timeout } from "../config";
 
 export type Sources = [IDataSource, ...IDataSource[]]
 export const defaultSource: Sources = [endpoint]
@@ -18,7 +18,7 @@ export async function query_select(query: string, sources = defaultSource) {
     const engine = new QueryEngine()
     const response = await engine.queryBindings(
         format_query(query),
-        { sources: sources, unionDefaultGraph: true }
+        { sources: sources, unionDefaultGraph: true, httpTimeout: endpoint_timeout }
     );
     const bindings = await response.toArray();
     return bindings;
@@ -28,7 +28,7 @@ export async function query_quads(query: string, sources = defaultSource) {
     const engine = new QueryEngine()
     const response = await engine.queryQuads(
         format_query(query),
-        { sources: sources, unionDefaultGraph: true }
+        { sources: sources, unionDefaultGraph: true, httpTimeout: endpoint_timeout }
     );
     const quads = await response.toArray();
     return quads;
