@@ -27,7 +27,7 @@ export const PlatformPublishers = () => {
             {publishers.map(([p, s]) => (
                 <SourceWrapper key={p["@id"]} src={s}>
                     <DetailsListItem
-                        primary={p["schema:name"] || labelize(p["@id"], labels)}
+                        primary={labelize(p["schema:name"] || p["@id"], labels)}
                         secondary={p["schema:url"]}
                         avatar={<CorporateFare />}
                         link={p["schema:url"] || p["@id"]}
@@ -56,7 +56,7 @@ async function platform_publishers(store: Quadstore) {
             ?prop rdfs:subPropertyOf* dcterms:relation .
             optional { ?org schema:name ?name . }
             optional { ?org rdfs:label ?label . }
-            bind(coalesce(?name, ?label) as ?name)
+            bind(coalesce(?label, ?name) as ?name)
             optional { ?org schema:url ?url . }
             optional { 
                 ?a pad:hasSourceAssertion ?source

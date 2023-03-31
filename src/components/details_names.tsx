@@ -24,6 +24,7 @@ export const PlatformNames = () => {
                     <DetailsListItem
                         key={n["schema:name"]}
                         primary={n["schema:name"]}
+                        secondary={n["schema:url"]}
                         link={n["schema:url"]}
                     />
                 </SourceWrapper>
@@ -42,12 +43,12 @@ async function platform_names(store: Quadstore) {
         where {
             ?pad pad:hasAssertion ?assertion . 
             graph ?assertion {
-                ?p a ppo:Platform ; schema:name ?name .
-                optional { ?p schema:url ?url } .
+                ?platform a ppo:Platform ; schema:name ?name .
+                optional { ?platform schema:url ?url } .
             }
             optional {
                 ?assertion pad:hasSourceAssertion ?source
-                graph ?source { ?platform schema:name ?name }
+                graph ?source { ?source_platform schema:name ?name }
             }
         }
     `;

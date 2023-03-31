@@ -11,6 +11,7 @@ export const labels = {
     "https://openalex.org": "OpenAlex",
     "https://www.ieee.org": "IEEE",
     "https://springernature.com": "Springer",
+    "https://wiley.com": "Wiley",
     "https://www.wiley.com": "Wiley",
     "https://www.wiley.com/": "Wiley",
     "https://elifesciences.org": "eLife",
