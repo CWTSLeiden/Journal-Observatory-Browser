@@ -1,4 +1,4 @@
-import {Box, Card, Chip, Grid, LinearProgress, Skeleton, TablePagination, TableSortLabel, Typography,} from "@mui/material";
+import {Card, CardActionArea, CardContent, Chip, Grid, LinearProgress, Skeleton, TablePagination, TableSortLabel, Typography,} from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
 import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
@@ -21,15 +21,15 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
         }
     }
     return (
-        <div>
-            <TableSortLabel
-                active={orderprop === prop}
-                direction={orderasc ? 'asc' : 'desc'}
-                onClick={clickHandler}
-            >
-                <b>{label}</b>
-            </TableSortLabel>
-        </div>
+        <TableSortLabel
+            component="div"
+            active={orderprop === prop}
+            direction={orderasc ? 'asc' : 'desc'}
+            onClick={clickHandler}
+            sx={{marginBottom: 0, paddingBottom: 0 }}
+        >
+            {label}
+        </TableSortLabel>
     )
 }
 
@@ -81,27 +81,30 @@ export const PadListPagination = () => {
     const page = useAppSelector((store) => store.search.page);
     const dispatch = useAppDispatch();
     return (
-        <Grid container sx={{paddingLeft: 2, paddingRight: 2}} spacing={2} alignItems="center">
-            <Grid item xs={4}>
-                <OrderLabel label="Name" prop="schema:name" />
+        <Typography variant="body2" component="div">
+            <Grid container sx={{paddingLeft: 1, paddingRight: 1}} alignItems="center">
+                <Grid item xs={3}>
+                    <OrderLabel label="Platform title" prop="schema:name" />
+                </Grid>
+                <Grid item xs={9}>
+                    <TablePagination
+                        component="div"
+                        page={page}
+                        rowsPerPage={pagesize}
+                        rowsPerPageOptions={[20, 50, 100]}
+                        onRowsPerPageChange={(e) => {
+                            dispatch(actions.page_setsize(Number(e.target.value)));
+                        }}
+                        onPageChange={(_, n) => {
+                            dispatch(actions.page_set(n));
+                        }}
+                        count={total}
+                        labelRowsPerPage='Platforms per page:'
+                        labelDisplayedRows={function defaultLabelDisplayedRows({ from, to, count }) { return `Platform ${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`; }}
+                    />
+                </Grid>
             </Grid>
-            <Grid item xs={8}>
-                <TablePagination
-                    component="div"
-                    page={page}
-                    rowsPerPage={pagesize}
-                    rowsPerPageOptions={[20, 50, 100]}
-                    onRowsPerPageChange={(e) => {
-                        dispatch(actions.page_setsize(Number(e.target.value)));
-                    }}
-                    onPageChange={(_, n) => {
-                        dispatch(actions.page_set(n));
-                    }}
-                    count={total}
-                    colSpan={4}
-                />
-            </Grid>
-        </Grid>
+        </Typography>
     );
 };
 
@@ -122,19 +125,23 @@ const PadCard = ({ pad }: PadCardProps) => {
     const issn = propToString(pad["prism:issn"], true)
     return (
         <Card key={pad_id} onClick={handleClick} sx={{padding: 2, cursor: "pointer", minHeight: '125px'}}>
-            <Grid container spacing={2} alignItems="center">
-                <Grid item xs={8}><b>{name}</b></Grid>
-                <Grid item xs={3}>{ issn ? <i>ISSN: {issn}</i> : null }</Grid>
-                <Grid item xs={1}><ArrowForward fontSize="small"/></Grid>
-                <Grid item xs={12} container spacing={2} alignItems="center">
-                    <Grid item xs={1} sx={{minWidth: 80}}>Policies: </Grid>
-                    <PadCardPolicies pad={pad} />
-                </Grid>
-                <Grid item xs={12} container spacing={2} alignItems="center">
-                    <Grid item xs={1} sx={{minWidth: 80}}>Sources: </Grid>
-                    <PadCardSources pad={pad} />
-                </Grid>
-            </Grid>
+            <CardActionArea>
+                <CardContent>
+                    <Grid container spacing={2} alignItems="flex-start">
+                        <Grid item xs={8}><Typography variant="subtitle1" component="div" sx={{fontWeight: 'bold'}}>{name}</Typography></Grid>
+                        <Grid item xs={3}>{ issn ? <Typography>ISSN: {issn}</Typography> : null }</Grid>
+                        <Grid item xs={1}><ArrowForward fontSize="small"/></Grid>
+                        <Grid item xs={12} container spacing={2} alignItems="center">
+                            <Grid item xs={1} sx={{minWidth: 80}}><Typography>Policies:</Typography></Grid>
+                            <PadCardPolicies pad={pad} />
+                        </Grid>
+                        <Grid item xs={12} container spacing={2} alignItems="center">
+                            <Grid item xs={1} sx={{minWidth: 80}}><Typography>Sources:</Typography></Grid>
+                            <PadCardSources pad={pad} />
+                        </Grid>
+                    </Grid>
+                </CardContent>
+            </CardActionArea>
         </Card>
     );
 };

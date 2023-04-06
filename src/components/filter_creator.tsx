@@ -39,7 +39,7 @@ export const MultipleSelect = ({label, toggles, commit}: MultipleSelectProps) =>
     }
     useEffect(() => setState(toggles), [toggles])
     return (
-        <FormControl>
+        <FormControl size="small">
             <InputLabel>{label}</InputLabel>
             <Select
                 id="filter-creators-select"

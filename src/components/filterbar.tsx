@@ -1,5 +1,5 @@
 import React, { ReactElement } from "react";
-import { Accordion, AccordionDetails, AccordionSummary, Button, List, Stack, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Button, List, Paper, Stack, Typography } from "@mui/material";
 import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubLicenseFilter, PubPolicyFilter } from "./filter_publication";
 import { ElsewhereCopyrightownerFilter, ElsewhereEmbargoFilter, ElsewhereLicenseFilter, ElsewhereLocationFilter, ElsewherePolicyFilter, ElsewhereVersionFilter } from "./filter_elsewhere";
 import { CreatorSelect } from "./filter_creator";
@@ -16,18 +16,20 @@ type FilterBarSectionProps = {
     children: ReactElement | ReactElement[]
 };
 const FilterBarSection = ({ id, title, folded, children }: FilterBarSectionProps ) => (
-    <Accordion defaultExpanded={!folded}>
-        <AccordionSummary id={id} expandIcon={<ExpandMore />} >
-            <Typography sx={{ fontWeight: 600 }}>
-                {title}
-            </Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-            <List>
-                {children}
-            </List>
-        </AccordionDetails>
-    </Accordion>
+    <Paper>
+        <Accordion defaultExpanded={!folded} disableGutters={true} elevation={0}>
+            <AccordionSummary id={id} expandIcon={<ExpandMore />} >
+                <Typography sx={{ fontWeight: 600 }}>
+                    {title}
+                </Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+                <List>
+                    {children}
+                </List>
+            </AccordionDetails>
+        </Accordion>
+    </Paper>
 )
 
 type FilterBarProps = {

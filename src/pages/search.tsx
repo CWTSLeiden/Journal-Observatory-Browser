@@ -54,7 +54,7 @@ function SearchComponent() {
                     <FilterBar handleSubmit={doSearch} />
                 </Grid>
                 <Grid item xs={12} sm={12} md={9} container id="results">
-                    <Stack direction="column" spacing={1} sx={{width: "100%"}}>
+                    <Stack direction="column" spacing={2} sx={{width: "100%"}}>
                         <PadListPagination />
                         <PadListProgress loading={loading} status={status} />
                         <PadList loading={loading} />
