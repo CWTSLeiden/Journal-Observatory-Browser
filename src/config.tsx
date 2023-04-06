@@ -60,7 +60,7 @@ export const colors_override: {[key: string]: customColor} = {
 
 export const endpoint = {
     type: "sparql",
-    value: "https://sparql.boomen.net/repositories/job"
+    value: "https://sparql.journalobservatory.org/repositories/job"
 };
 export const endpoint_timeout = 20_000
 
