@@ -55,10 +55,10 @@ function SearchComponent() {
                 </Grid>
                 <Grid item xs={12} sm={12} md={9} container id="results">
                     <Stack direction="column" spacing={2} sx={{width: "100%"}}>
-                        <PadListPagination />
+                        <PadListPagination loading={loading} />
                         <PadListProgress loading={loading} status={status} />
                         <PadList loading={loading} />
-                        <PadListPagination />
+                        <PadListPagination loading={loading} />
                     </Stack>
                 </Grid>
             </Grid>

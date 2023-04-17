@@ -75,37 +75,52 @@ export const PadCardSkeleton = ({n}: {n?: number}) => (
     </>
 )
 
-export const PadListPagination = () => {
+export const PadListPagination = ({loading}: {loading: boolean}) => {
+    const pads = useAppSelector((store) => store.pads.pads);
     const total = useAppSelector((store) => store.pads.total);
     const pagesize = useAppSelector((store) => store.search.pagesize);
     const page = useAppSelector((store) => store.search.page);
     const dispatch = useAppDispatch();
-    return (
-        <Typography variant="body2" component="div">
-            <Grid container sx={{paddingLeft: 1, paddingRight: 1}} alignItems="center">
-                <Grid item xs={3}>
-                    <OrderLabel label="Platform title" prop="schema:name" />
+    if (pads.length < 1 && !loading) {
+        return null
+    } else {
+        return (
+            <Typography variant="body2" component="div" height={40}>
+                <Grid container sx={{paddingLeft: 0, paddingRight: 0}} alignItems="center" justifyContent="space-between">
+                    <Grid item>
+                        {loading &&
+                            <Skeleton variant="rounded" width={100} sx={{padding: 2}} />
+                        }
+                        {!loading && pads.length > 1 &&
+                            <OrderLabel label="Platform title" prop="schema:name" />
+                        }
+                    </Grid>
+                    <Grid item>
+                        {loading &&
+                            <Skeleton component="div" variant="rounded" width={400} sx={{padding: 2}} />
+                        }
+                        {!loading && pads.length > 1 &&
+                            <TablePagination
+                                component="div"
+                                page={page}
+                                rowsPerPage={pagesize}
+                                rowsPerPageOptions={[20, 50, 100]}
+                                onRowsPerPageChange={(e) => {
+                                    dispatch(actions.page_setsize(Number(e.target.value)));
+                                }}
+                                onPageChange={(_, n) => {
+                                    dispatch(actions.page_set(n));
+                                }}
+                                count={total}
+                                labelRowsPerPage='Platforms per page:'
+                                labelDisplayedRows={function defaultLabelDisplayedRows({ from, to, count }) { return `Platform ${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`; }}
+                            />
+                        }
+                    </Grid>
                 </Grid>
-                <Grid item xs={9}>
-                    <TablePagination
-                        component="div"
-                        page={page}
-                        rowsPerPage={pagesize}
-                        rowsPerPageOptions={[20, 50, 100]}
-                        onRowsPerPageChange={(e) => {
-                            dispatch(actions.page_setsize(Number(e.target.value)));
-                        }}
-                        onPageChange={(_, n) => {
-                            dispatch(actions.page_set(n));
-                        }}
-                        count={total}
-                        labelRowsPerPage='Platforms per page:'
-                        labelDisplayedRows={function defaultLabelDisplayedRows({ from, to, count }) { return `Platform ${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`; }}
-                    />
-                </Grid>
-            </Grid>
-        </Typography>
-    );
+            </Typography>
+        );
+    }
 };
 
 const propToString = (
