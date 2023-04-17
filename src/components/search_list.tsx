@@ -26,7 +26,7 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
             active={orderprop === prop}
             direction={orderasc ? 'asc' : 'desc'}
             onClick={clickHandler}
-            sx={{marginBottom: 0, paddingBottom: 0 }}
+            sx={{marginBottom: 0, paddingBottom: 0, paddingLeft: 1 }}
         >
             {label}
         </TableSortLabel>
