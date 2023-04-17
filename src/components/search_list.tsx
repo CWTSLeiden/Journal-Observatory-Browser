@@ -139,7 +139,7 @@ const PadCard = ({ pad }: PadCardProps) => {
     const name = propToString(pad["schema:name"], true) || "<none>"
     const issn = propToString(pad["prism:issn"], true)
     return (
-        <Card key={pad_id} onClick={handleClick} sx={{padding: 2, cursor: "pointer", minHeight: '125px'}}>
+        <Card key={pad_id} onClick={handleClick} sx={{padding: 0, cursor: "pointer", minHeight: '125px'}}>
             <CardActionArea>
                 <CardContent>
                     <Grid container spacing={2} alignItems="flex-start">
