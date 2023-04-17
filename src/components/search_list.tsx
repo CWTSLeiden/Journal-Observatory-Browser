@@ -40,7 +40,7 @@ export const PadList = ({loading}: {loading: boolean}) => {
         return <PadCardSkeleton n={pagesize} />
     }
     if (pads.length < 1) {
-        return <Card sx={{padding: 2}}>No Results</Card>
+        return <Typography variant="body1">No platforms matching the search criteria have been found.</Typography>
     }
     return <>{pads.map((pad) => <PadCard key={pad["@id"]} pad={pad} />)}</>
 };
