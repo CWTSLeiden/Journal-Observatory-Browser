@@ -42,7 +42,7 @@ export const PadList = ({loading, status}: {loading: boolean, status: number}) =
     if (status != 200) {
         return <Typography variant="body1">An unexpected error occurred.</Typography>
     }
-    if (pads.length < 1) {
+    if (pads.length == 0) {
         return <Typography variant="body1">No platforms matching the search criteria have been found.</Typography>
     }
     return <>{pads.map((pad) => <PadCard key={pad["@id"]} pad={pad} />)}</>
@@ -65,7 +65,7 @@ export const PadListPagination = ({loading}: {loading: boolean}) => {
     const pagesize = useAppSelector((store) => store.search.pagesize);
     const page = useAppSelector((store) => store.search.page);
     const dispatch = useAppDispatch();
-    if (pads.length < 1 && !loading) {
+    if ((pads.length == 0) && !loading) {
         return null
     } else {
         return (
@@ -75,7 +75,7 @@ export const PadListPagination = ({loading}: {loading: boolean}) => {
                         {loading &&
                             <Skeleton variant="rounded" width={100} sx={{padding: 2}} />
                         }
-                        {!loading && pads.length > 1 &&
+                        {!loading && (pads.length > 0) &&
                             <OrderLabel label="Platform title" prop="schema:name" />
                         }
                     </Grid>
@@ -83,7 +83,7 @@ export const PadListPagination = ({loading}: {loading: boolean}) => {
                         {loading &&
                             <Skeleton component="div" variant="rounded" width={400} sx={{padding: 2}} />
                         }
-                        {!loading && pads.length > 1 &&
+                        {!loading && (pads.length > 0) &&
                             <TablePagination
                                 component="div"
                                 page={page}
