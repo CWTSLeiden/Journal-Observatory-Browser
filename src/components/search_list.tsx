@@ -46,7 +46,7 @@ export const PadList = ({loading}: {loading: boolean}) => {
 };
 
 export const PadListProgress = ({loading, status}: {loading: boolean, status: number}) => (
-    <Grid container alignItems="center" justifyItems="center" sx={{height: '15px'}}>
+    <Grid container alignItems="center" justifyItems="center">
         {!loading && (status != 200) ? <Error /> : null }
         {loading ? <Loading /> : null }
     </Grid>
