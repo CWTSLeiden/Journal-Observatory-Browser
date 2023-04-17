@@ -1,4 +1,4 @@
-import {Card, CardActionArea, CardContent, Chip, Grid, LinearProgress, Skeleton, TablePagination, TableSortLabel, Typography,} from "@mui/material";
+import {Card, CardActionArea, CardContent, Chip, Grid, Skeleton, TablePagination, TableSortLabel, Typography} from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
 import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
@@ -40,13 +40,22 @@ export const PadList = ({loading, status}: {loading: boolean, status: number}) =
         return <PadCardSkeleton n={pagesize} />
     }
     if (status != 200) {
-        return <Typography variant="body1">An unexpected error occurred.</Typography>
+        return <ErrorCode code={status} />
     }
     if (pads.length == 0) {
         return <Typography variant="body1">No platforms matching the search criteria have been found.</Typography>
     }
     return <>{pads.map((pad) => <PadCard key={pad["@id"]} pad={pad} />)}</>
 };
+
+const ErrorCode = ({code}: {code: number}) => {
+    if (code < 300) { return null }
+    let error_text = "An unexpected error occurred."
+    if (code < 400) { error_text = "Not Found." }
+    else if (code < 500) { error_text = "An unexpected error occurred." }
+    else if (code < 600) { error_text = "Internal Server Error." }
+    return <Typography variant="body1">{`${error_text} (${code})`}</Typography>
+}
 
 export const PadCardSkeleton = ({n}: {n?: number}) => (
     <>
