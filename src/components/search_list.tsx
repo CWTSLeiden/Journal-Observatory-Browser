@@ -33,36 +33,20 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
     )
 }
 
-export const PadList = ({loading}: {loading: boolean}) => {
+export const PadList = ({loading, status}: {loading: boolean, status: number}) => {
     const pads = useAppSelector((store) => store.pads.pads);
     const pagesize = useAppSelector((store) => store.search.pagesize);
     if (loading) {
         return <PadCardSkeleton n={pagesize} />
+    }
+    if (status != 200) {
+        return <Typography variant="body1">An unexpected error occurred.</Typography>
     }
     if (pads.length < 1) {
         return <Typography variant="body1">No platforms matching the search criteria have been found.</Typography>
     }
     return <>{pads.map((pad) => <PadCard key={pad["@id"]} pad={pad} />)}</>
 };
-
-export const PadListProgress = ({loading, status}: {loading: boolean, status: number}) => (
-    <Grid container alignItems="center" justifyItems="center">
-        {!loading && (status != 200) ? <Error /> : null }
-        {loading ? <Loading /> : null }
-    </Grid>
-)
-
-const Loading = () => <Grid item xs={12}><LinearProgress sx={{borderRadius: 5}} /></Grid>
-const Error = () => (
-    <>
-        <Grid item xs={1}>
-            <Typography align="center" variant="body2" color="error">error</Typography>
-        </Grid>
-        <Grid item xs={11}>
-            <LinearProgress variant="determinate" color="error" value={100} sx={{borderRadius: 5}} />
-        </Grid>
-    </>
-)
 
 export const PadCardSkeleton = ({n}: {n?: number}) => (
     <>
