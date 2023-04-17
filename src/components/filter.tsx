@@ -1,123 +1,170 @@
-import React, { ReactElement, useEffect, useState } from "react";
-import { useAppSelector, useAppDispatch, SearchStore } from "../store";
-import * as searchActions from "../actions/search";
+import React, { ReactElement, useContext, useEffect, useState } from "react";
 import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary,
-    Box,
-    Button,
+    Badge,
     Checkbox,
+    Collapse,
     FormControlLabel,
-    FormGroup,
+    List,
+    ListItem,
+    ListItemButton,
+    ListItemIcon,
+    ListItemText,
+    Radio,
+    RadioGroup,
     Slider,
-    Stack,
-    Typography,
 } from "@mui/material";
-import { ExpandMore } from "@mui/icons-material";
+import { ExpandLess, ExpandMore } from "@mui/icons-material";
+import { enabledToggles, Toggles } from "../store/search";
+import { labelize } from "../query/labels";
+import { LabelContext } from "../store";
 
-type CheckBoxFilterParams = {
-    state: (s: SearchStore) => boolean;
-    action: () => searchActions.searchAction;
+type CheckboxFilterParams = {
+    state: boolean;
+    action: () => void;
     label: string;
-    children?: Array<ReactElement> | ReactElement;
 };
-const CheckBoxFilter = ({
+export const CheckboxFilter = ({
     state,
     action,
     label,
-    children,
-}: CheckBoxFilterParams) => {
-    const checked = useAppSelector(state);
-    const dispatch = useAppDispatch();
-    const checkbox = (
-        <Checkbox
-            checked={Boolean(checked)}
-            onChange={() => dispatch(action())}
-        />
-    );
+}: CheckboxFilterParams) => {
     return (
-        <div className="filter">
-            <FormControlLabel control={checkbox} label={label} />
-            {children ? <Box sx={{ ml: 4, mr: 4 }}>{children}</Box> : ""}
-        </div>
+        <ListItem>
+            <ListItemButton onClick={action} disabled={state == undefined}>
+                <ListItemIcon>
+                    <Checkbox checked={state} />
+                </ListItemIcon>
+                <ListItemText primary={label} />
+            </ListItemButton>
+        </ListItem>
     );
 };
 
-const PubPolicyFilter = () => (
-    <CheckBoxFilter
-        state={(store) => store.search.pubpolicy}
-        action={searchActions.toggle_pubpolicy}
-        label="hasPubPolicy"
-    />
-);
-
-const PaywallFilter = () => (
-    <CheckBoxFilter
-        state={(store) => store.search.paywall}
-        action={searchActions.toggle_paywall}
-        label="hasPaywall"
-    />
-);
-
-const EmbargoFilter = () => {
-    const state = useAppSelector((s) => s.search.embargo);
-    const value = useAppSelector((s) => s.search.embargoduration);
+type SliderFilterParams = {
+    state: boolean;
+    value: number;
+    setvalue: (n: number) => void;
+    range: number[];
+    unit?: string;
+};
+export const SliderFilter = ({
+    state,
+    value,
+    setvalue,
+    range,
+    unit,
+}: SliderFilterParams) => {
     const [number, setNumber] = useState(value);
     useEffect(() => setNumber(value), [value]);
-    const dispatch = useAppDispatch();
     return (
-        <CheckBoxFilter
-            state={(store) => store.search.embargo}
-            action={searchActions.toggle_embargo}
-            label="hasEmbargo"
+        <Slider
+            disabled={!state}
+            valueLabelFormat={(n) => <div>{`${n} ${unit ? unit : ""}`}</div>}
+            value={number}
+            onChange={(_, n: number) => setNumber(n)}
+            onChangeCommitted={(_, n: number) => setvalue(n)}
+            min={Math.min(...range)}
+            max={Math.max(...range)}
+            valueLabelDisplay="auto"
+            marks={range.map((n) => ({
+                value: n,
+                label: String(n),
+            }))}
+        />
+    );
+};
+
+type DropdownCheckboxProps = {
+    state: boolean;
+    toggle: () => void;
+    icon?: ReactElement;
+    label: string;
+    children: ReactElement | ReactElement[];
+    indicator?: boolean;
+}
+export const DropdownCheckbox = ({state, toggle, icon, label, children, indicator}: DropdownCheckboxProps) => {
+    return (
+        <React.Fragment>
+            <ListItem>
+                <ListItemButton disabled={state == undefined} onClick={toggle}>
+                    <ListItemIcon>
+                        {icon ? icon : <Checkbox checked={state} />}
+                    </ListItemIcon>
+                    <ListItemText primary={label} />
+                    {indicator ? (state ? <ExpandLess /> : <ExpandMore />) : null}
+                </ListItemButton>
+            </ListItem>
+            <Collapse in={state} timeout="auto" unmountOnExit>
+                <List sx={{pl: 4, pr: 2}}>
+                    { children }
+                </List>
+            </Collapse>
+        </React.Fragment>
+    )
+}
+
+type DropdownTogglesProps = {
+    label: string;
+    toggles: Toggles;
+    toggle_action: (p: string) => void;
+    reset_action?: () => void;
+    labels?: { [key: string]: string };
+}
+export const DropdownToggles = ({label, toggles, toggle_action, reset_action, labels}: DropdownTogglesProps) => {
+    const clabels = useContext(LabelContext)
+    const [open, setOpen] = useState(false)
+    const amount = enabledToggles(toggles).length
+    const icon = (
+        <Badge overlap="circular" badgeContent={amount} color="primary">
+            <Checkbox checked={amount > 0} />
+        </Badge>
+    )
+    const handleToggle = () => {
+        if (open) reset_action()
+        setOpen(!open)
+    }
+    return (
+        <DropdownCheckbox
+            state={open}
+            toggle={handleToggle}
+            icon={icon}
+            label={label}
+            indicator
         >
-            <Slider
-                disabled={!state}
-                value={number}
-                onChange={(_, n: number) => setNumber(n)}
-                onChangeCommitted={(_, n: number) =>
-                    dispatch(searchActions.set_embargo(n))
-                }
-                max={24}
-                valueLabelDisplay="auto"
-                marks={[0, 6, 12, 18, 24].map((n) => ({
-                    value: n,
-                    label: `${n}M`,
-                }))}
-            />
-        </CheckBoxFilter>
-    );
-};
+            { Object.keys(toggles).map((p: string) => 
+                <CheckboxFilter
+                    key={p}
+                    state={toggles[p]}
+                    action={() => toggle_action(p)}
+                    label={labelize(p, {...clabels, ...labels})}
+                />)
+            }
+        </DropdownCheckbox>
+    )
+}
 
-type FilterBarProps = {
-    handleSubmit: React.UIEventHandler;
-};
-const FilterBar = ({ handleSubmit }: FilterBarProps) => {
+type RadioFilterProps = {
+    option: string;
+    options: string[];
+    setoption: (p: string) => void;
+    labels?: { [key: string]: string };
+}
+export const RadioFilter = ({option, options, setoption, labels}: RadioFilterProps) => {
+    const clabels = useContext(LabelContext)
+    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) =>
+        setoption(event.target.value)
+    const Option = ({value}: {value: string}) =>
+        <FormControlLabel
+            value={value}
+            control={<Radio />}
+            label={labelize(value, {...clabels, ...labels})}
+        />
     return (
-        <Stack id="filter-bar" spacing={2}>
-            <Accordion defaultExpanded={true}>
-                <AccordionSummary
-                    id="filter-panel-publication-policy"
-                    expandIcon={<ExpandMore />}
-                >
-                    <Typography sx={{ fontWeight: 600 }}>
-                        Publication Policy
-                    </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <FormGroup>
-                        <PubPolicyFilter />
-                        <PaywallFilter />
-                        <EmbargoFilter />
-                    </FormGroup>
-                </AccordionDetails>
-            </Accordion>
-            <Button variant="outlined" onClick={handleSubmit}>
-                Filter
-            </Button>
-        </Stack>
-    );
-};
-
-export { FilterBar };
+        <RadioGroup
+            value={option}
+            onChange={handleChange}
+        >
+            {options.map(option => <Option key={option} value={option} />)}
+        </RadioGroup>
+    )
+}

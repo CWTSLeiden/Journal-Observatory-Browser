@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../store";
-import * as searchActions from "../actions/search";
+import * as searchActions from "../store/search";
 import { Button, TextField } from "@mui/material";
 import { Stack } from "@mui/system";
 
@@ -8,11 +8,15 @@ type SearchBarProps = {
     handleSubmit: () => void;
 };
 const SearchBar = ({ handleSubmit }: SearchBarProps) => {
-    const state = useAppSelector((state) => state.search.searchstring);
+    const state = useAppSelector((store) => store.search.searchstring);
     const [input, setInput] = useState(state)
     useEffect(() => setInput(state), [state])
     const dispatch = useAppDispatch();
-    const commit = () => dispatch(searchActions.set_search(input))
+    const commit = () => dispatch(searchActions.search_set(input))
+    const clear = () => {
+        setInput("")
+        dispatch(searchActions.search_clear())
+    }
     return (
         <Stack id="search-bar" direction="row" spacing={2} mt={2}>
             <TextField
@@ -25,13 +29,17 @@ const SearchBar = ({ handleSubmit }: SearchBarProps) => {
                 onKeyUp={(e) => (e.key == "Enter" ? handleSubmit() : null)}
                 fullWidth
             />
-            <Button onClick={handleSubmit} variant="contained">
+            <Button
+                variant="contained"
+                onClick={handleSubmit}
+                sx={{width: 160}}>
                 Search
             </Button>
             <Button
                 variant="outlined"
-                onMouseDown={() => dispatch(searchActions.clear())}
+                onMouseDown={clear}
                 onMouseUp={handleSubmit}
+                sx={{width: 160}}
             >
                 Clear
             </Button>

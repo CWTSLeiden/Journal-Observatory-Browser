@@ -1,26 +1,36 @@
 import "../styles.css"
 import "../details.css"
 import React, { useState, useEffect, useContext } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams } from "react-router-dom";
 
-import * as detailsActions from "../actions/details"
-import MetadataComponent from "../components/metadata";
-import { AppContext, PadContext } from "../context";
-import { compact_id, expand_id } from "../config";
-import { pad_id_norm } from "../query/display_pad";
-import { query_jsonld, query_select, query_single } from "../query/local";
+import { OntologyContext, PadContext } from "../store";
+import { ld_to_str, pad_id_norm } from "../query/jsonld_helpers";
+import { query_jsonld } from "../query/local";
 import { pad_store } from "../query/pad_store"
-import { useAppDispatch } from "../store";
-import PolicyComponent from "../components/policy";
 import { mergeQuadstores } from "../query/local";
 import { Quadstore } from "quadstore";
+import { Grid, IconButton, useTheme } from "@mui/material";
+import { PadSourcesBar } from "../components/details_sources";
+import { PlatformTitle } from "../components/details_title";
+import { PlatformKeywords } from "../components/details_keywords";
+import { PlatformNames } from "../components/details_names";
+import { PlatformIdentifiers } from "../components/details_identifiers";
+import { ChevronLeft } from "@mui/icons-material";
+import { useAppDispatch, useAppSelector } from "../store";
+import * as actions from "../store/details"
+import { PlatformPublishers } from "../components/details_publishers";
+import { PlatformPubPolicies } from "../components/details_publication_policy";
+import { PlatformElsewherePolicies } from "../components/details_elsewhere_policy";
+import { PlatformEvaluationPolicies } from "../components/details_evaluation_policy";
 
 function DetailsComponent() {
     const pad_id = pad_id_norm(useParams().id)
-    const ontologyStore = useContext(AppContext).ontologyStore
+    const ontologyStore = useContext(OntologyContext)
     const [padStore, setPadStore] = useState(undefined)
-    const [pad_name, setPadName] = useState("loading...");
-    const dispatch = useAppDispatch();
+    const sidebar = useAppSelector(s => s.details.sidebar)
+    const sidebarwidth = 400
+    const dispatch = useAppDispatch()
+    const theme = useTheme()
 
     // Set PAD Store
     useEffect(() => {
@@ -30,92 +40,53 @@ function DetailsComponent() {
             setPadStore(store)
         }
         ontologyStore ? render() : null
-    }, [ontologyStore]);
+    }, [ontologyStore, dispatch, pad_id]);
 
     // Set Sources
     useEffect(() => {
         const render = async () => {
-            const src = await pad_sources(pad_id, padStore)
-            dispatch(detailsActions.set_sources(src))
+            dispatch(actions.sources_clear())
+            const src = await pad_sources(padStore)
+            dispatch(actions.sources_set(src))
         }
         padStore ? render() : null
-    }, [padStore])
-
-    // Set Platform Name
-    useEffect(() => {
-        const render = async () => 
-            setPadName(await pad_names(pad_id, padStore))
-        padStore ? render() : null
-    }, [padStore]);
-
-    // Set Labels
-    useEffect(() => {
-        const render = async () => {
-            const labels = await pad_labels(ontologyStore)
-            const labels_dict = {}
-            labels.map((l) => {
-                labels_dict[compact_id(l.get("property").value)] = l.get("label").value 
-                labels_dict[expand_id(l.get("property").value)] = l.get("label").value
-            })
-            dispatch(detailsActions.set_labels(labels_dict))
-        }
-        ontologyStore ? render() : null
-    }, [ontologyStore]);
+    }, [padStore, dispatch])
 
     return (
         <PadContext.Provider value={padStore}>
-            <section>
-                <title>{pad_name}</title>
-                <ul>
-                    <li id="pad_id">
-                        Pad ID: <Link to={`/pad/${pad_id}`}>{pad_id}</Link>
-                    </li>
-                    <li id="pad_doc">
-                        JSON
-                    </li>
-                </ul>
-                <input id="docinput" type="checkbox" />
-            </section>
-            <MetadataComponent pad_id={pad_id} />
-            <PolicyComponent pad_id={pad_id} />
+            <Grid component="main" container spacing={2} sx={{pr: sidebar ? `${sidebarwidth}px` : 0}}>
+                <Grid item xs={12}><PlatformTitle pad_id={pad_id} /></Grid>
+                <Grid item xs={12}><PlatformKeywords /></Grid>
+                <Grid item xs={6}><PlatformNames /></Grid>
+                <Grid item xs={6}><PlatformIdentifiers /></Grid>
+                <Grid item xs={6}><PlatformPublishers /></Grid>
+                <Grid item xs={6}><PlatformPubPolicies /></Grid>
+                <Grid item xs={6}><PlatformElsewherePolicies /></Grid>
+                <Grid item xs={6}><PlatformEvaluationPolicies /></Grid>
+            </Grid>
+            <PadSourcesBar width={sidebarwidth} />
+            <IconButton
+                color="primary"
+                sx={{ position: 'absolute', top: 12, right: 12 }}
+                onClick={() => dispatch(actions.sidebar_toggle())}
+            >
+                <ChevronLeft sx={{ color: theme.palette.primary.contrastText }}/>
+            </IconButton>
         </PadContext.Provider>
     );
 }
 
-async function pad_names(pad_id: string, store: Quadstore) {
-    const query = `
-        select ?name where {
-            ?pad a pad:PAD ;
-                pad:hasAssertion ?assertion .
-            graph ?assertion { ?s a ppo:Platform ; schema:name ?name }
-        }
-        values (?pad) {(pad:${pad_id})}
-    `;
-    const name = await query_single(query, store)
-    return name || pad_id
-}
-
-async function pad_sources(pad_id: string, store: Quadstore) {
+async function pad_sources(store: Quadstore) {
     const query = `
         construct { ?source ?p ?o }
         where { 
-            ?pad a pad:PAD ; pad:hasProvenance ?provenance .
-            graph ?provenance { ?assertion pad:hasSourceAssertion ?source } .
-            graph ?sprovenance { ?source ?p ?o }
-        }
-        values (?pad) {(pad:${pad_id})}
-    `;
-    return await query_jsonld(query, store);
-}
-
-async function pad_labels(store: Quadstore) {
-    const query = `
-        select ?property ?label where { 
-            ?property rdfs:label ?label
-            filter(str(?label) != "")
+        ?pad a pad:PAD ; pad:hasProvenance ?provenance .
+        graph ?provenance { ?assertion pad:hasSourceAssertion ?source } .
+        graph ?sprovenance { ?source ?p ?o }
         }
     `;
-    return await query_select(query, store);
+    const results = await query_jsonld(query, store);
+    return Object.fromEntries(results.map(result => [ld_to_str(result["@id"]), result]))
 }
 
 export default DetailsComponent;
