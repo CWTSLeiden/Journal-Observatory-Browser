@@ -40,9 +40,10 @@ function SearchComponent() {
         loadPads(0);
     }
 
+    // Variable changes that trigger reloading pads
     useEffect(() => {
         loadPads(page);
-    }, [page, pagesize]);
+    }, [page, pagesize, orderasc]);
 
     return (
         <Grid container direction="column" spacing={2} id="search">
