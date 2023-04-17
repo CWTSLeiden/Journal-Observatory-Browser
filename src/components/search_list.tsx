@@ -36,7 +36,7 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
 export const PadList = ({loading}: {loading: boolean}) => {
     const pads = useAppSelector((store) => store.pads.pads);
     const pagesize = useAppSelector((store) => store.search.pagesize);
-    if (pads.length < 1 && loading) {
+    if (loading) {
         return <PadCardSkeleton n={pagesize} />
     }
     if (pads.length < 1) {
