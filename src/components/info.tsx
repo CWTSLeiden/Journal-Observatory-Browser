@@ -27,7 +27,7 @@ export const InfoDialog = ({property, text}: {property: string, text?: string}) 
                         {labelize(property, labels)}
                     </Typography>
                 </DialogTitle>
-                <DialogContent dividers={true}>
+                <DialogContent>
                     <DialogContentText>
                         <ReactMarkdown>
                             {text || info[property]}
