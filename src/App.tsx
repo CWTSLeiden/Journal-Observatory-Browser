@@ -30,21 +30,21 @@ function App() {
     }, [ontology, labels]);
     
     return (
-        <Stack spacing={2}>
-            <ScrollToTop smooth top={200} component={<KeyboardArrowUpRounded />} />
-            <AppHeader />
-            <OntologyContext.Provider value={ontology}>
-                <LabelContext.Provider value={labels}>
-                    <Provider store={store}>
-                        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+            <Stack spacing={2}>
+                <ScrollToTop smooth top={200} component={<KeyboardArrowUpRounded />} />
+                <AppHeader />
+                <OntologyContext.Provider value={ontology}>
+                    <LabelContext.Provider value={labels}>
+                        <Provider store={store}>
                             <Container id="content-container">
                                 <AppRouter />
                             </Container>
-                        </ThemeProvider>
-                    </Provider>
-                </LabelContext.Provider>
-            </OntologyContext.Provider>
-        </Stack>
+                        </Provider>
+                    </LabelContext.Provider>
+                </OntologyContext.Provider>
+            </Stack>
+        </ThemeProvider>
     );
 }
 
