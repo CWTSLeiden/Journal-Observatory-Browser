@@ -23,7 +23,7 @@ const FilterBarSection = ({ id, title, infodialog, children }: FilterBarSectionP
     return (
         <Paper elevation={0}>
             <Accordion expanded={state} disableGutters={true}>
-                <AccordionSummary id={id} expandIcon={<ExpandMore onClick={toggle} />}>
+                <AccordionSummary id={id} expandIcon={<ExpandMore onClick={toggle} />} sx={{ pt: 0, pb: 0, pl: 2, pr: 1 }}>
                     <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
                         <Typography onClick={toggle} sx={{ fontWeight: 600 }}>
                             {title}
@@ -32,7 +32,7 @@ const FilterBarSection = ({ id, title, infodialog, children }: FilterBarSectionP
                         <Box sx={{ flex: 1 }} onClick={toggle} >&nbsp;</Box>
                     </Box>
                 </AccordionSummary>
-                <AccordionDetails>
+                <AccordionDetails sx={{ pt: 0, pb: 1, pl: 1, pr: 1 }}>
                     <List>
                         {children}
                     </List>
