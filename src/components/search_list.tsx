@@ -74,29 +74,41 @@ export const PadListPagination = ({loading}: {loading: boolean}) => {
     const pagesize = useAppSelector((store) => store.search.pagesize);
     const page = useAppSelector((store) => store.search.page);
     const dispatch = useAppDispatch();
-    if (pads.length > 0 || loading) {
+    if ((pads.length == 0) && !loading) {
+        return null
+    } else {
         return (
             <Typography variant="body2" component="div" height={40}>
                 <Grid container sx={{paddingLeft: 0, paddingRight: 0}} alignItems="center" justifyContent="space-between">
                     <Grid item>
-                        <OrderLabel label="Platform title" prop="schema:name" />
+                        {loading &&
+                            <Skeleton variant="rounded" width={100} sx={{padding: 2}} />
+                        }
+                        {!loading && (pads.length > 0) &&
+                            <OrderLabel label="Platform title" prop="schema:name" />
+                        }
                     </Grid>
                     <Grid item>
-                        <TablePagination
-                            component="div"
-                            page={page}
-                            rowsPerPage={pagesize}
-                            rowsPerPageOptions={[20, 50, 100]}
-                            onRowsPerPageChange={(e) => {
-                                dispatch(actions.page_setsize(Number(e.target.value)));
-                            }}
-                            onPageChange={(_, n) => {
-                                dispatch(actions.page_set(n));
-                            }}
-                            count={total}
-                            labelRowsPerPage='Platforms per page:'
-                            labelDisplayedRows={({from,to,count}) => `Platform ${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`}
-                        />
+                        {loading &&
+                            <Skeleton component="div" variant="rounded" width={400} sx={{padding: 2}} />
+                        }
+                        {!loading && (pads.length > 0) &&
+                            <TablePagination
+                                component="div"
+                                page={page}
+                                rowsPerPage={pagesize}
+                                rowsPerPageOptions={[20, 50, 100]}
+                                onRowsPerPageChange={(e) => {
+                                    dispatch(actions.page_setsize(Number(e.target.value)));
+                                }}
+                                onPageChange={(_, n) => {
+                                    dispatch(actions.page_set(n));
+                                }}
+                                count={total}
+                                labelRowsPerPage='Platforms per page:'
+                                labelDisplayedRows={function defaultLabelDisplayedRows({ from, to, count }) { return `Platform ${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`; }}
+                            />
+                        }
                     </Grid>
                 </Grid>
             </Typography>
