@@ -2,7 +2,9 @@ import "./styles.css";
 import React, { useEffect, useState } from "react";
 import { Buffer } from "buffer";
 import { Container, Stack, ThemeProvider } from "@mui/material";
+import { KeyboardArrowUpRounded } from "@mui/icons-material";
 import { Provider } from "react-redux";
+import ScrollToTop from "react-scroll-to-top";
 
 import AppHeader from "./components/header";
 import AppRouter from "./AppRouter";
@@ -29,6 +31,7 @@ function App() {
     
     return (
         <Stack spacing={2}>
+            <ScrollToTop smooth top={200} component={<KeyboardArrowUpRounded />} />
             <AppHeader />
             <OntologyContext.Provider value={ontology}>
                 <LabelContext.Provider value={labels}>
