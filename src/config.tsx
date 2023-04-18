@@ -101,7 +101,6 @@ export const context = {
     "pad": "https://journalobservatory.org/pad/",
     "ppo": "http://purl.org/cwts/ppo/",
     "loc": "http://id.loc.gov/ontologies/bibframe/",
-    "onto": "http://www.ontotext.com/",
     "openalex": "https://docs.openalex.org/about-the-data/venue#",
     "prism": "http://prismstandard.org/namespaces/basic/2.0/",
     "pro": "http://purl.org/spar/pro/",
