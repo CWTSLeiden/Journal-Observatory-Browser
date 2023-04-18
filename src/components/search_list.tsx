@@ -1,4 +1,4 @@
-import {Card, CardActionArea, CardContent, Chip, Grid, LinearProgress, Skeleton, TablePagination, TableSortLabel, Typography,} from "@mui/material";
+import {Card, CardActionArea, CardContent, Chip, Grid, Skeleton, TablePagination, TableSortLabel, Typography} from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
 import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
@@ -26,43 +26,36 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
             active={orderprop === prop}
             direction={orderasc ? 'asc' : 'desc'}
             onClick={clickHandler}
-            sx={{marginBottom: 0, paddingBottom: 0 }}
+            sx={{marginBottom: 0, paddingBottom: 0, paddingLeft: 1 }}
         >
             {label}
         </TableSortLabel>
     )
 }
 
-export const PadList = ({loading}: {loading: boolean}) => {
+export const PadList = ({loading, status}: {loading: boolean, status: number}) => {
     const pads = useAppSelector((store) => store.pads.pads);
     const pagesize = useAppSelector((store) => store.search.pagesize);
-    if (pads.length < 1 && loading) {
+    if (loading) {
         return <PadCardSkeleton n={pagesize} />
     }
-    if (pads.length < 1) {
-        return <Card sx={{padding: 2}}>No Results</Card>
+    if (status != 200) {
+        return <ErrorCode code={status} />
+    }
+    if (pads.length == 0) {
+        return <Typography variant="body1">No platforms matching the search criteria have been found.</Typography>
     }
     return <>{pads.map((pad) => <PadCard key={pad["@id"]} pad={pad} />)}</>
 };
 
-export const PadListProgress = ({loading, status}: {loading: boolean, status: number}) => (
-    <Grid container alignItems="center" justifyItems="center" sx={{height: '15px'}}>
-        {!loading && (status != 200) ? <Error /> : null }
-        {loading ? <Loading /> : null }
-    </Grid>
-)
-
-const Loading = () => <Grid item xs={12}><LinearProgress sx={{borderRadius: 5}} /></Grid>
-const Error = () => (
-    <>
-        <Grid item xs={1}>
-            <Typography align="center" variant="body2" color="error">error</Typography>
-        </Grid>
-        <Grid item xs={11}>
-            <LinearProgress variant="determinate" color="error" value={100} sx={{borderRadius: 5}} />
-        </Grid>
-    </>
-)
+const ErrorCode = ({code}: {code: number}) => {
+    if (code < 300) { return null }
+    let error_text = "An unexpected error occurred."
+    if (code < 400) { error_text = "Not Found." }
+    else if (code < 500) { error_text = "An unexpected error occurred." }
+    else if (code < 600) { error_text = "Internal Server Error." }
+    return <Typography variant="body1">{`${error_text} (${code})`}</Typography>
+}
 
 export const PadCardSkeleton = ({n}: {n?: number}) => (
     <>
@@ -75,37 +68,52 @@ export const PadCardSkeleton = ({n}: {n?: number}) => (
     </>
 )
 
-export const PadListPagination = () => {
+export const PadListPagination = ({loading}: {loading: boolean}) => {
+    const pads = useAppSelector((store) => store.pads.pads);
     const total = useAppSelector((store) => store.pads.total);
     const pagesize = useAppSelector((store) => store.search.pagesize);
     const page = useAppSelector((store) => store.search.page);
     const dispatch = useAppDispatch();
-    return (
-        <Typography variant="body2" component="div">
-            <Grid container sx={{paddingLeft: 1, paddingRight: 1}} alignItems="center">
-                <Grid item xs={3}>
-                    <OrderLabel label="Platform title" prop="schema:name" />
+    if ((pads.length == 0) && !loading) {
+        return null
+    } else {
+        return (
+            <Typography variant="body2" component="div" height={40}>
+                <Grid container sx={{paddingLeft: 0, paddingRight: 0}} alignItems="center" justifyContent="space-between">
+                    <Grid item>
+                        {loading &&
+                            <Skeleton variant="rounded" width={100} sx={{padding: 2}} />
+                        }
+                        {!loading && (pads.length > 0) &&
+                            <OrderLabel label="Platform title" prop="schema:name" />
+                        }
+                    </Grid>
+                    <Grid item>
+                        {loading &&
+                            <Skeleton component="div" variant="rounded" width={400} sx={{padding: 2}} />
+                        }
+                        {!loading && (pads.length > 0) &&
+                            <TablePagination
+                                component="div"
+                                page={page}
+                                rowsPerPage={pagesize}
+                                rowsPerPageOptions={[20, 50, 100]}
+                                onRowsPerPageChange={(e) => {
+                                    dispatch(actions.page_setsize(Number(e.target.value)));
+                                }}
+                                onPageChange={(_, n) => {
+                                    dispatch(actions.page_set(n));
+                                }}
+                                count={total}
+                                labelRowsPerPage='Platforms per page:'
+                                labelDisplayedRows={function defaultLabelDisplayedRows({ from, to, count }) { return `Platform ${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`; }}
+                            />
+                        }
+                    </Grid>
                 </Grid>
-                <Grid item xs={9}>
-                    <TablePagination
-                        component="div"
-                        page={page}
-                        rowsPerPage={pagesize}
-                        rowsPerPageOptions={[20, 50, 100]}
-                        onRowsPerPageChange={(e) => {
-                            dispatch(actions.page_setsize(Number(e.target.value)));
-                        }}
-                        onPageChange={(_, n) => {
-                            dispatch(actions.page_set(n));
-                        }}
-                        count={total}
-                        labelRowsPerPage='Platforms per page:'
-                        labelDisplayedRows={function defaultLabelDisplayedRows({ from, to, count }) { return `Platform ${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`; }}
-                    />
-                </Grid>
-            </Grid>
-        </Typography>
-    );
+            </Typography>
+        );
+    }
 };
 
 const propToString = (
@@ -124,7 +132,7 @@ const PadCard = ({ pad }: PadCardProps) => {
     const name = propToString(pad["schema:name"], true) || "<none>"
     const issn = propToString(pad["prism:issn"], true)
     return (
-        <Card key={pad_id} onClick={handleClick} sx={{padding: 2, cursor: "pointer", minHeight: '125px'}}>
+        <Card key={pad_id} onClick={handleClick} sx={{padding: 0, cursor: "pointer", minHeight: '125px'}}>
             <CardActionArea>
                 <CardContent>
                     <Grid container spacing={2} alignItems="flex-start">
