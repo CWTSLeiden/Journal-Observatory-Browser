@@ -2,6 +2,12 @@ import { customColor } from "./components/theme";
 
 export const pagesize = 20
 
+export const endpoint = {
+    type: "sparql",
+    value: "https://sparql.journalobservatory.org/repositories/job"
+};
+export const endpoint_timeout = 20_000
+
 export const labels = {
     "@id": "Identifier",
     "@type": "Type",
@@ -58,12 +64,6 @@ export const colors_override: {[key: string]: customColor} = {
     "https://elifesciences.org": "custom8",
 }
 
-export const endpoint = {
-    type: "sparql",
-    value: "https://sparql.journalobservatory.org/repositories/job"
-};
-export const endpoint_timeout = 20_000
-
 export const context = {
     "brick": "https://brickschema.org/schema/Brick#",
     "csvw": "http://www.w3.org/ns/csvw#",
@@ -75,7 +75,6 @@ export const context = {
     "doap": "http://usefulinc.com/ns/doap#",
     "foaf": "http://xmlns.com/foaf/0.1/",
     "odrl": "http://www.w3.org/ns/odrl/2/",
-    "onto": "http://www.ontotext.com/",
     "org": "http://www.w3.org/ns/org#",
     "owl": "http://www.w3.org/2002/07/owl#",
     "prof": "http://www.w3.org/ns/dx/prof/",
@@ -112,4 +111,25 @@ export const context = {
     "wd": "http://www.wikidata.org/entity/",
     "wdt": "http://www.wikidata.org/prop/direct/",
     "wikibase": "http://wikiba.se/ontology#"
+};
+
+export const info = {
+    "publication-policy-filterbar": `
+### Filters for policies of platforms regarding the publication of a scholarly work.
+- **Has Publication Policy**  
+  The platform has a policy regarding publishing on its own platfom.
+- **Is Open Access**  
+  Articles published on the platform can be published with an open access license.
+- **Has Article Publishing Charges**  
+  .
+- **License**  
+  .
+- **Has Copyright Owner**  
+  .
+- **Has Embargo Duration**  
+  .
+`,
+    "ppo:PublicationPolicy":
+        "Policies of the platform regarding the publication of a scholarly work."
+
 };

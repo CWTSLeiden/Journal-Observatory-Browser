@@ -7,6 +7,7 @@ import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
 import { PolicyDetailsItem, PolicyItem } from "./details_policy";
 import * as summary from "./details_policy_summary"
+import { InfoDialog } from "./info";
 
 export const PlatformEvaluationPolicies = () => {
     const padStore = useContext(PadContext)
@@ -23,7 +24,11 @@ export const PlatformEvaluationPolicies = () => {
     }, [padStore]);
 
     return (
-        <DetailsCard title="Evaluation Policies" loading={loading}>
+        <DetailsCard
+            title="Evaluation Policies"
+            loading={loading}
+            infodialog={<InfoDialog property="ppo:EvaluationPolicy" />}
+        >
             {policies.map(([p, s]) => (
                 <PlatformEvaluationPolicy key={p["@id"]} policy={p} src={s} />
             ))}

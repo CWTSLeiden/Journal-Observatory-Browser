@@ -73,15 +73,16 @@ type DetailsCardProps = {
     title: string;
     children?: React.ReactElement | React.ReactElement[];
     loading?: boolean
+    infodialog?: React.ReactElement;
 }
-export const DetailsCard = ({title, children, loading}: DetailsCardProps) => {
+export const DetailsCard = ({title, children, loading, infodialog}: DetailsCardProps) => {
     const sources_disabled = useAppSelector(s => s.details.sources_disabled)
     const loading_component = [<DetailsListItemSkeleton key="0" />]
     const hidden_component = [<DetailsListItem key="0" primary="Hidden" secondary="Expand source filter" disabled />]
     const missing_component = [<DetailsListItem key="0" primary="No data" disabled />]
     return (
         <Card>
-            <CardHeader title={title} />
+            <CardHeader title={title} action={infodialog} />
             <Divider />
             <CardContent>
                 <Stack direction="column" spacing={1}>

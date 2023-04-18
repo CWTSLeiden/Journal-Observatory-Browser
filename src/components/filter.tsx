@@ -1,18 +1,5 @@
 import React, { ReactElement, useContext, useEffect, useState } from "react";
-import {
-    Badge,
-    Checkbox,
-    Collapse,
-    FormControlLabel,
-    List,
-    ListItem,
-    ListItemButton,
-    ListItemIcon,
-    ListItemText,
-    Radio,
-    RadioGroup,
-    Slider,
-} from "@mui/material";
+import { Badge, Checkbox, Collapse, FormControlLabel, List, ListItem, ListItemButton, ListItemIcon, ListItemText, Radio, RadioGroup, Slider } from "@mui/material";
 import { ExpandLess, ExpandMore } from "@mui/icons-material";
 import { enabledToggles, Toggles } from "../store/search";
 import { labelize } from "../query/labels";
