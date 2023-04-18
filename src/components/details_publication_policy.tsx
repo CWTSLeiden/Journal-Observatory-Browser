@@ -97,10 +97,11 @@ async function platform_publication_policies(store: Quadstore) {
                 optional { ?policy ?haslicense ?license . ?haslicense rdfs:subPropertyOf* dcterms:license } .
                 optional { ?policy fabio:hasEmbargoDuration ?embargo } .
                 optional { ?policy ppo:hasCopyrightOwner [ a ?copyrightowner ] } .
-                optional { ?policy ppo:hasArticlePublishingCharges ?apc } .
-                optional { ?apc schema:price ?apcprice } .
-                optional { ?apc schema:priceCurrency ?apccurrency } .
-                optional { ?apc schema:url ?apcurl } .
+                optional { ?policy ppo:hasArticlePublishingCharges ?apc .
+                    optional { ?apc schema:price ?apcprice } .
+                    optional { ?apc schema:priceCurrency ?apccurrency } .
+                    optional { ?apc schema:url ?apcurl } .
+                }
             }
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
