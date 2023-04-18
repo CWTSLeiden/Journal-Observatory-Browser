@@ -34,7 +34,7 @@ export const MultipleSelect = ({label, toggles, commit}: MultipleSelectProps) =>
     }
     const handleReset = () => {
         const newstate = {...state}
-        Object.keys(state).map(k => newstate[k] = true)
+        Object.keys(state).map(k => newstate[k] = false)
         setState(newstate)
     }
     useEffect(() => setState(toggles), [toggles])
@@ -51,15 +51,17 @@ export const MultipleSelect = ({label, toggles, commit}: MultipleSelectProps) =>
                 multiple
             >
                 {Object.keys(state).map(key => (
-                    <MenuItem key={key} value={key}>
-                        <Checkbox checked={state[key]} />
+                    <MenuItem key={key} value={key} sx={{pt: "1px", pb: "1px"}}>
+                        <Checkbox checked={state[key]} sx={{pr: 3}}/>
                         <ListItemText primary={labelize(key)} />
                     </MenuItem>
                 ))}
                 <Button
                     onClick={handleReset}
                     sx={{width: "100%", mt: 1}}
-                >All</Button>
+                >
+                    Clear
+                </Button>
             </Select>
         </FormControl>
     )
