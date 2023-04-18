@@ -1,5 +1,5 @@
-import React, { ReactElement } from "react";
-import { Accordion, AccordionDetails, AccordionSummary, Button, List, Paper, Stack, Typography } from "@mui/material";
+import React, { ReactElement, useState } from "react";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, List, Paper, Stack, Typography } from "@mui/material";
 import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubLicenseFilter, PubPolicyFilter } from "./filter_publication";
 import { ElsewhereCopyrightownerFilter, ElsewhereEmbargoFilter, ElsewhereLicenseFilter, ElsewhereLocationFilter, ElsewherePolicyFilter, ElsewhereVersionFilter } from "./filter_elsewhere";
 import { CreatorSelect } from "./filter_creator";
@@ -7,30 +7,40 @@ import { ExpandMore } from "@mui/icons-material";
 import { EvaluationAnonymizedFilter, EvaluationCommentsFilter, EvaluationInformationFilter, EvaluationInteractionsFilter, EvaluationPolicyFilter } from "./filter_evaluation";
 import { useAppDispatch } from "../store";
 import * as searchActions from "../store/search";
+import { InfoDialog } from "./info";
+import { info } from "../config";
 
 
 type FilterBarSectionProps = {
     id: string,
     title: string,
-    folded?: boolean
+    infodialog?: ReactElement,
     children: ReactElement | ReactElement[]
 };
-const FilterBarSection = ({ id, title, folded, children }: FilterBarSectionProps ) => (
-    <Paper>
-        <Accordion defaultExpanded={!folded} disableGutters={true} elevation={0}>
-            <AccordionSummary id={id} expandIcon={<ExpandMore />} >
-                <Typography sx={{ fontWeight: 600 }}>
-                    {title}
-                </Typography>
-            </AccordionSummary>
-            <AccordionDetails>
-                <List>
-                    {children}
-                </List>
-            </AccordionDetails>
-        </Accordion>
-    </Paper>
-)
+const FilterBarSection = ({ id, title, infodialog, children }: FilterBarSectionProps ) => {
+    const [state, setState] = useState(true)
+    const toggle = () => setState(!state)
+    return (
+        <Paper elevation={0}>
+            <Accordion expanded={state} disableGutters={true}>
+                <AccordionSummary id={id} expandIcon={<ExpandMore onClick={toggle} />}>
+                    <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+                        <Typography onClick={toggle} sx={{ fontWeight: 600 }}>
+                            {title}
+                        </Typography>
+                        {infodialog}
+                        <Box sx={{ flex: 1 }} onClick={toggle} >&nbsp;</Box>
+                    </Box>
+                </AccordionSummary>
+                <AccordionDetails>
+                    <List>
+                        {children}
+                    </List>
+                </AccordionDetails>
+            </Accordion>
+        </Paper>
+    )
+}
 
 type FilterBarProps = {
     handleSubmit: React.UIEventHandler;
@@ -44,6 +54,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
             <FilterBarSection
                 id="filter-panel-publication-policy"
                 title="Publication Policy"
+                infodialog={<InfoDialog property="ppo:PublicationPolicy" text={info["publication-policy-filterbar"]}/>}
             >
                 <PubPolicyFilter />
                 <OpenAccessFilter />
@@ -56,6 +67,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
             <FilterBarSection
                 id="filter-panel-publication-elsewhere-policy"
                 title="Publication Elsewhere Policy"
+                infodialog={<InfoDialog property="ppo:PublicationElsewherePolicy" text={info["elsewhere-policy-filterbar"]}/>}
             >
                 <ElsewherePolicyFilter />
                 <ElsewhereVersionFilter />
@@ -68,6 +80,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
             <FilterBarSection
                 id="filter-panel-evaluation-policy"
                 title="Evaluation Policy"
+                infodialog={<InfoDialog property="ppo:EvaluationPolicy" text={info["evaluation-policy-filterbar"]}/>}
             >
                 <EvaluationPolicyFilter />
                 <EvaluationAnonymizedFilter />

@@ -7,6 +7,7 @@ import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
 import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
+import { InfoDialog } from "./info";
 
 export const PlatformPubPolicies = () => {
     const padStore = useContext(PadContext)
@@ -23,7 +24,11 @@ export const PlatformPubPolicies = () => {
     }, [padStore]);
 
     return (
-        <DetailsCard title="Publication Policies" loading={loading}>
+        <DetailsCard
+            title="Publication Policies"
+            loading={loading}
+            infodialog={<InfoDialog property="ppo:PublicationPolicy" />}
+        >
             {policies.map(([p, s]) => (
                 <PlatformPubPolicy key={p["@id"]} policy={p} src={s} />
             ))}

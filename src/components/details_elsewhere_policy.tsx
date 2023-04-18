@@ -2,11 +2,12 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { ld_cons_src, zip_prop } from "../query/jsonld_helpers";
+import { ld_cons_src } from "../query/jsonld_helpers";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
 import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
+import { InfoDialog } from "./info";
 
 export const PlatformElsewherePolicies = () => {
     const padStore = useContext(PadContext)
@@ -23,7 +24,11 @@ export const PlatformElsewherePolicies = () => {
     }, [padStore]);
 
     return (
-        <DetailsCard title="Publication Elsewhere Policies" loading={loading}>
+        <DetailsCard
+            title="Publication Elsewhere Policies"
+            loading={loading}
+            infodialog={<InfoDialog property="ppo:PublicationElsewherePolicy" />}
+        >
             {policies.map(([p, s]) => (
                 <PlatformElsewherePolicy key={p["@id"]} policy={p} src={s} />
             ))}
