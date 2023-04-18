@@ -53,7 +53,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
             
             <FilterBarSection
                 id="filter-panel-publication-policy"
-                title="Publication Policy"
+                title="Publication policy"
                 infodialog={<InfoDialog property="ppo:PublicationPolicy" text={info["publication-policy-filterbar"]}/>}
             >
                 <PubPolicyFilter />
@@ -66,7 +66,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
 
             <FilterBarSection
                 id="filter-panel-publication-elsewhere-policy"
-                title="Publication Elsewhere Policy"
+                title="Preprinting/self-archiving policy"
                 infodialog={<InfoDialog property="ppo:PublicationElsewherePolicy" text={info["elsewhere-policy-filterbar"]}/>}
             >
                 <ElsewherePolicyFilter />
@@ -79,7 +79,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
 
             <FilterBarSection
                 id="filter-panel-evaluation-policy"
-                title="Evaluation Policy"
+                title="Evaluation policy"
                 infodialog={<InfoDialog property="ppo:EvaluationPolicy" text={info["evaluation-policy-filterbar"]}/>}
             >
                 <EvaluationPolicyFilter />

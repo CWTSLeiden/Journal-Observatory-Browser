@@ -28,29 +28,41 @@ export const labels = {
     "https://creativecommons.org/licenses/by-nc-sa/4.0/": "CC BY-NC-SA",
     "https://creativecommons.org/licenses/by-nd/4.0/": "CC BY-ND",
     "https://creativecommons.org/licenses/by-sa/4.0/": "CC BY-SA",
-    "non_commercial_institutional_repository": "Non Commercial Institutional Repository",
-    "non_commercial_subject_repository": "Non Commercial Subject Repository",
-    "non_commercial_social_network": "Non Commercial Social Network",
-    "this_journal": "This Journal",
-    "named_repository": "Named Repository",
-    "any_website": "Any Website",
-    "preprint_repository": "Preprint Repository",
-    "institutional_website": "Institutional Website",
-    "named_academic_social_network": "Named Academic Social Network",
-    "any_repository": "Any Repository",
-    "non_commercial_repository": "Non Commercial Repository",
-    "non_commercial_website": "Non Commercial Website",
-    "institutional_repository": "Institutional Repository",
-    "authors_homepage": "Authors Homepage",
-    "funder_designated_location": "Funder Designated Location",
-    "subject_repository": "Subject Repository",
-    "academic_social_network": "Academic Social Network",
-    "ppo:hasPublicationPolicy": "has Publication Policy",
-    "ppo:hasPublicationElsewherePolicy": "has Publication Elsewhere Policy",
-    "ppo:hasEvaluationPolicy": "has Evaluation Policy",
+    "non_commercial_institutional_repository": "Non-commercial institutional repository",
+    "non_commercial_subject_repository": "Non-commercial subject repository",
+    "non_commercial_social_network": "Non-commercial social network",
+    "this_journal": "This journal",
+    "named_repository": "Named repository",
+    "any_website": "Any website",
+    "preprint_repository": "Preprint repository",
+    "institutional_website": "Institutional website",
+    "named_academic_social_network": "Named academic social network",
+    "any_repository": "Any repository",
+    "non_commercial_repository": "Non-commercial repository",
+    "non_commercial_website": "Non-commercial website",
+    "institutional_repository": "Institutional repository",
+    "authors_homepage": "Author's homepage",
+    "funder_designated_location": "Funder designated location",
+    "subject_repository": "Subject repository",
+    "academic_social_network": "Academic social network",
+    "ppo:PublicationPolicy": "Publication policy",
+    "ppo:PublicationElsewherePolicy": "Preprinting/self-archiving policy",
+    "ppo:EvaluationPolicy": "Evaluation policy",
+    "ppo:hasPublicationPolicy": "Publication policy",
+    "ppo:hasPublicationElsewherePolicy": "Preprinting/self-archiving policy",
+    "ppo:hasEvaluationPolicy": "Evaluation policy",
     "ppo:postPublicationCommentingOpen": "Open",
-    "ppo:postPublicationCommentingOnInvitation": "On Invitation",
-    "ppo:postPublicationCommentingClosed": "Closed"
+    "ppo:postPublicationCommentingOnInvitation": "On invitation",
+    "ppo:postPublicationCommentingClosed": "Closed",
+    "ppo:isOpenAccess": "Open access",
+    "ppo:hasArticlePublishingCharges": "Article processing charges",
+    "ppo:hasCopyrightOwner": "Copyright owner",
+    "pro:peer-reviewer": "Peer reviewer",
+    "ppo:ReviewReport": "Review report",
+    "ppo:ReviewSummary": "Review summary",
+    "ppo:SubmittedManuscript": "Submitted manuscript",
+    "ppo:AuthorEditorCommunication": "Author-editor communication",
+    "fabio:hasEmbargoDuration": "Embargo period",
 }
 
 export const colors_override: {[key: string]: customColor} = {
@@ -75,6 +87,7 @@ export const context = {
     "doap": "http://usefulinc.com/ns/doap#",
     "foaf": "http://xmlns.com/foaf/0.1/",
     "odrl": "http://www.w3.org/ns/odrl/2/",
+    "onto": "http://www.ontotext.com/",
     "org": "http://www.w3.org/ns/org#",
     "owl": "http://www.w3.org/2002/07/owl#",
     "prof": "http://www.w3.org/ns/dx/prof/",
@@ -115,21 +128,28 @@ export const context = {
 
 export const info = {
     "publication-policy-filterbar": `
-### Filters for policies of platforms regarding the publication of a scholarly work.
-- **Has Publication Policy**  
+Filters for policies of platforms regarding the publication of a scholarly work.
+- **Publication policy**  
   The platform has a policy regarding publishing on its own platfom.
-- **Is Open Access**  
+- **Open access**  
   Articles published on the platform can be published with an open access license.
-- **Has Article Publishing Charges**  
-  .
+- **Article processing charges**  
+  ...
 - **License**  
-  .
-- **Has Copyright Owner**  
-  .
-- **Has Embargo Duration**  
-  .
+  ...
+- **Copyright owner**  
+  ...
+- **Embargo period**  
+  ...
 `,
+    "elsewhere-policy-filterbar":
+        "Filters for policies of platforms regarding the publication of a scholarly work on other platforms.",
+    "evaluation-policy-filterbar":
+        "Filters for policies of platforms regarding the evaluation of a scholarly work.",
     "ppo:PublicationPolicy":
-        "Policies of the platform regarding the publication of a scholarly work."
-
+        "Policies of the platform regarding the publication of a scholarly work.",
+    "ppo:PublicationElsewherePolicy":
+        "Policies of the platform regarding the publication of a scholarly work on other platforms.",
+    "ppo:EvaluationPolicy":
+        "Policies of the platform regarding the evaluation of a scholarly work."
 };

@@ -28,10 +28,10 @@ export const EvaluationAnonymizedFilter = () => {
             toggle_action={(p: string) => dispatch(searchActions.evaluation_anonymized_toggleone(p))}
             reset_action={() => dispatch(searchActions.evaluation_anonymized_reset())}
             labels={{
-                "all": "All Identities Visible",
-                "single": "Single Anonymized",
-                "double": "Double Anonymized",
-                "triple": "Triple Anonymized"
+                "all": "All identities visible",
+                "single": "Single anonymized",
+                "double": "Double anonymized",
+                "triple": "Triple anonymized"
             }}
         />
     )
@@ -42,7 +42,7 @@ export const EvaluationInteractionsFilter = () => {
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label="Reviewer Interacts With"
+            label="Reviewer interacts with"
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.evaluation_interactions_toggleone(p))}
             reset_action={() => dispatch(searchActions.evaluation_interactions_reset())}
@@ -55,7 +55,7 @@ export const EvaluationInformationFilter = () => {
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label="Review Information Published"
+            label="Review information published"
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.evaluation_information_toggleone(p))}
             reset_action={() => dispatch(searchActions.evaluation_information_reset())}
@@ -68,7 +68,7 @@ export const EvaluationCommentsFilter = () => {
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label="Post-Publication Commenting"
+            label="Post-publication commenting"
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.evaluation_comments_toggleone(p))}
             reset_action={() => dispatch(searchActions.evaluation_comments_reset())}

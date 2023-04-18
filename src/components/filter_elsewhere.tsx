@@ -23,7 +23,7 @@ export const ElsewhereVersionFilter = () => {
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label="Applies To Version"
+            label="Applies to version"
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.elsewhere_versions_toggleone(p))}
             reset_action={() => dispatch(searchActions.elsewhere_versions_reset())}
