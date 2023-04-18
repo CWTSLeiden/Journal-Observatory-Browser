@@ -1,4 +1,4 @@
-import { QuestionMark } from "@mui/icons-material"
+import { HelpOutlineTwoTone } from "@mui/icons-material"
 import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Typography } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React, { useContext, useState } from "react"
@@ -16,10 +16,10 @@ export const InfoDialog = ({property, text}: {property: string, text?: string}) 
         <>
             <IconButton
                 onClick={handleOpen}
-                sx={{ color: grey[400]}}
+                sx={{ color: grey[400] }}
                 size="small"
             >
-                <QuestionMark fontSize="inherit" sx={{mb: 1}} />
+                <HelpOutlineTwoTone fontSize="inherit" />
             </IconButton>
             <Dialog open={state} onClose={handleClose} scroll="paper">
                 <DialogTitle>
