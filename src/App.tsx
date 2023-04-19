@@ -2,7 +2,9 @@ import "./styles.css";
 import React, { useEffect, useState } from "react";
 import { Buffer } from "buffer";
 import { Container, Stack, ThemeProvider } from "@mui/material";
+import { KeyboardArrowUpRounded } from "@mui/icons-material";
 import { Provider } from "react-redux";
+import ScrollToTop from "react-scroll-to-top";
 
 import AppHeader from "./components/header";
 import AppRouter from "./AppRouter";
@@ -28,20 +30,21 @@ function App() {
     }, [ontology, labels]);
     
     return (
-        <Stack spacing={2}>
-            <AppHeader />
-            <OntologyContext.Provider value={ontology}>
-                <LabelContext.Provider value={labels}>
-                    <Provider store={store}>
-                        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme}>
+            <Stack spacing={2}>
+                <ScrollToTop smooth top={200} component={<KeyboardArrowUpRounded />} />
+                <AppHeader />
+                <OntologyContext.Provider value={ontology}>
+                    <LabelContext.Provider value={labels}>
+                        <Provider store={store}>
                             <Container id="content-container">
                                 <AppRouter />
                             </Container>
-                        </ThemeProvider>
-                    </Provider>
-                </LabelContext.Provider>
-            </OntologyContext.Provider>
-        </Stack>
+                        </Provider>
+                    </LabelContext.Provider>
+                </OntologyContext.Provider>
+            </Stack>
+        </ThemeProvider>
     );
 }
 
