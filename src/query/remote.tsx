@@ -1,7 +1,8 @@
 import { QueryEngine } from "@comunica/query-sparql";
 import { IDataSource } from "@comunica/types";
 import { fromRDF, compact, flatten } from "jsonld";
-import { context, endpoint, endpoint_timeout } from "../config";
+import context from "../strings/context.json";
+import { endpoint, endpoint_timeout } from "../config";
 
 export type Sources = [IDataSource, ...IDataSource[]]
 export const defaultSource: Sources = [endpoint]

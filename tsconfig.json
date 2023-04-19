@@ -6,6 +6,7 @@
             {"name": "react-hooks"}
         ],
         "jsx": "react",
+        "resolveJsonModule": true,
         "esModuleInterop": true,
         "moduleResolution": "node"
     }

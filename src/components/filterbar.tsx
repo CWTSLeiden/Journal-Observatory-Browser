@@ -8,7 +8,7 @@ import { EvaluationAnonymizedFilter, EvaluationCommentsFilter, EvaluationInforma
 import { LabelContext, useAppDispatch } from "../store";
 import * as searchActions from "../store/search";
 import { InfoDialog } from "./info";
-import { info } from "../config";
+import info from "../strings/info.json";
 import { labelize } from "../query/labels";
 
 

@@ -1,7 +1,7 @@
 import { Quadstore } from "quadstore";
 import { compact_id, expand_id } from "./jsonld_helpers";
 import { query_select } from "./local";
-import { labels as labels_override } from "../config";
+import labels_override from "../strings/labels.json";
 
 async function get_labels(store: Quadstore) {
     const query = `
