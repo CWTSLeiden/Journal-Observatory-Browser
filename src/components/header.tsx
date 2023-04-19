@@ -6,7 +6,7 @@ const AppHeader = () => (
         <Container id="header-container">
             <Toolbar>
                 <Typography component="h1" variant="h6">
-                    Scholarly Communication Platform Browser
+                    Journal Observatory Browser
                 </Typography>
             </Toolbar>
         </Container>
