@@ -1,17 +1,13 @@
 import React, { useState } from "react";
 import { AppBar, Button, Container, Dialog, DialogContent, DialogActions, DialogTitle, IconButton, Link, Toolbar, Typography } from "@mui/material";
 import { LibraryBooks, Info } from "@mui/icons-material";
+import ReactMarkdown from "react-markdown";
+import { info } from "../config";
 
 const AppHeader = () => {
-    const [open, setOpen] = useState(false);
-
-    const handleClickOpen = () => {
-      setOpen(true);
-    };
-
-    const handleClose = () => {
-      setOpen(false);
-    };
+    const [infoDialogState, setInfoDialogState] = useState(false);
+    const handleOpenInfoDialog = () => setInfoDialogState(true);
+    const handlCloseInfoDialog = () => setInfoDialogState(false);
 
     return (
         <AppBar position="static" elevation={0}>
@@ -23,23 +19,20 @@ const AppHeader = () => {
                     <Typography href="/" component="a" variant="h6" sx={{color: 'inherit', textDecoration: 'none', flexGrow: 1}}>
                         Scholarly Communication Platform Browser
                     </Typography>
-                    <IconButton color="inherit" onClick={handleClickOpen}>
+                    <IconButton color="inherit" onClick={handleOpenInfoDialog}>
                         <Info />
                     </IconButton>
-                    <Dialog open={open} onClose={handleClose}>
+                    <Dialog open={infoDialogState} onClose={handlCloseInfoDialog} scroll="paper">
                         <DialogTitle>
-                            About Scholarly Communication Platform Browser
+                            {info["about-title"]}
                         </DialogTitle>
                         <DialogContent>
-                            <Typography variant="body1" align="justify" paragraph>
-                                Scholarly Communication Platform Browser has been developed by Bram van den Boomen and Nees Jan van Eck at the Centre for Science and Technology Studies (CWTS) at Leiden University.
-                            </Typography>
-                            <Typography variant="body1" align="justify" paragraph>
-                                This prototype has been developed to demonstrate the value of the Scholarly Communication Platform Framework developed in the Journal Observatory project funded by the Dutch Research Council (NWO).
-                            </Typography>
+                            <ReactMarkdown>
+                                {info["about-text"]}
+                            </ReactMarkdown>
                         </DialogContent>
                         <DialogActions>
-                            <Button onClick={handleClose}>Close</Button>
+                            <Button onClick={handlCloseInfoDialog}>Close</Button>
                         </DialogActions>
                     </Dialog>
                 </Toolbar>
