@@ -25,7 +25,7 @@ export const PlatformEvaluationPolicies = () => {
 
     return (
         <DetailsCard
-            title="Evaluation Policies"
+            title="Evaluation policies"
             loading={loading}
             infodialog={<InfoDialog property="ppo:EvaluationPolicy" />}
         >
@@ -69,10 +69,10 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
     const commenting_id = ppc(id, commenting)
 
     if (people_id.length == 0) {
-        people_id.push(summary.no_accessible(id, "No Identities Published"))
+        people_id.push(summary.no_accessible(id, "No identities published"))
     }
     if (documents_id.length == 0) {
-        people_id.push(summary.no_accessible(id, "No Review Documents Published"))
+        people_id.push(summary.no_accessible(id, "No review documents published"))
     }
 
     return (

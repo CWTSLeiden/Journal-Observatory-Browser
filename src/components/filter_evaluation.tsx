@@ -19,30 +19,32 @@ export const EvaluationPolicyFilter = () => {
 }
 
 export const EvaluationAnonymizedFilter = () => {
+    const labels = useContext(LabelContext)
     const toggles = useAppSelector((store: SearchStore) => store.search.evaluation_anonymized)
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label="Anonymized"
+            label={labelize("anonymized", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.evaluation_anonymized_toggleone(p))}
             reset_action={() => dispatch(searchActions.evaluation_anonymized_reset())}
             labels={{
-                "all": "All Identities Visible",
-                "single": "Single Anonymized",
-                "double": "Double Anonymized",
-                "triple": "Triple Anonymized"
+                "all": "All identities visible",
+                "single": "Single anonymized",
+                "double": "Double anonymized",
+                "triple": "Triple anonymized"
             }}
         />
     )
 }
 
 export const EvaluationInteractionsFilter = () => {
+    const labels = useContext(LabelContext)
     const toggles = useAppSelector((store: SearchStore) => store.search.evaluation_interactions)
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label="Reviewer Interacts With"
+            label={labelize("reviewer-interacts-with", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.evaluation_interactions_toggleone(p))}
             reset_action={() => dispatch(searchActions.evaluation_interactions_reset())}
@@ -51,11 +53,12 @@ export const EvaluationInteractionsFilter = () => {
 }
 
 export const EvaluationInformationFilter = () => {
+    const labels = useContext(LabelContext)
     const toggles = useAppSelector((store: SearchStore) => store.search.evaluation_information)
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label="Review Information Published"
+            label={labelize("review-information-published", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.evaluation_information_toggleone(p))}
             reset_action={() => dispatch(searchActions.evaluation_information_reset())}
@@ -64,11 +67,12 @@ export const EvaluationInformationFilter = () => {
 }
 
 export const EvaluationCommentsFilter = () => {
+    const labels = useContext(LabelContext)
     const toggles = useAppSelector((store: SearchStore) => store.search.evaluation_comments)
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label="Post-Publication Commenting"
+            label={labelize("ppo:hasPostPublicationCommenting", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.evaluation_comments_toggleone(p))}
             reset_action={() => dispatch(searchActions.evaluation_comments_reset())}

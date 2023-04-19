@@ -90,11 +90,12 @@ export const PubCopyrightOwnersFilter = () => {
 }
 
 export const PubLicenseFilter = () => {
+    const labels = useContext(LabelContext)
     const toggles = useAppSelector((store: SearchStore) => store.search.pub_licenses)
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label="License"
+            label={labelize("dcterms:license", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.publication_licenses_toggleone(p))}
             reset_action={() => dispatch(searchActions.publication_licenses_reset())}

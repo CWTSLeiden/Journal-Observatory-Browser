@@ -177,7 +177,7 @@ const PadCardPolicies = ({ pad }: PadCardProps) => {
             </Cond>
             <Cond cond={elsewherepolicies > 0}>
                 <Grid item>
-                    <Chip color="primary" label={`Elsewhere: ${elsewherepolicies}`} />
+                    <Chip color="primary" label={`Preprinting/self-archiving: ${elsewherepolicies}`} />
                 </Grid>
             </Cond>
             <Cond cond={pubpolicies + evalpolicies + elsewherepolicies == 0}>

@@ -25,7 +25,7 @@ export const PlatformElsewherePolicies = () => {
 
     return (
         <DetailsCard
-            title="Publication Elsewhere Policies"
+            title="Preprinting/self-archiving policies"
             loading={loading}
             infodialog={<InfoDialog property="ppo:PublicationElsewherePolicy" />}
         >

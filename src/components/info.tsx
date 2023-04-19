@@ -3,15 +3,16 @@ import { Button, Dialog, DialogActions, DialogContent, DialogContentText, Dialog
 import { grey } from "@mui/material/colors"
 import React, { useContext, useState } from "react"
 import ReactMarkdown from "react-markdown"
-import { info } from "../config"
+import info from "../strings/info.json"
 import { labelize } from "../query/labels"
 import { LabelContext } from "../store"
 
-export const InfoDialog = ({property, text}: {property: string, text?: string}) => {
+export const InfoDialog = ({property, text}: {property: string, text?: string | string[]}) => {
     const [state, setState] = useState(false)
     const labels = useContext(LabelContext)
     const handleOpen = () => setState(true)
     const handleClose = () => setState(false)
+    const dialogtext = Array.isArray(text) ? text.join("\n") : text || info[property]
     return (
         <>
             <IconButton
@@ -26,9 +27,9 @@ export const InfoDialog = ({property, text}: {property: string, text?: string}) 
                     {labelize(property, labels)}
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText>
+                    <DialogContentText component="div">
                         <ReactMarkdown>
-                            {text || info[property]}
+                            {dialogtext}
                         </ReactMarkdown>
                     </DialogContentText>
                 </DialogContent>

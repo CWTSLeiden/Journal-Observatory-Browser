@@ -1,7 +1,7 @@
 import { fromRDF, compact, flatten } from "jsonld";
 import { Quadstore } from "quadstore";
 import { Engine } from "quadstore-comunica";
-import { context } from "../config";
+import context from "../strings/context.json";
 import type { ResultStream, Quad, Bindings } from '@rdfjs/types';
 import { format_query } from "./remote";
 

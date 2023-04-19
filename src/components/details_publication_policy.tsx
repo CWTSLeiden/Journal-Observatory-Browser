@@ -25,7 +25,7 @@ export const PlatformPubPolicies = () => {
 
     return (
         <DetailsCard
-            title="Publication Policies"
+            title="Publication policies"
             loading={loading}
             infodialog={<InfoDialog property="ppo:PublicationPolicy" />}
         >

@@ -1,4 +1,4 @@
-import { context } from "../config";
+import context from "../strings/context.json";
 
 export const compact_id = (id: string) => {
     for (const [k, v] of Object.entries(context)) {
