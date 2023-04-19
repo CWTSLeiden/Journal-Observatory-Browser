@@ -1,5 +1,5 @@
 import React, { ReactElement, useContext, useState } from "react";
-import { Accordion, AccordionDetails, AccordionSummary, Box, Button, List, Paper, Stack, Typography } from "@mui/material";
+import { Accordion, AccordionDetails, AccordionSummary, Box, Button, Card, Divider, List, Paper, Stack, Typography } from "@mui/material";
 import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubLicenseFilter, PubPolicyFilter } from "./filter_publication";
 import { ElsewhereCopyrightownerFilter, ElsewhereEmbargoFilter, ElsewhereLicenseFilter, ElsewhereLocationFilter, ElsewherePolicyFilter, ElsewhereVersionFilter } from "./filter_elsewhere";
 import { CreatorSelect } from "./filter_creator";
@@ -22,7 +22,7 @@ const FilterBarSection = ({ id, title, infodialog, children }: FilterBarSectionP
     const [state, setState] = useState(true)
     const toggle = () => setState(!state)
     return (
-        <Paper elevation={0}>
+        <Card variant="outlined">
             <Accordion expanded={state} disableGutters={true}>
                 <AccordionSummary id={id} expandIcon={<ExpandMore onClick={toggle} />} sx={{ pt: 0, pb: 0, pl: 2, pr: 1 }}>
                     <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
@@ -33,13 +33,14 @@ const FilterBarSection = ({ id, title, infodialog, children }: FilterBarSectionP
                         <Box sx={{ flex: 1 }} onClick={toggle} >&nbsp;</Box>
                     </Box>
                 </AccordionSummary>
-                <AccordionDetails sx={{ pt: 0, pb: 1, pl: 1, pr: 1 }}>
+                <Divider />
+                <AccordionDetails sx={{ pl: 1 }}>
                     <List>
                         {children}
                     </List>
                 </AccordionDetails>
             </Accordion>
-        </Paper>
+        </Card>
     )
 }
 

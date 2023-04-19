@@ -169,11 +169,13 @@ export const ChipsSkeleton = ({n}: {n?: number}) => (
     </>
 )
 
-export const MaybeLink = ({link, label}: {link: string | string[]; label?: string}) => {
+export const MaybeLink = ({link, label, disabled}: {link: string | string[]; label?: string; disabled?: boolean}) => {
+    const theme = useTheme()
     const href = Array.isArray(link) ? link.find(Boolean) : link
     const ishref = href ? href.match(/^(https|http|www):/) : null
     const title = ishref && label ? label : link
-    return ishref ? <Link href={href} target="_blank">{title}</Link> : <div>{title}</div>
+    const color_text = disabled ? theme.palette.text.disabled : undefined
+    return ishref ? <Link color={color_text} href={href} target="_blank">{title}</Link> : <div>{title}</div>
 }
 
 export const MaybeLinkIcon = ({link}: {link: string | string[]}) => {

@@ -51,10 +51,10 @@ function SearchComponent() {
                 <SearchBar handleSubmit={doSearch} />
             </Grid>
             <Grid container direction="row" item spacing={2}>
-                <Grid item xs={12} sm={12} md={3} id="filter">
+                <Grid item xs={12} sm={12} md={4} lg={3} id="filter">
                     <FilterBar handleSubmit={doSearch} />
                 </Grid>
-                <Grid item xs={12} sm={12} md={9} container id="results">
+                <Grid item xs={12} sm={12} md={8} lg={9} container id="results">
                     <Stack direction="column" spacing={2} sx={{width: "100%"}}>
                         <PadListPagination loading={loading} />
                         <PadList loading={loading} status={status} />
