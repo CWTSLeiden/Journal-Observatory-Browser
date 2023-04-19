@@ -2,17 +2,27 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { first, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
+import { first, includes, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
 import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
 import { InfoDialog } from "./info";
 
+const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
+    const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
+    const openaccess = includes("ppo:isOpenAccess", "true")
+    if (compare(policy1, policy2, openaccess)) { return -1 }
+    if (compare(policy2, policy1, openaccess)) { return 1 }
+    return Math.sign(Object.keys(policy1).length - Object.keys(policy2).length)
+}
+
 export const PlatformPubPolicies = () => {
     const padStore = useContext(PadContext)
     const [policies, setPolicies] = useState([]);
     const [loading, setLoading] = useState(true);
+    const render_policy = ([p, s]) => <PlatformPubPolicy key={p["@id"]} policy={p} src={s} />
+
     useEffect(() => {
         const render = async () => {
             const result = await platform_publication_policies(padStore)
@@ -23,15 +33,14 @@ export const PlatformPubPolicies = () => {
         padStore ? render() : null
     }, [padStore]);
 
+    console.log(policies)
     return (
         <DetailsCard
             title="Publication policies"
             loading={loading}
             infodialog={<InfoDialog property="ppo:PublicationPolicy" />}
         >
-            {policies.map(([p, s]) => (
-                <PlatformPubPolicy key={p["@id"]} policy={p} src={s} />
-            ))}
+            {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>
     )
 }
