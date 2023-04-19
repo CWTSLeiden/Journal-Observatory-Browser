@@ -8,6 +8,7 @@ import { fold_graph } from "../query/fold";
 import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
 import { InfoDialog } from "./info";
+import { labelize } from "../query/labels";
 
 const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
@@ -33,7 +34,6 @@ export const PlatformPubPolicies = () => {
         padStore ? render() : null
     }, [padStore]);
 
-    console.log(policies)
     return (
         <DetailsCard
             title="Publication policies"
@@ -61,7 +61,7 @@ const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
             id: ld_to_str(apc["@id"]),
             type: "ppo:hasArticlePublishingCharges",
             value: [
-                first(apc, "schema:price") || "0",
+                labelize(first(apc, "schema:price"), {"unknown": "Unknown amount"}) || "0",
                 first(apc, "schema:priceCurrency")
             ].join(' '),
             url: first(apc, "schema:url")
@@ -116,6 +116,10 @@ async function platform_publication_policies(store: Quadstore) {
                     optional { ?apc schema:priceCurrency ?apccurrency } .
                     optional { ?apc schema:url ?apcurl } .
                 }
+                optional { ?policy ppo:hasOpenAccessFee "true" .
+                    bind(bnode() as ?apc) .
+                    bind("unknown" as ?apcprice)
+                } .
             }
             optional { 
                 ?assertion pad:hasSourceAssertion ?source

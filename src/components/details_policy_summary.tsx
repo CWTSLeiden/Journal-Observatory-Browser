@@ -49,6 +49,9 @@ export const apc = (item: PolicyItem): PolicyItem => {
     if (amount == 0) {
         return summarize(item, "No APC", "success", MoneyOff)
     }
+    else if (Number.isNaN(amount)) {
+        return summarize(item, `APC`, "warning", AttachMoney)
+    }
     else {
         return summarize(item, `APC: ${amount}`, "warning", AttachMoney)
     }
