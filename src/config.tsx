@@ -115,6 +115,14 @@ export const context = {
 };
 
 export const info = {
+    "about-title":
+        "About the Scholarly Communication Platform Browser",
+    "about-text": `
+The Scholarly Communication Platform Browser has been developed by Bram van den Boomen and Nees Jan van Eck at the Centre for Science and Technology Studies (CWTS) at Leiden University.
+
+This prototype has been developed to demonstrate the value of the Scholarly Communication Platform Framework developed in the Journal Observatory project funded by the Dutch Research Council (NWO).
+    `,
+
     "publication-policy-filterbar": `
 ### Filters for policies of platforms regarding the publication of a scholarly work.
 - **Has Publication Policy**  
@@ -130,6 +138,7 @@ export const info = {
 - **Has Embargo Duration**  
   .
 `,
+
     "ppo:PublicationPolicy":
         "Policies of the platform regarding the publication of a scholarly work."
 

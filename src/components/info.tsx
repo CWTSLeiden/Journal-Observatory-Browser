@@ -1,5 +1,5 @@
 import { HelpOutlineTwoTone } from "@mui/icons-material"
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Typography } from "@mui/material"
+import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React, { useContext, useState } from "react"
 import ReactMarkdown from "react-markdown"
@@ -23,9 +23,7 @@ export const InfoDialog = ({property, text}: {property: string, text?: string}) 
             </IconButton>
             <Dialog open={state} onClose={handleClose} scroll="paper">
                 <DialogTitle>
-                    <Typography variant="h5">
-                        {labelize(property, labels)}
-                    </Typography>
+                    {labelize(property, labels)}
                 </DialogTitle>
                 <DialogContent>
                     <DialogContentText>
