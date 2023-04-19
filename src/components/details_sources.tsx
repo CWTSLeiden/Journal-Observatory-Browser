@@ -9,6 +9,7 @@ import { useAppDispatch, useAppSelector } from "../store"
 import * as actions from "../store/details"
 import { expand_id } from "../query/jsonld_helpers"
 import info from "../strings/info.json";
+import context from "../strings/context.json";
 import { InfoDialog } from "./info"
 
 export const sort_sources_keys = (sources: object) => {
@@ -110,3 +111,47 @@ export const PadSourceCard = ({id}: {id: string}) => {
     )
 }
 
+export const Provenance = ({pad_id}: {pad_id: string}) => {
+    const query = `
+PREFIX pad: <${context["pad"]}>
+PREFIX ppo: <${context["ppo"]}>
+CONSTRUCT {
+    ?s ?p ?o
+}
+WHERE { 
+    SERVICE <repository:job> {
+        pad:${pad_id} a pad:PAD ;
+            pad:hasAssertion ?assertion .
+        graph ?assertion { ?s ?p ?o } .
+    }
+}
+    `
+    const sparqurl = `https://sparql.journalobservatory.org/sparql?name=pad:${pad_id}&infer=true&sameAs=true&query=` + query
+    const url = context["pad"] + pad_id
+    const LinkButton = ({title, url}: {title: string, url?: string}) => (
+        <ListItemButton>
+            <Link variant="button" href={url} target="_blank">
+                {title}
+            </Link>
+        </ListItemButton>
+    )
+    return (
+        <Card variant="outlined">
+            <CardContent>
+                <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+                    <Typography sx={{ fontWeight: 600 }}>Provenance</Typography>
+                    <InfoDialog property="provenance-title" text={info["provenance-text"]}/>
+                </Box>
+            </CardContent>
+            <Divider />
+            <CardContent>
+                <List>
+                    <LinkButton title="sparql" url={encodeURI(sparqurl)} />
+                    <LinkButton title="json-ld" url={url} />
+                    <LinkButton title="trig" url={url + "?format=trig"} />
+                    <LinkButton title="html" url={url + "?format=html"} />
+                </List>
+            </CardContent>
+        </Card>
+    )
+}
