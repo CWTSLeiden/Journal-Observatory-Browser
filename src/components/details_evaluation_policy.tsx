@@ -25,7 +25,7 @@ export const PlatformEvaluationPolicies = () => {
 
     return (
         <DetailsCard
-            title="Evaluation Policies"
+            title="Evaluation policies"
             loading={loading}
             infodialog={<InfoDialog property="ppo:EvaluationPolicy" />}
         >
