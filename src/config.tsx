@@ -57,12 +57,20 @@ export const labels = {
     "ppo:isOpenAccess": "Open access",
     "ppo:hasArticlePublishingCharges": "Article processing charges",
     "ppo:hasCopyrightOwner": "Copyright owner",
+    "ppo:hasPostPublicationCommenting": "Post-publication Commenting",
     "pro:peer-reviewer": "Peer reviewer",
     "ppo:ReviewReport": "Review report",
     "ppo:ReviewSummary": "Review summary",
     "ppo:SubmittedManuscript": "Submitted manuscript",
     "ppo:AuthorEditorCommunication": "Author-editor communication",
     "fabio:hasEmbargoDuration": "Embargo period",
+    "ppo:appliesToVersion": "Applies to version",
+    "pso:submitted": "Submitted",
+    "pso:accepted-for-publication": "Accepted",
+    "pso:published": "Published",
+    "anonymized": "Anonymized",
+    "reviewer-interacts-with": "Reviewer interacts with",
+    "review-information-pulished": "Review information published",
 }
 
 export const colors_override: {[key: string]: customColor} = {

@@ -1,14 +1,15 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useContext, useState } from "react";
 import { Accordion, AccordionDetails, AccordionSummary, Box, Button, List, Paper, Stack, Typography } from "@mui/material";
 import { OpenAccessFilter, PubApcFilter, PubCopyrightOwnersFilter, PubEmbargoFilter, PubLicenseFilter, PubPolicyFilter } from "./filter_publication";
 import { ElsewhereCopyrightownerFilter, ElsewhereEmbargoFilter, ElsewhereLicenseFilter, ElsewhereLocationFilter, ElsewherePolicyFilter, ElsewhereVersionFilter } from "./filter_elsewhere";
 import { CreatorSelect } from "./filter_creator";
 import { ExpandMore } from "@mui/icons-material";
 import { EvaluationAnonymizedFilter, EvaluationCommentsFilter, EvaluationInformationFilter, EvaluationInteractionsFilter, EvaluationPolicyFilter } from "./filter_evaluation";
-import { useAppDispatch } from "../store";
+import { LabelContext, useAppDispatch } from "../store";
 import * as searchActions from "../store/search";
 import { InfoDialog } from "./info";
 import { info } from "../config";
+import { labelize } from "../query/labels";
 
 
 type FilterBarSectionProps = {
@@ -46,6 +47,7 @@ type FilterBarProps = {
     handleSubmit: React.UIEventHandler;
 };
 const FilterBar = ({ handleSubmit }: FilterBarProps) => {
+    const labels = useContext(LabelContext)
     const dispatch = useAppDispatch();
     return (
         <Stack id="filter-bar" spacing={2}>
@@ -53,7 +55,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
             
             <FilterBarSection
                 id="filter-panel-publication-policy"
-                title="Publication policy"
+                title={labelize("ppo:PublicationPolicy", labels)}
                 infodialog={<InfoDialog property="ppo:PublicationPolicy" text={info["publication-policy-filterbar"]}/>}
             >
                 <PubPolicyFilter />
@@ -66,7 +68,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
 
             <FilterBarSection
                 id="filter-panel-publication-elsewhere-policy"
-                title="Preprinting/self-archiving policy"
+                title={labelize("ppo:PublicationElsewherePolicy", labels)}
                 infodialog={<InfoDialog property="ppo:PublicationElsewherePolicy" text={info["elsewhere-policy-filterbar"]}/>}
             >
                 <ElsewherePolicyFilter />
@@ -79,7 +81,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
 
             <FilterBarSection
                 id="filter-panel-evaluation-policy"
-                title="Evaluation policy"
+                title={labelize("ppo:EvaluationPolicy", labels)}
                 infodialog={<InfoDialog property="ppo:EvaluationPolicy" text={info["evaluation-policy-filterbar"]}/>}
             >
                 <EvaluationPolicyFilter />
