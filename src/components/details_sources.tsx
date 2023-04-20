@@ -1,16 +1,15 @@
-import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, Drawer, IconButton, Link, List, ListItem, ListItemButton, Switch, Toolbar, Typography, useTheme } from "@mui/material"
 import React from "react"
+import { Avatar, Box, Button, Card, CardActions, CardContent, CardHeader, Divider, List, ListItem, Switch, Typography, useTheme } from "@mui/material"
 import { first, ld_to_str, todate } from "../query/jsonld_helpers"
 import { labelize } from "../query/labels"
 import { MaybeLink } from "./details"
 import { colorize } from "./theme"
-import { ChevronRight, Source } from "@mui/icons-material"
+import { Source } from "@mui/icons-material"
 import { useAppDispatch, useAppSelector } from "../store"
 import * as actions from "../store/details"
 import { expand_id } from "../query/jsonld_helpers"
-import info from "../strings/info.json";
-import context from "../strings/context.json";
 import { InfoDialog } from "./info"
+import info from "../strings/info.json";
 
 export const sort_sources_keys = (sources: object) => {
     const key_date = Object.entries(sources).map(([id, source]) => [id, first(source, "dcterms:created")])
@@ -22,27 +21,6 @@ export const sort_sources_keys = (sources: object) => {
         return 0
     }
     return key_date.sort(sort_tuple).map(([id,]) => id)
-}
-
-export const PadSourcesBar = ({width}: {width: number}) => {
-    const sidebar = useAppSelector(s => s.details.sidebar)
-    const dispatch = useAppDispatch()
-    return (
-        <Drawer
-            variant="persistent" 
-            open={sidebar}
-            anchor="right"
-        >
-            <Box sx={{ width }} />
-            <Toolbar>
-                <IconButton onClick={() => dispatch(actions.sidebar_set(false))}>
-                    <ChevronRight />
-                </IconButton>
-            </Toolbar>
-            <Divider />
-            <PadSources />
-        </Drawer>
-    )
 }
 
 export const PadSources = () => {
@@ -107,51 +85,6 @@ export const PadSourceCard = ({id}: {id: string}) => {
                 <Button disabled={disabled} href={expand_id(id)} target="_blank">Source</Button>
                 <Button disabled={disabled} href={creator} target="_blank">Creator</Button>
             </CardActions>
-        </Card>
-    )
-}
-
-export const Provenance = ({pad_id}: {pad_id: string}) => {
-    const query = `
-PREFIX pad: <${context["pad"]}>
-PREFIX ppo: <${context["ppo"]}>
-CONSTRUCT {
-    ?s ?p ?o
-}
-WHERE { 
-    SERVICE <repository:job> {
-        pad:${pad_id} a pad:PAD ;
-            pad:hasAssertion ?assertion .
-        graph ?assertion { ?s ?p ?o } .
-    }
-}
-    `
-    const sparqurl = `https://sparql.journalobservatory.org/sparql?name=pad:${pad_id}&infer=true&sameAs=true&query=` + query
-    const url = context["pad"] + pad_id
-    const LinkButton = ({title, url}: {title: string, url?: string}) => (
-        <ListItemButton>
-            <Link variant="button" href={url} target="_blank">
-                {title}
-            </Link>
-        </ListItemButton>
-    )
-    return (
-        <Card variant="outlined">
-            <CardContent>
-                <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ fontWeight: 600 }}>Provenance</Typography>
-                    <InfoDialog property="provenance-title" text={info["provenance-text"]}/>
-                </Box>
-            </CardContent>
-            <Divider />
-            <CardContent>
-                <List>
-                    <LinkButton title="sparql" url={encodeURI(sparqurl)} />
-                    <LinkButton title="json-ld" url={url} />
-                    <LinkButton title="trig" url={url + "?format=trig"} />
-                    <LinkButton title="html" url={url + "?format=html"} />
-                </List>
-            </CardContent>
         </Card>
     )
 }

@@ -3,6 +3,7 @@ import { PadContext } from "../store";
 import { query_select_first } from "../query/local";
 import { Quadstore } from "quadstore";
 import { Box, Skeleton, Tooltip, Typography } from "@mui/material";
+import { compact_id } from "../query/jsonld_helpers";
 
 export const PlatformTitle = ({pad_id}: {pad_id?: string}) => {
     const [name, setName] = useState<string>();
@@ -19,7 +20,7 @@ export const PlatformTitle = ({pad_id}: {pad_id?: string}) => {
 
     return (
         <Box sx={{mt: 8, mb: 4}}>
-            <Tooltip title={pad_id} placement="top">
+            <Tooltip title={compact_id(pad_id)} placement="top">
                 <Typography align="center" variant="h3">
                     {!name && loading ? loadingview : name}
                 </Typography>

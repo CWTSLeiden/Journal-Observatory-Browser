@@ -10,7 +10,7 @@ import { pad_store } from "../query/pad_store"
 import { mergeQuadstores } from "../query/local";
 import { Quadstore } from "quadstore";
 import { Grid, Stack } from "@mui/material";
-import { PadSources, Provenance } from "../components/details_sources";
+import { PadSources } from "../components/details_sources";
 import { PlatformTitle } from "../components/details_title";
 import { PlatformKeywords } from "../components/details_keywords";
 import { PlatformNames } from "../components/details_names";
@@ -21,9 +21,11 @@ import { PlatformPublishers } from "../components/details_publishers";
 import { PlatformPubPolicies } from "../components/details_publication_policy";
 import { PlatformElsewherePolicies } from "../components/details_elsewhere_policy";
 import { PlatformEvaluationPolicies } from "../components/details_evaluation_policy";
+import { Provenance } from "../components/details_provenance";
+import context from "../strings/context.json";
 
 function DetailsComponent() {
-    const pad_id = pad_id_norm(useParams().id)
+    const pad_id = context["pad"] + pad_id_norm(useParams().id)
     const ontologyStore = useContext(OntologyContext)
     const [padStore, setPadStore] = useState(undefined)
     const dispatch = useAppDispatch()
