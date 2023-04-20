@@ -6,14 +6,10 @@ import ReactMarkdown from "react-markdown"
 import info from "../strings/info.json"
 
 export const BetaWarning = () => {
-    const [state, setState] = useState(window.localStorage.getItem('beta_warning_banner') || "open")
+    const [state, setState] = useState(window.sessionStorage.getItem('beta_warning_banner') || "open")
     
     useEffect(() => {
-        setState(window.localStorage.getItem('beta_warning_banner'));
-    }, []);
-
-    useEffect(() => {
-        window.localStorage.setItem('beta_warning_banner', state);
+        window.sessionStorage.setItem('beta_warning_banner', state);
     }, [state]);
 
     const closebutton = (
