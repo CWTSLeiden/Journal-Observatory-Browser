@@ -11,15 +11,16 @@ import { Stack } from "@mui/system";
 import { order_pads } from "../store/pads";
 
 function SearchComponent() {
-    const didMountRef = useRef(false)
     const searchState = useAppSelector((s) => s.search);
     const page = useAppSelector((s) => s.search.page);
     const pads = useAppSelector((s) => s.pads.pads);
     const pagesize = useAppSelector((s) => s.search.pagesize);
     const orderasc = useAppSelector((s) => s.search.orderasc);
     const dispatch = useAppDispatch();
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(!pads[page])
     const [status, setStatus] = useState(200)
+    const [localPagesize, setLocalPagesize] = useState(pagesize)
+    const [localOrderasc, setLocalOrderasc] = useState(orderasc)
 
     const loadPads = async (page: number) => {
         setStatus(200)
@@ -38,6 +39,7 @@ function SearchComponent() {
     }
 
     async function doSearch() {
+        setLoading(true)
         dispatch(searchActions.page_reset());
         dispatch(padsActions.pads_clear());
         loadPads(0);
@@ -45,8 +47,17 @@ function SearchComponent() {
 
     // Variable changes that trigger reloading all pads
     useEffect(() => {
-        doSearch()
-    }, [pagesize, orderasc]);
+        if (pagesize != localPagesize) {
+            doSearch()
+            setLocalPagesize(pagesize)
+        }
+    }, [pagesize, localPagesize]);
+    useEffect(() => {
+        if (orderasc != localOrderasc) {
+            doSearch()
+            setLocalOrderasc(orderasc)
+        } 
+    }, [orderasc, localOrderasc]);
 
     // Use cached pagination
     useEffect(() => {
