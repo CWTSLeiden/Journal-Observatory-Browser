@@ -13,6 +13,7 @@ import { LabelContext, OntologyContext } from "./store";
 import { ontology_store } from "./query/pad_store";
 import { get_labels_dict } from "./query/labels";
 import theme from "./components/theme";
+import { BetaWarning } from "./components/beta_warning";
 
 window.Buffer = Buffer;
 global.process.nextTick = setImmediate
@@ -31,6 +32,7 @@ function App() {
     
     return (
         <ThemeProvider theme={theme}>
+            <BetaWarning />
             <Stack spacing={2}>
                 <ScrollToTop smooth top={200} component={<KeyboardArrowUpRounded />} />
                 <AppHeader />
