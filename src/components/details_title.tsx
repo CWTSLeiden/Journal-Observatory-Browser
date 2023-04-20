@@ -21,7 +21,7 @@ export const PlatformTitle = ({pad_id}: {pad_id?: string}) => {
     return (
         <Box sx={{mt: 8, mb: 4}}>
             <Tooltip title={compact_id(pad_id)} placement="top">
-                <Typography align="center" variant="h3">
+                <Typography align="center" variant="h4">
                     {!name && loading ? loadingview : name}
                 </Typography>
             </Tooltip>
