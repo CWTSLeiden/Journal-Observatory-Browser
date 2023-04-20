@@ -15,7 +15,7 @@ CONSTRUCT {
 }
 WHERE { 
     SERVICE <repository:job> {
-        pad:${pad_id} a pad:PAD ;
+        ${compact_id(pad_id)} a pad:PAD ;
             pad:hasAssertion ?assertion .
         graph ?assertion { ?s ?p ?o } .
     }
