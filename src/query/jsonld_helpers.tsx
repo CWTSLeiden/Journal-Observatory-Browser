@@ -104,6 +104,15 @@ export const ld_cons_src = (obj: object[]) => {
     return zip.sort(cons_ordering)
 }
 
+export const includes = (prop: string, filter: string) => (obj: object) => {
+    if (obj[prop] == filter) { return true }
+    if (Array.isArray(obj[prop])) {
+        if (obj[prop].includes(filter)) { return true }
+        if (obj[prop].find((p: object) => p["@id"] == filter)) { return true }
+    }
+    return false
+}
+
 export const todate = (date: string) => {
     const parse = Date.parse(date)
     return isNaN(parse) ? date : (new Date(parse)).toISOString().substring(0, 10)

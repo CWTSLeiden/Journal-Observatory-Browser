@@ -88,7 +88,7 @@ export async function pad_store(pad_id: string): Promise<Quadstore> {
                 graph ?g { ?s ?p ?o }
             }
         }
-        values (?pad) {(pad:${pad_id})}
+        values (?pad) {(<${pad_id}>)}
     `;
     const quads = await query_select(query)
     const store = await createStore()

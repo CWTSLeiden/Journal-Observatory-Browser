@@ -2,17 +2,36 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { ld_cons_src } from "../query/jsonld_helpers";
+import { includes, ld_cons_src } from "../query/jsonld_helpers";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
 import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
 import { InfoDialog } from "./info";
 
+const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
+    const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
+    const prohibited = includes("@type", "ppo:PublicationElsewhereProhibitedPolicy")
+    const published = includes("ppo:appliesToVersion", "pso:published")
+    const accepted = includes("ppo:appliesToVersion", "pso:accepted-for-publication")
+    const submitted = includes("ppo:appliesToVersion", "pso:submitted")
+    if (compare(policy1, policy2, prohibited)) { return -1 }
+    if (compare(policy2, policy1, prohibited)) { return 1 }
+    if (compare(policy1, policy2, published)) { return -1 }
+    if (compare(policy2, policy1, published)) { return 1 }
+    if (compare(policy1, policy2, accepted)) { return -1 }
+    if (compare(policy2, policy1, accepted)) { return 1 }
+    if (compare(policy1, policy2, submitted)) { return -1 }
+    if (compare(policy2, policy1, submitted)) { return 1 }
+    return Math.sign(Object.keys(policy1).length - Object.keys(policy2).length)
+}
+
 export const PlatformElsewherePolicies = () => {
     const padStore = useContext(PadContext)
     const [policies, setPolicies] = useState([]);
     const [loading, setLoading] = useState(true);
+    const render_policy = ([p, s]) => <PlatformElsewherePolicy key={p["@id"]} policy={p} src={s} />
+
     useEffect(() => {
         const render = async () => {
             const result = await platform_elsewhere_policies(padStore)
@@ -29,9 +48,7 @@ export const PlatformElsewherePolicies = () => {
             loading={loading}
             infodialog={<InfoDialog property="ppo:PublicationElsewherePolicy" />}
         >
-            {policies.map(([p, s]) => (
-                <PlatformElsewherePolicy key={p["@id"]} policy={p} src={s} />
-            ))}
+            {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>
     )
 }

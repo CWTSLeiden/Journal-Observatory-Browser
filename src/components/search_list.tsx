@@ -1,4 +1,4 @@
-import {Card, CardActionArea, CardContent, Chip, Grid, Skeleton, TablePagination, TableSortLabel, Typography} from "@mui/material";
+import { Card, CardActionArea, CardContent, Chip, Grid, Skeleton, TablePagination, TableSortLabel, Typography } from "@mui/material";
 import { ArrowForward } from "@mui/icons-material";
 import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
@@ -34,8 +34,10 @@ const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
 }
 
 export const PadList = ({loading, status}: {loading: boolean, status: number}) => {
-    const pads = useAppSelector((store) => store.pads.pads);
+    const padlist = useAppSelector((store) => store.pads.pads);
+    const page = useAppSelector((store) => store.search.page);
     const pagesize = useAppSelector((store) => store.search.pagesize);
+    const pads = padlist[Number(page)] || []
     if (loading) {
         return <PadCardSkeleton n={pagesize} />
     }
@@ -45,7 +47,7 @@ export const PadList = ({loading, status}: {loading: boolean, status: number}) =
     if (pads.length == 0) {
         return <Typography variant="body1">No platforms matching the search criteria have been found.</Typography>
     }
-    return <>{pads.map((pad) => <PadCard key={pad["@id"]} pad={pad} />)}</>
+    return <>{pads.map((pad: object) => <PadCard key={pad["@id"]} pad={pad} />)}</>
 };
 
 const ErrorCode = ({code}: {code: number}) => {
@@ -69,11 +71,12 @@ export const PadCardSkeleton = ({n}: {n?: number}) => (
 )
 
 export const PadListPagination = ({loading}: {loading: boolean}) => {
-    const pads = useAppSelector((store) => store.pads.pads);
+    const padlist = useAppSelector((store) => store.pads.pads);
     const total = useAppSelector((store) => store.pads.total);
     const pagesize = useAppSelector((store) => store.search.pagesize);
     const page = useAppSelector((store) => store.search.page);
     const dispatch = useAppDispatch();
+    const pads = padlist[String(page)] || []
     if ((pads.length == 0) && !loading) {
         return null
     } else {
@@ -106,7 +109,7 @@ export const PadListPagination = ({loading}: {loading: boolean}) => {
                                 }}
                                 count={total}
                                 labelRowsPerPage='Platforms per page:'
-                                labelDisplayedRows={function defaultLabelDisplayedRows({ from, to, count }) { return `Platform ${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`; }}
+                                labelDisplayedRows={({from, to, count}) => `Platform ${from}–${to} of ${count !== -1 ? count : `more than ${to}`}`}
                             />
                         }
                     </Grid>
