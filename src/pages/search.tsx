@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FilterBar } from "../components/filterbar";
 import { SearchBar } from "../components/searchbar";
 import { PadList, PadListPagination } from "../components/search_list";
@@ -11,8 +11,10 @@ import { Stack } from "@mui/system";
 import { order_pads } from "../store/pads";
 
 function SearchComponent() {
+    const didMountRef = useRef(false)
     const searchState = useAppSelector((s) => s.search);
     const page = useAppSelector((s) => s.search.page);
+    const pads = useAppSelector((s) => s.pads.pads);
     const pagesize = useAppSelector((s) => s.search.pagesize);
     const orderasc = useAppSelector((s) => s.search.orderasc);
     const dispatch = useAppDispatch();
@@ -24,7 +26,7 @@ function SearchComponent() {
         setLoading(true)
         try {
             const { padlist, num } = await pad_list(searchState, pagesize * page);
-            dispatch(padsActions.pads_set(order_pads(padlist, orderasc)));
+            dispatch(padsActions.pads_set({page: page, pads: order_pads(padlist, orderasc)}));
             dispatch(padsActions.total_set(num));
         } catch(err) {
             console.log(err)
@@ -37,13 +39,21 @@ function SearchComponent() {
 
     async function doSearch() {
         dispatch(searchActions.page_reset());
+        dispatch(padsActions.pads_clear());
         loadPads(0);
     }
 
-    // Variable changes that trigger reloading pads
+    // Variable changes that trigger reloading all pads
     useEffect(() => {
-        loadPads(page);
-    }, [page, pagesize, orderasc]);
+        doSearch()
+    }, [pagesize, orderasc]);
+
+    // Use cached pagination
+    useEffect(() => {
+        if (!pads[page]) {
+            loadPads(page)
+        }
+    }, [page]);
 
     return (
         <Grid container direction="column" spacing={2} id="search">
