@@ -7,7 +7,7 @@ import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
 import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
-import { InfoDialog } from "./info";
+import { AnnotationDialog } from "./info";
 import { labelize } from "../query/labels";
 
 const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
@@ -38,7 +38,7 @@ export const PlatformPubPolicies = () => {
         <DetailsCard
             title="Publication policies"
             loading={loading}
-            infodialog={<InfoDialog property="scpo:PublicationPolicy" />}
+            infodialog={<AnnotationDialog property="scpo:PublicationPolicy" />}
         >
             {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>

@@ -7,7 +7,7 @@ import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
 import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
-import { InfoDialog } from "./info";
+import { AnnotationDialog } from "./info";
 
 const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
@@ -46,7 +46,7 @@ export const PlatformElsewherePolicies = () => {
         <DetailsCard
             title="Preprinting/self-archiving policies"
             loading={loading}
-            infodialog={<InfoDialog property="scpo:PublicationElsewherePolicy" />}
+            infodialog={<AnnotationDialog property="scpo:PublicationElsewherePolicy" />}
         >
             {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>

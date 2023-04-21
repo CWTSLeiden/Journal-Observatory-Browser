@@ -1,18 +1,17 @@
 import { HelpOutlineTwoTone, Info } from "@mui/icons-material"
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, IconButtonTypeMap, IconTypeMap } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from "@mui/material"
 import { grey } from "@mui/material/colors"
-import React, { useContext, useState } from "react"
+import React, { ReactElement, useContext, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import info from "../strings/info.json"
 import { labelize } from "../query/labels"
 import { LabelContext } from "../store"
-import { OverridableComponent } from "@mui/material/OverridableComponent"
 
 
 type InfoDialogProps = {
     property: string;
     text?: string | string[];
-    icon?
+    icon?: ReactElement;
 }
 export const InfoDialog = ({property, text, icon}: InfoDialogProps) => {
     const [state, setState] = useState(false)
@@ -58,5 +57,6 @@ export const AnnotationDialog = ({property, text}: InfoDialogProps) => {
             property={property}
             text={text}
             icon={icon}
-        />)
+        />
+    )
 }
