@@ -7,6 +7,7 @@ import { Provider } from "react-redux";
 import ScrollToTop from "react-scroll-to-top";
 
 import AppHeader from "./components/header";
+import AppFooter from "./components/footer";
 import AppRouter from "./AppRouter";
 import store from "./store";
 import { LabelContext, OntologyContext } from "./store";
@@ -45,6 +46,7 @@ function App() {
                         </Provider>
                     </LabelContext.Provider>
                 </OntologyContext.Provider>
+                <AppFooter />
             </Stack>
         </ThemeProvider>
     );
