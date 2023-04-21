@@ -51,13 +51,13 @@ export const ld_zip_src = (obj: object[], prop?: string) => {
         }
     }
     obj.map((o: object) => {
-        const src = Array.isArray(o["ppo:_src"]) ? o["ppo:_src"] : []
+        const src = Array.isArray(o["scpo:_src"]) ? o["scpo:_src"] : []
         const sources = src.map(s => ld_to_str(s))
         if (prop) {
             add(prop, o[prop], sources)
         } else {
             Object.entries(o).map(([k, v]) => {
-                const items = k == "ppo:_src" ? null : v
+                const items = k == "scpo:_src" ? null : v
                 add(k, items, sources)
             })
         }
@@ -97,7 +97,7 @@ const cons_ordering = (a: [object, string[]], b: [object, string[]]) => {
 export const ld_cons_src = (obj: object[]) => {
     const zip = []
     obj.map((o: object) => {
-        const src = Array.isArray(o["ppo:_src"]) ? o["ppo:_src"] : []
+        const src = Array.isArray(o["scpo:_src"]) ? o["scpo:_src"] : []
         const sources = src.map(s => ld_to_str(s))
         zip.push([o, sources])
     })

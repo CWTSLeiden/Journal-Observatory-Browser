@@ -35,7 +35,7 @@ async function platform_name(store: Quadstore) {
             ?pad a pad:PAD ;
                 pad:hasAssertion ?assertion .
             graph ?assertion {
-                ?s a ppo:Platform ;
+                ?s a scpo:Platform ;
                     schema:name ?name .
             }
         }

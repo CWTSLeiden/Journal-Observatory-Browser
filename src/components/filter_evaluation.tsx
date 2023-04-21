@@ -13,7 +13,7 @@ export const EvaluationPolicyFilter = () => {
         <CheckboxFilter
             state={state}
             action={() => dispatch(searchActions.evaluation_toggle())}
-            label={labelize("ppo:hasEvaluationPolicy", labels)}
+            label={labelize("scpo:hasEvaluationPolicy", labels)}
         />
     )
 }
@@ -72,7 +72,7 @@ export const EvaluationCommentsFilter = () => {
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label={labelize("ppo:hasPostPublicationCommenting", labels)}
+            label={labelize("scpo:hasPostPublicationCommenting", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.evaluation_comments_toggleone(p))}
             reset_action={() => dispatch(searchActions.evaluation_comments_reset())}

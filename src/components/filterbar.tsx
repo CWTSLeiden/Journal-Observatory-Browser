@@ -56,8 +56,8 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
             
             <FilterBarSection
                 id="filter-panel-publication-policy"
-                title={labelize("ppo:PublicationPolicy", labels)}
-                infodialog={<InfoDialog property="ppo:PublicationPolicy" text={info["publication-policy-filterbar"]}/>}
+                title={labelize("scpo:PublicationPolicy", labels)}
+                infodialog={<InfoDialog property="scpo:PublicationPolicy" text={info["publication-policy-filterbar"]}/>}
             >
                 <PubPolicyFilter />
                 <OpenAccessFilter />
@@ -69,8 +69,8 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
 
             <FilterBarSection
                 id="filter-panel-publication-elsewhere-policy"
-                title={labelize("ppo:PublicationElsewherePolicy", labels)}
-                infodialog={<InfoDialog property="ppo:PublicationElsewherePolicy" text={info["elsewhere-policy-filterbar"]}/>}
+                title={labelize("scpo:PublicationElsewherePolicy", labels)}
+                infodialog={<InfoDialog property="scpo:PublicationElsewherePolicy" text={info["elsewhere-policy-filterbar"]}/>}
             >
                 <ElsewherePolicyFilter />
                 <ElsewhereVersionFilter />
@@ -82,8 +82,8 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
 
             <FilterBarSection
                 id="filter-panel-evaluation-policy"
-                title={labelize("ppo:EvaluationPolicy", labels)}
-                infodialog={<InfoDialog property="ppo:EvaluationPolicy" text={info["evaluation-policy-filterbar"]}/>}
+                title={labelize("scpo:EvaluationPolicy", labels)}
+                infodialog={<InfoDialog property="scpo:EvaluationPolicy" text={info["evaluation-policy-filterbar"]}/>}
             >
                 <EvaluationPolicyFilter />
                 <EvaluationAnonymizedFilter />

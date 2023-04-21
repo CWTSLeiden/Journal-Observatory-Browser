@@ -20,7 +20,7 @@ export const total_set = createAction<number>('total/set')
 // Utility
 export const order_pads = (pads: Array<object>, asc?: boolean) => {
     const direction = (asc || asc == undefined) ? 1 : -1
-    const ord = (a: object) => a["ppo:_ord"] || ""
+    const ord = (a: object) => a["scpo:_ord"] || ""
     const ordering = (a: object, b: object) =>
         (ord(a) > ord(b) ? 1 : -1) * direction
     pads.sort(ordering)

@@ -19,7 +19,7 @@ async function pad_list(search: SearchState, offset=0) {
     const nquery = `
         select distinct ?pad from onto:count where {
             ?pad a pad:PAD ; pad:hasAssertion ?assertion .
-            graph ?assertion { ?platform a ppo:Platform } .
+            graph ?assertion { ?platform a scpo:Platform } .
             ${filter.creator_filter(search)}
             ${filter.search_filter(search.searchstring)}
             ${filter.pub_policy_filter(search)}
@@ -48,15 +48,14 @@ async function pad_list(search: SearchState, offset=0) {
                 prism:issn ?issnu ;
                 schema:name ?name ;
                 ?policytype ?policy ;
-                ppo:isOpenAccess ?openaccess ;
+                scpo:isOpenAccess ?openaccess ;
                 dcterms:creator ?creator ;
-                ppo:_ord ?order .
         }
         where {
             {
                 select ?pad ?assertion ?platform ?order where {
                     ?pad a pad:PAD ; pad:hasAssertion ?assertion .
-                    graph ?assertion { ?platform a ppo:Platform } .
+                    graph ?assertion { ?platform a scpo:Platform } .
                     ${filter.search_filter(search.searchstring)}
                     ${filter.creator_filter(search)}
                     ${filter.pub_policy_filter(search)}
@@ -76,9 +75,7 @@ async function pad_list(search: SearchState, offset=0) {
                     ${filter.evaluation_interaction_filter(search)}
                     ${filter.evaluation_information_filter(search)}
                     ${filter.evaluation_comment_filter(search)}
-                    ${orderprop(search)}
                 }
-                ${order(search)}
                 ${limit(search, offset)}
             }
             optional { ?assertion pad:hasSourceAssertion [ dcterms:creator ?creator ] }
@@ -89,9 +86,9 @@ async function pad_list(search: SearchState, offset=0) {
             optional { ?platform prism:eIssn ?eissn . }
             bind(coalesce(?issnl, ?issn, ?eissn) as ?issnu) .
             optional {
-                ?platform ppo:hasPolicy ?policy .
+                ?platform scpo:hasPolicy ?policy .
                 ?policy a ?policytype .
-                optional { ?policy ppo:isOpenAccess ?openaccess . }
+                optional { ?policy scpo:isOpenAccess ?openaccess . }
             }
         }
     `;

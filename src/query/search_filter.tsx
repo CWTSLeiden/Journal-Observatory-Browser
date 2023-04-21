@@ -34,8 +34,8 @@ export const creator_filter = (search: SearchState) => {
 export const pub_policy_filter = (search: SearchState) => {
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationPolicy .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationPolicy .
         }
     `;
     return search.pub_policy ? q : "";
@@ -44,9 +44,9 @@ export const pub_policy_filter = (search: SearchState) => {
 export const pub_open_access_filter = (search: SearchState) => {
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationPolicy ;
-            ppo:isOpenAccess true .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationPolicy ;
+            scpo:isOpenAccess true .
         }
     `;
     return search.open_access ? q : "";
@@ -55,8 +55,8 @@ export const pub_open_access_filter = (search: SearchState) => {
 export const pub_embargo_filter = (search: SearchState) => {
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationPolicy ;
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationPolicy ;
                 fabio:hasEmbargoDuration ?pub_embargo .
             filter(?pub_embargo <= "P${search.pub_embargoduration}M"^^xsd:duration)
         }
@@ -67,9 +67,9 @@ export const pub_embargo_filter = (search: SearchState) => {
 export const pub_apc_filter = (search: SearchState) => {
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationPolicy ;
-                ppo:hasArticlePublishingCharges [
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationPolicy ;
+                scpo:hasArticlePublishingCharges [
                     schema:price ?price ;
                     schema:priceCurrency "USD" ;
                 ] .
@@ -83,9 +83,9 @@ export const pub_copyrightowner_filter = (search: SearchState) => {
     const filtered = enabled(search.pub_copyrightowners)
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationPolicy ;
-                ppo:hasCopyrightOwner [ a ?copyrightowner ] .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationPolicy ;
+                scpo:hasCopyrightOwner [ a ?copyrightowner ] .
             filter(?copyrightowner in (${filtered.join(', ')}))
         }
     `;
@@ -96,8 +96,8 @@ export const pub_license_filter = (search: SearchState) => {
     const filtered = enabled(search.pub_licenses, "uri")
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationPolicy ;
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationPolicy ;
                 dcterms:license ?license .
             filter(?license in (${filtered.join(', ')}))
         }
@@ -108,8 +108,8 @@ export const pub_license_filter = (search: SearchState) => {
 export const elsewhere_policy_filter = (search: SearchState) => {
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationElsewherePolicy .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationElsewherePolicy .
         }
     `;
     return search.elsewhere_policy ? q : "";
@@ -120,9 +120,9 @@ export const elsewhere_version_filter = (search: SearchState) => {
     const filtered = enabled(search.elsewhere_versions)
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationElsewherePolicy ;
-                ppo:appliesToVersion ?version .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationElsewherePolicy ;
+                scpo:appliesToVersion ?version .
             filter(?version in (${filtered.join(', ')}))
         }
     `;
@@ -133,9 +133,9 @@ export const elsewhere_location_filter = (search: SearchState) => {
     const filtered = enabled(search.elsewhere_locations, "string")
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationElsewherePolicy ;
-                ppo:publicationLocation ?location .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationElsewherePolicy ;
+                scpo:publicationLocation ?location .
             filter(?location in (${filtered.join(', ')}))
         }
     `;
@@ -146,8 +146,8 @@ export const elsewhere_license_filter = (search: SearchState) => {
     const filtered = enabled(search.elsewhere_licenses, "uri")
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationElsewherePolicy ;
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationElsewherePolicy ;
                 dcterms:license ?license .
             filter(?license in (${filtered.join(', ')}))
         }
@@ -159,9 +159,9 @@ export const elsewhere_copyrightowner_filter = (search: SearchState) => {
     const filtered = enabled(search.elsewhere_copyrightowners)
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationElsewherePolicy ;
-                ppo:hasCopyrightOwner [ a ?copyrightowner ] .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationElsewherePolicy ;
+                scpo:hasCopyrightOwner [ a ?copyrightowner ] .
             filter(?copyrightowner in (${filtered.join(', ')}))
         }
     `;
@@ -171,8 +171,8 @@ export const elsewhere_copyrightowner_filter = (search: SearchState) => {
 export const elsewhere_embargo_filter = (search: SearchState) => {
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:PublicationElsewherePolicy ;
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:PublicationElsewherePolicy ;
                 fabio:hasEmbargoDuration ?pub_embargo .
             filter(?pub_embargo <= "P${search.elsewhere_embargoduration}M"^^xsd:duration)
         }
@@ -183,8 +183,8 @@ export const elsewhere_embargo_filter = (search: SearchState) => {
 export const evaluation_policy_filter = (search: SearchState) => {
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:EvaluationPolicy .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:EvaluationPolicy .
         }
     `;
     return search.evaluation_policy ? q : "";
@@ -195,31 +195,31 @@ export const evaluation_anonymized_filter = (search: SearchState) => {
     const all = `
         exists {
             ?editor a pro:editor .
-            ?author ppo:identifiedTo ?reviewer .
-            ?author ppo:identifiedTo ?editor .
-            ?reviewer ppo:identifiedTo ?author .
-            ?reviewer ppo:identifiedTo ?editor .
+            ?author scpo:identifiedTo ?reviewer .
+            ?author scpo:identifiedTo ?editor .
+            ?reviewer scpo:identifiedTo ?author .
+            ?reviewer scpo:identifiedTo ?editor .
         }
     `
     const single = `
         exists {
-            ?author ppo:identifiedTo ?reviewer .
-            ?reviewer ppo:anonymousTo ?author .
+            ?author scpo:identifiedTo ?reviewer .
+            ?reviewer scpo:anonymousTo ?author .
         }
     `
     const double = `
         exists {
-            ?author ppo:anonymousTo ?reviewer .
-            ?reviewer ppo:anonymousTo ?author .
+            ?author scpo:anonymousTo ?reviewer .
+            ?reviewer scpo:anonymousTo ?author .
         }
     `
     const triple = `
         exists {
             ?editor a pro:editor .
-            ?author ppo:anonymousTo ?reviewer .
-            ?author ppo:anonymousTo ?editor .
-            ?reviewer ppo:anonymousTo ?author .
-            ?reviewer ppo:anonymousTo ?editor .
+            ?author scpo:anonymousTo ?reviewer .
+            ?author scpo:anonymousTo ?editor .
+            ?reviewer scpo:anonymousTo ?author .
+            ?reviewer scpo:anonymousTo ?editor .
         }
     `
     const anonymized = [
@@ -230,15 +230,15 @@ export const evaluation_anonymized_filter = (search: SearchState) => {
     ].filter(Boolean)
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:EvaluationPolicy .
-            ?policy ppo:involves ?author .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:EvaluationPolicy .
+            ?policy scpo:involves ?author .
             ?author a pro:author .
             ?author ?author_reviewer ?reviewer .
-            ?policy ppo:involves ?reviewer .
+            ?policy scpo:involves ?reviewer .
             ?reviewer a pro:peer-reviewer .
             ?reviewer ?reviewer_author ?author .
-            ?policy ppo:involves ?editor .
+            ?policy scpo:involves ?editor .
             filter (${anonymized.join(' || ')})
         }
     `;
@@ -249,11 +249,11 @@ export const evaluation_interaction_filter = (search: SearchState) => {
     const filtered = enabled(search.evaluation_interactions)
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:EvaluationPolicy ;
-                ppo:involves ?reviewer .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:EvaluationPolicy ;
+                scpo:involves ?reviewer .
             ?reviewer a pro:peer-reviewer ;
-                ppo:interactsWith ?agent .
+                scpo:interactsWith ?agent .
             ?agent a ?publishingrole .
             filter(?publishingrole in (${filtered.join(', ')}))
             filter(?reviewer != ?agent)
@@ -266,11 +266,11 @@ export const evaluation_information_filter = (search: SearchState) => {
     const filtered = enabled(search.evaluation_information)
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:EvaluationPolicy ;
-                ppo:covers ?work .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:EvaluationPolicy ;
+                scpo:covers ?work .
             ?work a ?worktype ;
-                ppo:publiclyAccessible ppo:Accessible .
+                scpo:publiclyAccessible scpo:Accessible .
             filter(?worktype in (${filtered.join(', ')}))
         }
     `;
@@ -281,10 +281,10 @@ export const evaluation_comment_filter = (search: SearchState) => {
     const filtered = enabled(search.evaluation_comments)
     const q = `
         filter exists {
-            ?platform ppo:hasPolicy ?policy .
-            ?policy a ppo:EvaluationPolicy ;
-                ppo:covers ?ppc .
-            ?ppc a ppo:postPublicationCommenting .
+            ?platform scpo:hasPolicy ?policy .
+            ?policy a scpo:EvaluationPolicy ;
+                scpo:covers ?ppc .
+            ?ppc a scpo:postPublicationCommenting .
             filter(?ppc in (${filtered.join(', ')}))
         }
     `;

@@ -12,7 +12,7 @@ import { labelize } from "../query/labels";
 
 const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
-    const openaccess = includes("ppo:isOpenAccess", "true")
+    const openaccess = includes("scpo:isOpenAccess", "true")
     if (compare(policy1, policy2, openaccess)) { return -1 }
     if (compare(policy2, policy1, openaccess)) { return 1 }
     return Math.sign(Object.keys(policy1).length - Object.keys(policy2).length)
@@ -27,7 +27,7 @@ export const PlatformPubPolicies = () => {
     useEffect(() => {
         const render = async () => {
             const result = await platform_publication_policies(padStore)
-            const fold = fold_graph(result, 1).filter(g => g["@type"] == "ppo:PublicationPolicy")
+            const fold = fold_graph(result, 1).filter(g => g["@type"] == "scpo:PublicationPolicy")
             setPolicies(ld_cons_src(fold))
             setLoading(false)
         }
@@ -38,7 +38,7 @@ export const PlatformPubPolicies = () => {
         <DetailsCard
             title="Publication policies"
             loading={loading}
-            infodialog={<InfoDialog property="ppo:PublicationPolicy" />}
+            infodialog={<InfoDialog property="scpo:PublicationPolicy" />}
         >
             {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>
@@ -47,19 +47,19 @@ export const PlatformPubPolicies = () => {
 
 const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
     const zip = zip_policy_prop(policy)
-    const version = zip("ppo:appliesToVersion")
-    const isopenaccess = zip("ppo:isOpenAccess")
+    const version = zip("scpo:appliesToVersion")
+    const isopenaccess = zip("scpo:isOpenAccess")
         .map(summary.openaccess)
     const license = zip("dcterms:license")
         .map(linkify_policy_item)
         .map(summary.license)
     const embargo = zip("fabio:hasEmbargoDuration")
-    const owner = zip("ppo:hasCopyrightOwner")
+    const owner = zip("scpo:hasCopyrightOwner")
         .map(summary.copyright_owner)
-    const apc = (policy["ppo:hasArticlePublishingCharges"] || [])
+    const apc = (policy["scpo:hasArticlePublishingCharges"] || [])
         .map((apc: object) => ({
             id: ld_to_str(apc["@id"]),
-            type: "ppo:hasArticlePublishingCharges",
+            type: "scpo:hasArticlePublishingCharges",
             value: [
                 labelize(first(apc, "schema:price"), {"unknown": "Unknown amount"}) || "0",
                 first(apc, "schema:priceCurrency")
@@ -88,42 +88,42 @@ const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
 async function platform_publication_policies(store: Quadstore) {
     const query = `
         construct {
-            ?policy a ppo:PublicationPolicy .
-            ?policy ppo:appliesToVersion ?version .
-            ?policy ppo:isOpenAccess ?isopenaccess .
+            ?policy a scpo:PublicationPolicy .
+            ?policy scpo:appliesToVersion ?version .
+            ?policy scpo:isOpenAccess ?isopenaccess .
             ?policy dcterms:license ?license .
             ?policy fabio:hasEmbargoDuration ?embargo .
-            ?policy ppo:hasCopyrightOwner ?copyrightowner .
-            ?policy ppo:hasArticlePublishingCharges ?apc .
-            ?apc a ppo:ArticlePublishingCharges .
+            ?policy scpo:hasCopyrightOwner ?copyrightowner .
+            ?policy scpo:hasArticlePublishingCharges ?apc .
+            ?apc a scpo:ArticlePublishingCharges .
             ?apc schema:price ?apcprice .
             ?apc schema:priceCurrency ?apccurrency .
             ?apc schema:url ?apcurl .
-            ?policy ppo:_src ?source .
+            ?policy scpo:_src ?source .
         }
         where { 
             ?pad pad:hasAssertion ?assertion .
             graph ?assertion {
-                ?platform a ppo:Platform ; ppo:hasPolicy ?policy .
-                ?policy a ppo:PublicationPolicy .
-                optional { ?policy ppo:appliesToVersion ?version } .
-                optional { ?policy ppo:isOpenAccess ?isopenaccess } .
+                ?platform a scpo:Platform ; scpo:hasPolicy ?policy .
+                ?policy a scpo:PublicationPolicy .
+                optional { ?policy scpo:appliesToVersion ?version } .
+                optional { ?policy scpo:isOpenAccess ?isopenaccess } .
                 optional { ?policy ?haslicense ?license . ?haslicense rdfs:subPropertyOf* dcterms:license } .
                 optional { ?policy fabio:hasEmbargoDuration ?embargo } .
-                optional { ?policy ppo:hasCopyrightOwner [ a ?copyrightowner ] } .
-                optional { ?policy ppo:hasArticlePublishingCharges ?apc .
+                optional { ?policy scpo:hasCopyrightOwner [ a ?copyrightowner ] } .
+                optional { ?policy scpo:hasArticlePublishingCharges ?apc .
                     optional { ?apc schema:price ?apcprice } .
                     optional { ?apc schema:priceCurrency ?apccurrency } .
                     optional { ?apc schema:url ?apcurl } .
                 }
-                optional { ?policy ppo:hasOpenAccessFee "true" .
+                optional { ?policy scpo:hasOpenAccessFee "true" .
                     bind(bnode() as ?apc) .
                     bind("unknown" as ?apcprice)
                 } .
             }
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
-                graph ?source { [] a ppo:Platform ; ppo:hasPolicy ?policy } .
+                graph ?source { [] a scpo:Platform ; scpo:hasPolicy ?policy } .
             } .
         }
     `;

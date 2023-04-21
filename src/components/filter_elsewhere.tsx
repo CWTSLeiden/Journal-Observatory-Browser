@@ -11,7 +11,7 @@ export const ElsewherePolicyFilter = () => {
     const dispatch = useAppDispatch()
     return (
         <CheckboxFilter
-            label={labelize("ppo:hasPublicationElsewherePolicy", labels)}
+            label={labelize("scpo:hasPublicationElsewherePolicy", labels)}
             state={state}
             action={() => dispatch(searchActions.elsewhere_toggle())}
         />
@@ -24,7 +24,7 @@ export const ElsewhereVersionFilter = () => {
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label={labelize("ppo:appliesToVersion", labels)}
+            label={labelize("scpo:appliesToVersion", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.elsewhere_versions_toggleone(p))}
             reset_action={() => dispatch(searchActions.elsewhere_versions_reset())}
@@ -38,7 +38,7 @@ export const ElsewhereLocationFilter = () => {
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label={labelize("ppo:publicationLocation", labels)}
+            label={labelize("scpo:publicationLocation", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.elsewhere_locations_toggleone(p))}
             reset_action={() => dispatch(searchActions.elsewhere_locations_reset())}
@@ -66,7 +66,7 @@ export const ElsewhereCopyrightownerFilter = () => {
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label={labelize("ppo:hasCopyrightOwner", labels)}
+            label={labelize("scpo:hasCopyrightOwner", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.elsewhere_copyrightowners_toggleone(p))}
             reset_action={() => dispatch(searchActions.elsewhere_copyrightowners_reset())}

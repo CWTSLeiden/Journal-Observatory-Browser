@@ -162,10 +162,10 @@ const Cond = ({ cond, children }: { cond: boolean, children: ReactElement }) => 
 )
 
 const PadCardPolicies = ({ pad }: PadCardProps) => {
-    const pubpolicies       = pad["ppo:PublicationPolicy"]?.length || 0
-    const evalpolicies      = pad["ppo:EvaluationPolicy"]?.length || 0
-    const elsewherepolicies = pad["ppo:PublicationElsewherePolicy"]?.length || 0
-    const open_access = pad["ppo:isOpenAccess"]?.some(Boolean) || false
+    const pubpolicies       = pad["scpo:PublicationPolicy"]?.length || 0
+    const evalpolicies      = pad["scpo:EvaluationPolicy"]?.length || 0
+    const elsewherepolicies = pad["scpo:PublicationElsewherePolicy"]?.length || 0
+    const open_access = pad["scpo:isOpenAccess"]?.some(Boolean) || false
     return (
         <>
             <Cond cond={pubpolicies > 0}>

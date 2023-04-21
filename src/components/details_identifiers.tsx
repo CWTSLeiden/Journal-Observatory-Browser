@@ -39,7 +39,7 @@ export const PlatformIdentifiers = () => {
     return (
         <DetailsCard title="Identifiers" loading={loading}>
             {identifiers.map(([p, n, s]) => (
-                <SourceWrapper key={n} src={s}>
+                <SourceWrapper key={p + n} src={s}>
                     <DetailsListItem
                         primary={display_id(n)}
                         secondary={labelize(p, labels)}
@@ -56,16 +56,16 @@ async function platform_identifiers(store: Quadstore) {
     const query = `
         construct {
             ?b ?p ?o .
-            ?b ppo:_src ?source .
+            ?b scpo:_src ?source .
         }
         where {
             ?pad pad:hasAssertion ?a .
-            graph ?a { ?s a ppo:Platform ; ?p ?o } .
+            graph ?a { ?s a scpo:Platform ; ?p ?o } .
             ?p rdfs:subPropertyOf dcterms:identifier.
             bind(uuid() as ?b)
             optional { 
                 ?a pad:hasSourceAssertion ?source
-                graph ?source { [] a ppo:Platform ; ?p ?o } .
+                graph ?source { [] a scpo:Platform ; ?p ?o } .
             } .
         }
     `;

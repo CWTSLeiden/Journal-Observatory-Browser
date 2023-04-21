@@ -208,15 +208,15 @@ const initSearch: SearchState = {
         "pro:author": false
     },
     evaluation_information: {
-        "ppo:ReviewReport": false,
-        "ppo:ReviewSummary": false,
-        "ppo:SubmittedManuscript": undefined,
-        "ppo:AuthorEditorCommunication": false
+        "scpo:ReviewReport": false,
+        "scpo:ReviewSummary": false,
+        "scpo:SubmittedManuscript": undefined,
+        "scpo:AuthorEditorCommunication": false
     },
     evaluation_comments: {
-        "ppo:postPublicationCommentingOpen": false,
-        "ppo:postPublicationCommentingOnInvitation": undefined,
-        "ppo:postPublicationCommentingClosed": false
+        "scpo:postPublicationCommentingOpen": false,
+        "scpo:postPublicationCommentingOnInvitation": undefined,
+        "scpo:postPublicationCommentingClosed": false
     }
 };
 

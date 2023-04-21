@@ -101,7 +101,7 @@ export async function ontology_store(): Promise<Quadstore> {
         where {
             { graph pad:ontology { ?s ?p ?o } }
             union
-            { graph ppo:ontology { ?s ?p ?o } }
+            { graph scpo:ontology { ?s ?p ?o } }
         }
     `
     const quads = await query_quads(query)

@@ -16,7 +16,7 @@ export const PlatformEvaluationPolicies = () => {
     useEffect(() => {
         const render = async () => {
             const result = await platform_evaluation_policies(padStore)
-            const fold = fold_graph(result, 1).filter(g => (g["@type"] || []).includes("ppo:EvaluationPolicy"))
+            const fold = fold_graph(result, 1).filter(g => (g["@type"] || []).includes("scpo:EvaluationPolicy"))
             setPolicies(ld_cons_src(fold))
             setLoading(false)
         }
@@ -27,7 +27,7 @@ export const PlatformEvaluationPolicies = () => {
         <DetailsCard
             title="Evaluation policies"
             loading={loading}
-            infodialog={<InfoDialog property="ppo:EvaluationPolicy" />}
+            infodialog={<InfoDialog property="scpo:EvaluationPolicy" />}
         >
             {policies.map(([p, s]) => (
                 <PlatformEvaluationPolicy key={p["@id"]} policy={p} src={s} />
@@ -38,8 +38,8 @@ export const PlatformEvaluationPolicies = () => {
 
 const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}) => {
     const id = ld_to_str(policy["@id"])
-    const people = policy["ppo:involves"] || []
-    const documents = policy["ppo:covers"] || []
+    const people = policy["scpo:involves"] || []
+    const documents = policy["scpo:covers"] || []
 
     const authors = people.filter((p: object) => p["@type"] == "pro:author")
     const authors_id = accessible(id, "Author identity", authors)
@@ -53,19 +53,19 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
         .map(summary.accessible)
     const anonymized = summary.anonymized(is_anonymized(id, reviewers, authors))
 
-    const reports = documents.filter((p: object) => p["@type"] == "ppo:ReviewReport")
-    const report_id = accessible(id, "ppo:ReviewReport", reports)
-    const summaries = documents.filter((p: object) => p["@type"] == "ppo:ReviewSummary")
-    const summary_id = accessible(id, "ppo:ReviewSummary", summaries)
-    const manuscripts = documents.filter((p: object) => p["@type"] == "ppo:SubmittedManuscript")
-    const manuscript_id = accessible(id, "ppo:SubmittedManuscript", manuscripts)
-    const communication = documents.filter((p: object) => p["@type"] == "ppo:AuthorEditorCommunication")
-    const communication_id = accessible(id, "ppo:AuthorEditorCommunication", communication)
+    const reports = documents.filter((p: object) => p["@type"] == "scpo:ReviewReport")
+    const report_id = accessible(id, "scpo:ReviewReport", reports)
+    const summaries = documents.filter((p: object) => p["@type"] == "scpo:ReviewSummary")
+    const summary_id = accessible(id, "scpo:ReviewSummary", summaries)
+    const manuscripts = documents.filter((p: object) => p["@type"] == "scpo:SubmittedManuscript")
+    const manuscript_id = accessible(id, "scpo:SubmittedManuscript", manuscripts)
+    const communication = documents.filter((p: object) => p["@type"] == "scpo:AuthorEditorCommunication")
+    const communication_id = accessible(id, "scpo:AuthorEditorCommunication", communication)
     const documents_id = [report_id, summary_id, manuscript_id, communication_id]
         .filter(Boolean)
         .map(summary.accessible)
 
-    const commenting = documents.filter((p: object) => p["@type"] == "ppo:postPublicationCommenting")
+    const commenting = documents.filter((p: object) => p["@type"] == "scpo:postPublicationCommenting")
     const commenting_id = ppc(id, commenting)
 
     if (people_id.length == 0) {
@@ -94,36 +94,36 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
 async function platform_evaluation_policies(store: Quadstore) {
     const query = `
         construct {
-            ?policy a ppo:EvaluationPolicy .
-            ?policy ppo:_src ?source .
-            ?policy ppo:involves ?person .
-            ?policy ppo:covers ?document .
+            ?policy a scpo:EvaluationPolicy .
+            ?policy scpo:_src ?source .
+            ?policy scpo:involves ?person .
+            ?policy scpo:covers ?document .
 
             ?person a ?persontype .
-            ?person ppo:publiclyAccessible ?personpublic .
-            ?person ppo:anonymousTo ?otherpersonanon .
-            ?person ppo:identifiedTo ?otherpersonid .
-            ?person ppo:interactsWith ?interacts .
+            ?person scpo:publiclyAccessible ?personpublic .
+            ?person scpo:anonymousTo ?otherpersonanon .
+            ?person scpo:identifiedTo ?otherpersonid .
+            ?person scpo:interactsWith ?interacts .
 
             ?document a ?documenttype .
-            ?document ppo:publiclyAccessible ?documentpublic .
+            ?document scpo:publiclyAccessible ?documentpublic .
         }
         where { 
             ?pad pad:hasAssertion ?assertion .
             graph ?assertion {
-                ?platform a ppo:Platform ; ppo:hasPolicy ?policy .
-                ?policy a ppo:EvaluationPolicy .
-                optional { ?policy ppo:involves ?person . ?person a ?persontype } .
-                optional { ?person ppo:identityPubliclyAccessible ?personpublic } .
-                optional { ?person ppo:anonymousTo [ a ?otherpersonanon ] } .
-                optional { ?person ppo:identifiedTo [ a ?otherpersonid ] } .
-                optional { ?person ppo:interactsWith [ a ?interacts ] } .
-                optional { ?policy ppo:covers ?document . ?document a ?documenttype } .
-                optional { ?document ppo:publiclyAccessible ?documentpublic } .
+                ?platform a scpo:Platform ; scpo:hasPolicy ?policy .
+                ?policy a scpo:EvaluationPolicy .
+                optional { ?policy scpo:involves ?person . ?person a ?persontype } .
+                optional { ?person scpo:identityPubliclyAccessible ?personpublic } .
+                optional { ?person scpo:anonymousTo [ a ?otherpersonanon ] } .
+                optional { ?person scpo:identifiedTo [ a ?otherpersonid ] } .
+                optional { ?person scpo:interactsWith [ a ?interacts ] } .
+                optional { ?policy scpo:covers ?document . ?document a ?documenttype } .
+                optional { ?document scpo:publiclyAccessible ?documentpublic } .
             }
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
-                graph ?source { [] a ppo:Platform ; ppo:hasPolicy ?policy } .
+                graph ?source { [] a scpo:Platform ; scpo:hasPolicy ?policy } .
             } .
         }
     `;
@@ -135,8 +135,8 @@ const is_anonymized = (id: string, authors: object[], reviewers: object[]): Poli
     const item: PolicyItem = {id: id, type: "Anonymized"}
     const anonymous = (persons: object[], type: string) => {
         if (persons.length == 0) { return false }
-        const anonymous = persons.every(ld_contains("ppo:anonymousTo", type))
-        const identified = persons.some(ld_contains("ppo:identifiedTo", type))
+        const anonymous = persons.every(ld_contains("scpo:anonymousTo", type))
+        const identified = persons.some(ld_contains("scpo:identifiedTo", type))
         return (anonymous && !identified)
     }
     const author_reviewer = anonymous(authors, "pro:peer-reviewer")
@@ -161,14 +161,14 @@ const is_anonymized = (id: string, authors: object[], reviewers: object[]): Poli
 const accessible = (id: string, type: string, obj: object[]): PolicyItem => {
     if (obj.length == 0) { return null }
     const item: PolicyItem = {id: id, type: type}
-    if (obj.some(ld_contains("ppo:publiclyAccessible", "ppo:Accessible"))) {
-        item.value = "ppo:Accessible"
+    if (obj.some(ld_contains("scpo:publiclyAccessible", "scpo:Accessible"))) {
+        item.value = "scpo:Accessible"
     }
-    if (obj.every(ld_contains("ppo:publiclyAccessible", "ppo:NotAccessible"))) {
-        item.value = "ppo:NotAccessible"
+    if (obj.every(ld_contains("scpo:publiclyAccessible", "scpo:NotAccessible"))) {
+        item.value = "scpo:NotAccessible"
     }
-    if (obj.some(ld_contains("ppo:publiclyAccessible", "ppo:OptIn"))) {
-        item.value = "ppo:OptIn"
+    if (obj.some(ld_contains("scpo:publiclyAccessible", "scpo:OptIn"))) {
+        item.value = "scpo:OptIn"
     }
     return item.value ? item : null
 }
@@ -180,6 +180,6 @@ const ppc = (id: string, obj: object[]): PolicyItem[] => {
 
 const interacts = (id: string, type: string, obj: object[]): PolicyItem[] => {
     const item: PolicyItem = {id: id, type: type}
-    const interactions = obj.map(o => (o["ppo:interactsWith"] || []).map(ld_to_str))
+    const interactions = obj.map(o => (o["scpo:interactsWith"] || []).map(ld_to_str))
     return interactions.flat().map(i => ({...item, value: i}))
 }

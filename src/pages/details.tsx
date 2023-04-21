@@ -25,7 +25,7 @@ import { Provenance } from "../components/details_provenance";
 import context from "../strings/context.json";
 
 function DetailsComponent() {
-    const pad_id = context["pad"] + pad_id_norm(useParams().id)
+    const pad_id = context["job"] + pad_id_norm(useParams().id)
     const ontologyStore = useContext(OntologyContext)
     const [padStore, setPadStore] = useState(undefined)
     const dispatch = useAppDispatch()

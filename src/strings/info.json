@@ -28,10 +28,10 @@
         "Filters for policies of platforms regarding the publication of a scholarly work on other platforms.",
     "evaluation-policy-filterbar":
         "Filters for policies of platforms regarding the evaluation of a scholarly work.",
-    "ppo:PublicationPolicy":
+    "scpo:PublicationPolicy":
         "Policies of the platform regarding the publication of a scholarly work.",
-    "ppo:PublicationElsewherePolicy":
+    "scpo:PublicationElsewherePolicy":
         "Policies of the platform regarding the publication of a scholarly work on other platforms.",
-    "ppo:EvaluationPolicy":
+    "scpo:EvaluationPolicy":
         "Policies of the platform regarding the evaluation of a scholarly work."
 }

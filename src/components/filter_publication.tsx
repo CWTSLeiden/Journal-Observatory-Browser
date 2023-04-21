@@ -13,7 +13,7 @@ export const PubPolicyFilter = () => {
         <CheckboxFilter
             state={state}
             action={() => dispatch(searchActions.publication_toggle())}
-            label={labelize("ppo:hasPublicationPolicy", labels)}
+            label={labelize("scpo:hasPublicationPolicy", labels)}
         />
     )
 }
@@ -26,7 +26,7 @@ export const OpenAccessFilter = () => {
         <CheckboxFilter
             state={state}
             action={() => dispatch(searchActions.publication_openaccess_toggle())}
-            label={labelize("ppo:isOpenAccess", labels)}
+            label={labelize("scpo:isOpenAccess", labels)}
         />
     )
 }
@@ -62,7 +62,7 @@ export const PubApcFilter = () => {
         <DropdownCheckbox
             state={state}
             toggle={() => dispatch(searchActions.publication_apc_toggle())}
-            label={labelize("ppo:hasArticlePublishingCharges", labels)}
+            label={labelize("scpo:hasArticlePublishingCharges", labels)}
         >
             <SliderFilter
                 state={state}
@@ -81,7 +81,7 @@ export const PubCopyrightOwnersFilter = () => {
     const dispatch = useAppDispatch()
     return (
         <DropdownToggles
-            label={labelize("ppo:hasCopyrightOwner", labels)}
+            label={labelize("scpo:hasCopyrightOwner", labels)}
             toggles={toggles}
             toggle_action={(p: string) => dispatch(searchActions.publication_copyrightowners_toggleone(p))}
             reset_action={() => dispatch(searchActions.publication_copyrightowners_reset())}

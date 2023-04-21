@@ -44,12 +44,12 @@ async function platform_publishers(store: Quadstore) {
             ?org a pro:publisher ;
                 schema:name ?name ;
                 schema:url ?url ;
-                ppo:_src ?source .
+                scpo:_src ?source .
         }
         where {
             ?pad pad:hasAssertion ?a .
             graph ?a {
-                ?platform a ppo:Platform .
+                ?platform a scpo:Platform .
                 ?platform ?prop ?org .
                 ?org a pro:publisher .
             }
@@ -60,7 +60,7 @@ async function platform_publishers(store: Quadstore) {
             optional { ?org schema:url ?url . }
             optional { 
                 ?a pad:hasSourceAssertion ?source
-                graph ?source { [] a ppo:Platform ; ?prop ?org } .
+                graph ?source { [] a scpo:Platform ; ?prop ?org } .
             } .
         }
     `;

@@ -13,7 +13,7 @@ export const PlatformKeywords = () => {
     useEffect(() => {
         const render = async () => {
             const result = await platform_keywords(padStore)
-            const items = ld_zip_src(result, "ppo:hasKeyword")
+            const items = ld_zip_src(result, "scpo:hasKeyword")
             setKeywords(items)
             setLoading(false)
         }
@@ -33,15 +33,15 @@ export const PlatformKeywords = () => {
 async function platform_keywords(store: Quadstore) {
     const query = `
         construct {
-            ?platform ppo:hasKeyword ?o .
-            ?platform ppo:_src ?source .
+            ?platform scpo:hasKeyword ?o .
+            ?platform scpo:_src ?source .
         }
         where {
             ?pad pad:hasAssertion ?a . 
-            graph ?a { ?platform a ppo:Platform ; ppo:hasKeyword ?o . }
+            graph ?a { ?platform a scpo:Platform ; scpo:hasKeyword ?o . }
             optional {
                 ?a pad:hasSourceAssertion ?source
-                graph ?source { ?_ ppo:hasKeyword ?o }
+                graph ?source { ?_ scpo:hasKeyword ?o }
             }
         }
     `;

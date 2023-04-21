@@ -75,9 +75,9 @@ export const version = (item: PolicyItem): PolicyItem => {
 
 export const elsewhere_type = (item: PolicyItem): PolicyItem => {
     const typelabel = {
-        "ppo:PublicationElsewhereAllowedPolicy": "Allowed",
-        "ppo:PublicationElsewhereProhibitedPolicy": "Prohibited",
-        "ppo:PublicationElsewhereMandatoryPolicy": "Mandatory"
+        "scpo:PublicationElsewhereAllowedPolicy": "Allowed",
+        "scpo:PublicationElsewhereProhibitedPolicy": "Prohibited",
+        "scpo:PublicationElsewhereMandatoryPolicy": "Mandatory"
     }
     const label = typelabel[item.value]
     switch(label) {
@@ -109,16 +109,16 @@ export const anonymized = (item: PolicyItem): PolicyItem => {
 
 export const accessible = (item: PolicyItem): PolicyItem => {
     switch(item.value) {
-        case "ppo:Accessible":
+        case "scpo:Accessible":
             return summarize(item, `${item.type} public`, "default", Visibility)
-        case "ppo:NotAccessible":
+        case "scpo:NotAccessible":
             return summarize(item, `${item.type} hidden`, "default", VisibilityOff)
         default:
             return item
     }
 }
 export const no_accessible = (id: string, value: string): PolicyItem => {
-    const item = {id: id, type: "ppo:Accessible"}
+    const item = {id: id, type: "scpo:Accessible"}
     return summarize(item, value, "error", VisibilityOff)
 }
 

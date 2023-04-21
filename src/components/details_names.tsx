@@ -36,12 +36,12 @@ async function platform_names(store: Quadstore) {
         construct {
             ?name schema:name ?name .
             ?name schema:url ?url .
-            ?name ppo:_src ?source .
+            ?name scpo:_src ?source .
         }
         where {
             ?pad pad:hasAssertion ?assertion . 
             graph ?assertion {
-                ?platform a ppo:Platform ; schema:name ?name .
+                ?platform a scpo:Platform ; schema:name ?name .
                 optional { ?platform schema:url ?url } .
             }
             optional {

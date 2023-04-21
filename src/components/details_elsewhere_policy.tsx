@@ -11,10 +11,10 @@ import { InfoDialog } from "./info";
 
 const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
-    const prohibited = includes("@type", "ppo:PublicationElsewhereProhibitedPolicy")
-    const published = includes("ppo:appliesToVersion", "pso:published")
-    const accepted = includes("ppo:appliesToVersion", "pso:accepted-for-publication")
-    const submitted = includes("ppo:appliesToVersion", "pso:submitted")
+    const prohibited = includes("@type", "scpo:PublicationElsewhereProhibitedPolicy")
+    const published = includes("scpo:appliesToVersion", "pso:published")
+    const accepted = includes("scpo:appliesToVersion", "pso:accepted-for-publication")
+    const submitted = includes("scpo:appliesToVersion", "pso:submitted")
     if (compare(policy1, policy2, prohibited)) { return -1 }
     if (compare(policy2, policy1, prohibited)) { return 1 }
     if (compare(policy1, policy2, published)) { return -1 }
@@ -35,7 +35,7 @@ export const PlatformElsewherePolicies = () => {
     useEffect(() => {
         const render = async () => {
             const result = await platform_elsewhere_policies(padStore)
-            const fold = fold_graph(result, 1).filter(g => g["@type"].includes("ppo:PublicationElsewherePolicy"))
+            const fold = fold_graph(result, 1).filter(g => g["@type"].includes("scpo:PublicationElsewherePolicy"))
             setPolicies(ld_cons_src(fold))
             setLoading(false)
         }
@@ -46,7 +46,7 @@ export const PlatformElsewherePolicies = () => {
         <DetailsCard
             title="Preprinting/self-archiving policies"
             loading={loading}
-            infodialog={<InfoDialog property="ppo:PublicationElsewherePolicy" />}
+            infodialog={<InfoDialog property="scpo:PublicationElsewherePolicy" />}
         >
             {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>
@@ -56,17 +56,17 @@ export const PlatformElsewherePolicies = () => {
 const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]}) => {
     const zip = zip_policy_prop(policy)
     const type = zip("@type")
-        .filter(item => item.value != "ppo:PublicationElsewherePolicy")
+        .filter(item => item.value != "scpo:PublicationElsewherePolicy")
         .map(summary.elsewhere_type)
-    const version = zip("ppo:appliesToVersion")
+    const version = zip("scpo:appliesToVersion")
         .map(summary.version)
     const license = zip("dcterms:license")
         .map(linkify_policy_item)
         .map(summary.license)
     const embargo = zip("fabio:hasEmbargoDuration")
-    const owner = zip("ppo:hasCopyrightOwner").map(summary.copyright_owner)
-    const condition = zip("ppo:publicationCondition")
-    const location = zip("ppo:publicationLocation")
+    const owner = zip("scpo:hasCopyrightOwner").map(summary.copyright_owner)
+    const condition = zip("scpo:publicationCondition")
+    const location = zip("scpo:publicationLocation")
 
     return (
         <SourceWrapper key={policy["@id"]} src={src}>
@@ -89,32 +89,32 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
 async function platform_elsewhere_policies(store: Quadstore) {
     const query = `
         construct {
-            ?policy a ppo:PublicationElsewherePolicy .
+            ?policy a scpo:PublicationElsewherePolicy .
             ?policy a ?elsewherepolicy .
-            ?policy ppo:publicationLocation ?location .
-            ?policy ppo:appliesToVersion ?version .
+            ?policy scpo:publicationLocation ?location .
+            ?policy scpo:appliesToVersion ?version .
             ?policy fabio:hasEmbargoDuration ?embargo .
-            ?policy ppo:publicationCondition ?condition .
+            ?policy scpo:publicationCondition ?condition .
             ?policy dcterms:license ?license .
-            ?policy ppo:hasCopyrightOwner ?copyrightowner .
-            ?policy ppo:_src ?source .
+            ?policy scpo:hasCopyrightOwner ?copyrightowner .
+            ?policy scpo:_src ?source .
         }
         where { 
             ?pad pad:hasAssertion ?assertion .
             graph ?assertion {
-                ?platform a ppo:Platform ; ppo:hasPolicy ?policy .
+                ?platform a scpo:Platform ; scpo:hasPolicy ?policy .
                 ?policy a ?elsewherepolicy .
-                optional { ?policy ppo:publicationLocation ?location } .
-                optional { ?policy ppo:appliesToVersion ?version } .
+                optional { ?policy scpo:publicationLocation ?location } .
+                optional { ?policy scpo:appliesToVersion ?version } .
                 optional { ?policy fabio:hasEmbargoDuration ?embargo } .
-                optional { ?policy ppo:publicationCondition ?condition } .
+                optional { ?policy scpo:publicationCondition ?condition } .
                 optional { ?policy ?haslicense ?license . ?haslicense rdfs:subPropertyOf* dcterms:license } .
-                optional { ?policy ppo:hasCopyrightOwner [ a ?copyrightowner ] } .
+                optional { ?policy scpo:hasCopyrightOwner [ a ?copyrightowner ] } .
             }
-            ?elsewherepolicy rdfs:subClassOf* ppo:PublicationElsewherePolicy .
+            ?elsewherepolicy rdfs:subClassOf* scpo:PublicationElsewherePolicy .
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
-                graph ?source { [] a ppo:Platform ; ppo:hasPolicy ?policy } .
+                graph ?source { [] a scpo:Platform ; scpo:hasPolicy ?policy } .
             } .
         }
     `;

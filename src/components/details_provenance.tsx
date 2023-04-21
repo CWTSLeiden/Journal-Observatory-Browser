@@ -9,7 +9,7 @@ import { compact_id, expand_id } from "../query/jsonld_helpers";
 const pad_assertion_sparqurl = (pad_id: string) => {
     const query = `
 PREFIX pad: <${context["pad"]}>
-PREFIX ppo: <${context["ppo"]}>
+PREFIX scpo: <${context["scpo"]}>
 CONSTRUCT {
     ?s ?p ?o
 }
