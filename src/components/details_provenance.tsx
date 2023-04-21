@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Card, CardContent, Divider, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material"
 import { OpenInNew } from "@mui/icons-material"
-import { InfoDialog } from "./info"
+import { AnnotationDialog } from "./info"
 import context from "../strings/context.json";
 import info from "../strings/info.json";
 import { compact_id, expand_id } from "../query/jsonld_helpers";
@@ -53,7 +53,7 @@ export const Provenance = ({pad_id}: {pad_id: string}) => {
             <CardContent>
                 <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
                     <Typography sx={{ fontWeight: 600 }}>Provenance</Typography>
-                    <InfoDialog property="provenance-title" text={info["provenance-text"]}/>
+                    <AnnotationDialog property="provenance-title" text={info["provenance-text"]}/>
                 </Box>
             </CardContent>
             <Divider />

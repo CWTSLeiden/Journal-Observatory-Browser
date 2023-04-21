@@ -1,35 +1,38 @@
-import { HelpOutlineTwoTone } from "@mui/icons-material"
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from "@mui/material"
+import { HelpOutlineTwoTone, Info } from "@mui/icons-material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, IconButtonTypeMap, IconTypeMap } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React, { useContext, useState } from "react"
 import ReactMarkdown from "react-markdown"
 import info from "../strings/info.json"
 import { labelize } from "../query/labels"
 import { LabelContext } from "../store"
+import { OverridableComponent } from "@mui/material/OverridableComponent"
 
-export const InfoDialog = ({property, text}: {property: string, text?: string | string[]}) => {
+
+type InfoDialogProps = {
+    property: string;
+    text?: string | string[];
+    icon?
+}
+export const InfoDialog = ({property, text, icon}: InfoDialogProps) => {
     const [state, setState] = useState(false)
     const labels = useContext(LabelContext)
     const handleOpen = () => setState(true)
     const handleClose = () => setState(false)
-    const dialogtext = Array.isArray(text) ? text.join("\n") : text || info[property]
+    const iconbutton = icon ? icon : <IconButton color="inherit"><Info /></IconButton>
+    const dialoglabel = info[property] || labelize(property, labels)
+    const dialogtext = Array.isArray(text) ? text : info[text] || text || dialoglabel
     return (
         <>
-            <IconButton
-                onClick={handleOpen}
-                sx={{ color: grey[400] }}
-                size="small"
-            >
-                <HelpOutlineTwoTone fontSize="inherit" />
-            </IconButton>
+            <Box onClick={handleOpen}>
+                {iconbutton}
+            </Box>
             <Dialog open={state} onClose={handleClose} scroll="paper">
-                <DialogTitle>
-                    {labelize(property, labels)}
-                </DialogTitle>
+                <DialogTitle>{dialoglabel}</DialogTitle>
                 <DialogContent>
                     <DialogContentText component="div">
                         <ReactMarkdown>
-                            {dialogtext}
+                            {Array.isArray(dialogtext) ? dialogtext.join("\n") : dialogtext}
                         </ReactMarkdown>
                     </DialogContentText>
                 </DialogContent>
@@ -39,4 +42,21 @@ export const InfoDialog = ({property, text}: {property: string, text?: string | 
             </Dialog>
         </>
     )
+}
+
+export const AnnotationDialog = ({property, text}: InfoDialogProps) => {
+    const icon = (
+        <IconButton
+            sx={{ color: grey[400] }}
+            size="small"
+        >
+            <HelpOutlineTwoTone fontSize="inherit" />
+        </IconButton>
+    )
+    return (
+        <InfoDialog
+            property={property}
+            text={text}
+            icon={icon}
+        />)
 }
