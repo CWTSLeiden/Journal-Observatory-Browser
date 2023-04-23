@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FilterBar } from "../components/filterbar";
 import { SearchBar } from "../components/searchbar";
 import { PadList, PadListPagination } from "../components/search_list";

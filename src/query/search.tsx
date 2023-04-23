@@ -44,8 +44,7 @@ async function pad_list(search: SearchState, offset=0) {
 
     const query = `
         construct {
-            ?pad dcterms:identifier ?sid ;
-                prism:issn ?issnu ;
+            ?pad prism:issn ?issnu ;
                 schema:name ?name ;
                 ?policytype ?policy ;
                 scpo:isOpenAccess ?openaccess ;
@@ -75,12 +74,13 @@ async function pad_list(search: SearchState, offset=0) {
                     ${filter.evaluation_interaction_filter(search)}
                     ${filter.evaluation_information_filter(search)}
                     ${filter.evaluation_comment_filter(search)}
+                    ${orderprop(search)}
                 }
+                ${order(search)}
                 ${limit(search, offset)}
             }
             optional { ?assertion pad:hasSourceAssertion [ dcterms:creator ?creator ] }
             optional { ?platform schema:name ?name . }
-            optional { ?platform dcterms:identifier ?id . bind(str(?id) as ?sid) . }
             optional { ?platform fabio:ISSNL ?issnl . }
             optional { ?platform prism:issn ?issn . }
             optional { ?platform prism:eIssn ?eissn . }
