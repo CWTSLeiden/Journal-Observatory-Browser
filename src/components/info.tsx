@@ -3,7 +3,8 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, D
 import { grey } from "@mui/material/colors"
 import React, { ReactElement, useContext, useState } from "react"
 import ReactMarkdown from "react-markdown"
-import info from "../strings/info.json"
+import infoStrings from "../strings/info.json"
+import labelStrings from "../strings/labels.json"
 import { labelize } from "../query/labels"
 import { LabelContext } from "../store"
 
@@ -19,8 +20,8 @@ export const InfoDialog = ({property, text, icon}: InfoDialogProps) => {
     const handleOpen = () => setState(true)
     const handleClose = () => setState(false)
     const iconbutton = icon ? icon : <IconButton color="inherit"><Info /></IconButton>
-    const dialoglabel = info[property] || labelize(property, labels)
-    const dialogtext = Array.isArray(text) ? text : info[text] || text || dialoglabel
+    const dialoglabel = labelStrings[property] || labelize(property, labels)
+    const dialogtext = Array.isArray(text) ? text : infoStrings[text] || text || dialoglabel
     return (
         <>
             <Box onClick={handleOpen}>
