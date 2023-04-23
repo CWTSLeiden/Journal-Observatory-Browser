@@ -1,11 +1,12 @@
 import { Card, CardActionArea, CardContent, Chip, Grid, Skeleton, TablePagination, TableSortLabel, Typography } from "@mui/material";
-import { ArrowForward } from "@mui/icons-material";
+import { ArrowForward, LockOpen, Lock } from "@mui/icons-material";
 import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
 import * as actions from "../store/search";
 import { pad_id_norm, ld_to_str } from "../query/jsonld_helpers";
 import { useAppDispatch, useAppSelector } from "../store";
 import { labelize } from "../query/labels";
+import { ChipIcon } from "./details_policy"
 
 const OrderLabel = ({ prop, label }: { prop: string, label: string }) => {
     const orderprop = useAppSelector((store) => store.search.orderprop);
@@ -165,9 +166,20 @@ const PadCardPolicies = ({ pad }: PadCardProps) => {
     const pubpolicies       = pad["scpo:PublicationPolicy"]?.length || 0
     const evalpolicies      = pad["scpo:EvaluationPolicy"]?.length || 0
     const elsewherepolicies = pad["scpo:PublicationElsewherePolicy"]?.length || 0
-    const open_access = pad["scpo:isOpenAccess"]?.some(Boolean) || false
+    const open_access = pad["scpo:isOpenAccess"]?.some((oa: object) => ld_to_str(oa) == "true")
+    const closed_access = pad["scpo:isOpenAccess"]?.some((oa: object) => ld_to_str(oa) == "false")
     return (
         <>
+            <Cond cond={open_access}>
+                <Grid item>
+                    <ChipIcon label="Open Access" color="success" Icon={LockOpen} />
+                </Grid>
+            </Cond>
+            <Cond cond={closed_access && !open_access}>
+                <Grid item>
+                    <ChipIcon label="Closed Access" color="error" Icon={Lock} />
+                </Grid>
+            </Cond>
             <Cond cond={pubpolicies > 0}>
                 <Grid item>
                     <Chip color="primary" label={`Publication: ${pubpolicies}`} />
@@ -186,11 +198,6 @@ const PadCardPolicies = ({ pad }: PadCardProps) => {
             <Cond cond={pubpolicies + evalpolicies + elsewherepolicies == 0}>
                 <Grid item>
                     <Chip label="none" variant="outlined" />
-                </Grid>
-            </Cond>
-            <Cond cond={open_access}>
-                <Grid item>
-                    <Chip label="Open Access" color="error" />
                 </Grid>
             </Cond>
         </>

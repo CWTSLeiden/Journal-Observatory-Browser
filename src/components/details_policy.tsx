@@ -134,12 +134,13 @@ export const PolicyDetailsItem = ({id, items, disabled}: PolicyDetailsItemProps)
     )
 }
 
-type PolicyDetailsItemSummaryProps = {
-    items: PolicyItem[];
-    disabled: boolean
+type ChipIconProps = {
+    label: string;
+    color: string;
+    Icon?: OverridableComponent<IconTypeMap>;
+    disabled?: boolean;
 }
-export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSummaryProps) => {
-    const labels = useContext(LabelContext)
+export const ChipIcon = ({label, color, Icon, disabled}: ChipIconProps) => {
     const colors = {
         "primary" :"primary",
         "secondary" :"secondary",
@@ -150,28 +151,44 @@ export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSum
     }
     const theme = useTheme()
     const color_grey = theme.palette.grey[100]
+    const safecolor = disabled ? color_grey : colors[color]
+    const icon = Icon ? (
+        <Avatar sx={{bgcolor: color_grey}}>
+            <Icon fontSize="small" color={safecolor} />
+        </Avatar>
+    ) : null
+    return (
+        <Chip
+            label={label}
+            color={safecolor}
+            avatar={icon}
+            sx={{
+                "& .MuiChip-avatarColorPrimary": {backgroundColor: color_grey},
+                "& .MuiChip-avatarColorSecondary": {backgroundColor: color_grey}
+            }}
+        />
+    )
+}
+
+
+type PolicyDetailsItemSummaryProps = {
+    items: PolicyItem[];
+    disabled: boolean
+}
+export const PolicyDetailsSummaryItem = ({items, disabled}: PolicyDetailsItemSummaryProps) => {
+    const labels = useContext(LabelContext)
     return (
         <Grid container spacing={1}>
-            {items.map(item => {
-                const safecolor = disabled ? color_grey : colors[item.color]
-                const icon = item.Icon ? (
-                    <Avatar sx={{bgcolor: color_grey}}>
-                        <item.Icon fontSize="small" color={safecolor} />
-                    </Avatar>
-                ) : null
-                return (
-                    <Grid item key={item.id + item.type + item.summary}>
-                        <Chip
-                            label={labelize(item.summary, labels)}
-                            color={safecolor}
-                            avatar={icon}
-                            sx={{
-                                "& .MuiChip-avatarColorPrimary": {backgroundColor: color_grey},
-                                "& .MuiChip-avatarColorSecondary": {backgroundColor: color_grey}
-                            }}
-                        />
-                    </Grid>
-            )})}
+            {items.map(item => (
+                <Grid item key={item.id + item.type + item.summary}>
+                    <ChipIcon
+                        label={labelize(item.summary, labels)}
+                        color={item.color}
+                        Icon={item.Icon}
+                        disabled={disabled}
+                    />
+                </Grid>
+            ))}
         </Grid>
     )
 }
