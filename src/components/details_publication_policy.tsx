@@ -9,6 +9,7 @@ import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./detai
 import * as summary from "./details_policy_summary"
 import { AnnotationDialog } from "./info";
 import { labelize } from "../query/labels";
+import info from "../strings/info.json";
 
 const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
@@ -38,7 +39,7 @@ export const PlatformPubPolicies = () => {
         <DetailsCard
             title="Publication policies"
             loading={loading}
-            infodialog={<AnnotationDialog property="scpo:PublicationPolicy" />}
+            infodialog={<AnnotationDialog property="publication-policies-title" text={info["publication-policies-text"]} />}
         >
             {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>
