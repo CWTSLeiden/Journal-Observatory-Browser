@@ -68,6 +68,7 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
         .map(summary.accessible)
 
     const commenting_id = ppc(id, commenting)
+        .map(summary.ppc)
 
     if (people_id.length == 0) {
         people_id.push(summary.no_accessible(id, "No identities published"))

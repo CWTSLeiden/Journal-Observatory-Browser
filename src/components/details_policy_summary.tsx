@@ -1,4 +1,4 @@
-import { AttachMoney, Attribution, CheckCircle, Copyright, Error, Lock, LockOpen, MoneyOff, RemoveCircle, Visibility, VisibilityOff } from "@mui/icons-material"
+import { AttachMoney, Attribution, CheckCircle, Copyright, Error, GppGood, GppMaybe, Lock, LockOpen, Message, MoneyOff, RemoveCircle, Reviews, SpeakerNotesOff, Visibility, VisibilityOff } from "@mui/icons-material"
 import { IconTypeMap } from "@mui/material/Icon"
 import { OverridableComponent } from "@mui/material/OverridableComponent"
 import { PolicyItem } from "./details_policy";
@@ -57,6 +57,15 @@ export const apc = (item: PolicyItem): PolicyItem => {
     }
 }
 
+export const embargo = (item: PolicyItem): PolicyItem => {
+    if (item.value == "No Embargo") {
+        return summarize(item, "No APC", "success", GppGood)
+    }
+    else {
+        return summarize(item, `Embargo: ${item.value}`, "error", GppMaybe)
+    }
+}
+
 export const copyright_owner = (item: PolicyItem): PolicyItem => {
     const icon = Copyright
     switch(item.value) {
@@ -107,6 +116,20 @@ export const anonymized = (item: PolicyItem): PolicyItem => {
     }
 }
 
+export const ppc = (item: PolicyItem): PolicyItem => {
+    console.log(item)
+    switch(item.value) {
+        case "scpo:PostPublicationCommentingClosed":
+            return summarize(item, item.value, "error", SpeakerNotesOff)
+        case "scpo:PostPublicationCommentingOpen":
+            return summarize(item, item.value, "success", Message)
+        case "scpo:PostPublicationCommentingOnInvitation":
+            return summarize(item, item.value, "primary", Reviews)
+        default:
+            return item
+    }
+}
+
 export const accessible = (item: PolicyItem): PolicyItem => {
     switch(item.value) {
         case "scpo:Accessible":
@@ -119,5 +142,6 @@ export const no_accessible = (id: string, value: string): PolicyItem => {
     const item = {id: id, type: "scpo:Accessible"}
     return summarize(item, value, "error", VisibilityOff)
 }
+
 
 export default summarize
