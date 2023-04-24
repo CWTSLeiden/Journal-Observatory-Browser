@@ -8,6 +8,7 @@ import { fold_graph } from "../query/fold";
 import { PolicyDetailsItem, PolicyItem } from "./details_policy";
 import * as summary from "./details_policy_summary"
 import { AnnotationDialog } from "./info";
+import info from "../strings/info.json";
 
 export const PlatformEvaluationPolicies = () => {
     const padStore = useContext(PadContext)
@@ -27,7 +28,7 @@ export const PlatformEvaluationPolicies = () => {
         <DetailsCard
             title="Evaluation policies"
             loading={loading}
-            infodialog={<AnnotationDialog property="scpo:EvaluationPolicy" />}
+            infodialog={<AnnotationDialog property="evaluation-policies-title" text={info["evaluation-policies-text"]} />}
         >
             {policies.map(([p, s]) => (
                 <PlatformEvaluationPolicy key={p["@id"]} policy={p} src={s} />

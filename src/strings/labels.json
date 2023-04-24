@@ -65,5 +65,8 @@
     "review-information-published": "Review information published",
     "sources-title": "Data sources",
     "provenance-title": "Linked data",
-    "about-title": "About the Journal Observatory Browser"
+    "about-title": "About the Journal Observatory Browser",
+    "publication-policies-title": "Publication policies",
+    "publication-elsewhere-policies-title": "Preprinting/self-archiving policies",
+    "evaluation-policies-title": "Evaluation policies"
 }
