@@ -40,6 +40,7 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
     const id = ld_to_str(policy["@id"])
     const people = policy["scpo:involves"] || []
     const documents = policy["scpo:covers"] || []
+    const commenting = policy["scpo:hasPostPublicationCommenting"]
 
     const authors = people.filter((p: object) => p["@type"] == "pro:author")
     const authors_id = accessible(id, "Author identity", authors)
@@ -65,7 +66,6 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
         .filter(Boolean)
         .map(summary.accessible)
 
-    const commenting = documents.filter((p: object) => p["@type"] == "scpo:postPublicationCommenting")
     const commenting_id = ppc(id, commenting)
 
     if (people_id.length == 0) {
@@ -98,6 +98,7 @@ async function platform_evaluation_policies(store: Quadstore) {
             ?policy scpo:_src ?source .
             ?policy scpo:involves ?person .
             ?policy scpo:covers ?document .
+            ?policy scpo:hasPostPublicationCommenting ?ppc .
 
             ?person a ?persontype .
             ?person scpo:publiclyAccessible ?personpublic .
@@ -119,6 +120,7 @@ async function platform_evaluation_policies(store: Quadstore) {
                 optional { ?person scpo:identifiedTo [ a ?otherpersonid ] } .
                 optional { ?person scpo:interactsWith [ a ?interacts ] } .
                 optional { ?policy scpo:covers ?document . ?document a ?documenttype } .
+                optional { ?policy scpo:hasPostPublicationCommenting ?ppc . } .
                 optional { ?document scpo:publiclyAccessible ?documentpublic } .
             }
             optional { 
@@ -174,7 +176,7 @@ const accessible = (id: string, type: string, obj: object[]): PolicyItem => {
 }
 
 const ppc = (id: string, obj: object[]): PolicyItem[] => {
-    const item: PolicyItem = {id: id, type: "Commenting"}
+    const item: PolicyItem = {id: id, type: "scpo:hasPostPublicationCommenting"}
     return obj.map(o => ({...item, value: ld_to_str(o["@id"])})).filter(item => item.value)
 }
 

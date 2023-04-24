@@ -214,9 +214,9 @@ const initSearch: SearchState = {
         "scpo:AuthorEditorCommunication": false
     },
     evaluation_comments: {
-        "scpo:postPublicationCommentingOpen": false,
-        "scpo:postPublicationCommentingOnInvitation": undefined,
-        "scpo:postPublicationCommentingClosed": false
+        "scpo:PostPublicationCommentingOpen": false,
+        "scpo:PostPublicationCommentingOnInvitation": undefined,
+        "scpo:PostPublicationCommentingClosed": false
     }
 };
 

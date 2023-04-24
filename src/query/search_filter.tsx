@@ -284,8 +284,7 @@ export const evaluation_comment_filter = (search: SearchState) => {
         filter exists {
             ?platform scpo:hasPolicy ?policy .
             ?policy a scpo:EvaluationPolicy ;
-                scpo:covers ?ppc .
-            ?ppc a scpo:postPublicationCommenting .
+                scpo:hasPostPublicationCommenting ?ppc .
             filter(?ppc in (${filtered.join(', ')}))
         }
     `;
