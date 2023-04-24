@@ -8,30 +8,16 @@
         "",
         "This prototype has been developed to demonstrate the value of the Scholarly Communication Platform Framework developed in the Journal Observatory project funded by the Dutch Research Council (NWO)."
     ],
-    "publication-policy-filterbar": [
-        "Filters for policies of platforms regarding the publication of a scholarly work.",
-        "",
-        "- **Publication policy**  ",
-        "The platform has a policy regarding publishing on its own platfom.",
-        "- **Open access**  ",
-        "Articles published on the platform can be published with an open access license.",
-        "- **Article processing charges**  ",
-        "...",
-        "- **License**  ",
-        "...",
-        "- **Copyright owner**  ",
-        "...",
-        "- **Embargo period**  ",
-        "..."
-    ],
+    "publication-policy-filterbar":
+        "Filter based on the publication policies of journals/platforms.",
     "elsewhere-policy-filterbar":
-        "Filters for policies of platforms regarding the publication of a scholarly work on other platforms.",
+        "Filter based on the preprinting/self-archiving policies of journals/platforms.",
     "evaluation-policy-filterbar":
-        "Filters for policies of platforms regarding the evaluation of a scholarly work.",
+        "Filter based on the evaluation policies of journals/platforms.",
     "scpo:PublicationPolicy":
-        "Policies of the platform regarding the publication of a scholarly work.",
+        "Publication policies of the journal/platform.",
     "scpo:PublicationElsewherePolicy":
-        "Policies of the platform regarding the publication of a scholarly work on other platforms.",
+        "Preprinting/self-archiving policies of the journal/platform.",
     "scpo:EvaluationPolicy":
-        "Policies of the platform regarding the evaluation of a scholarly work."
+        "Evaluation policies of the journal/platform."
 }
