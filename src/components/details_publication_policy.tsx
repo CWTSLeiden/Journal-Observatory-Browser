@@ -112,7 +112,7 @@ async function platform_publication_policies(store: Quadstore) {
                 optional { ?policy fabio:hasEmbargoDuration ?embargo } .
                 optional { ?policy scpo:hasCopyrightOwner [ a ?copyrightowner ] } .
                 optional { ?policy scpo:hasArticleProcessingCharge ?apc .
-                    optional { ?apc schema:price ?apcprice } .
+                    ?apc schema:price ?apcprice .
                     optional { ?apc schema:priceCurrency ?apccurrency } .
                     optional { ?apc schema:url ?apcurl } .
                 }
