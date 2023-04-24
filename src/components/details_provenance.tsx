@@ -10,6 +10,7 @@ const pad_assertion_sparqurl = (pad_id: string) => {
     const query = `
 PREFIX pad: <${context["pad"]}>
 PREFIX scpo: <${context["scpo"]}>
+PREFIX jobid: <${context["jobid"]}>
 CONSTRUCT {
     ?s ?p ?o
 }
