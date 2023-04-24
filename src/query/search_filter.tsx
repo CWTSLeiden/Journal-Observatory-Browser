@@ -68,12 +68,14 @@ export const pub_apc_filter = (search: SearchState) => {
     const q = `
         filter exists {
             ?platform scpo:hasPolicy ?policy .
-            ?policy a scpo:PublicationPolicy ;
-                scpo:hasArticleProcessingCharge [
-                    schema:price ?price ;
-                    schema:priceCurrency "USD" ;
-                ] .
-            filter(?price <= ${search.pub_apcamount})
+            ?policy a scpo:PublicationPolicy .
+            optional {
+                ?policy scpo:hasArticleProcessingCharge [ schema:price ?price ] .
+            }
+            optional {
+                ?policy scpo:hasOpenAccessFee ?oafee .
+            }
+            filter(?price > 0 || ?oafee)
         }
     `;
     return search.pub_apc ? q : "";

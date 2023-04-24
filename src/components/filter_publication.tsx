@@ -56,22 +56,13 @@ export const PubEmbargoFilter = () => {
 export const PubApcFilter = () => {
     const labels = useContext(LabelContext)
     const state = useAppSelector((store: SearchStore) => store.search.pub_apc)
-    const amount = useAppSelector((store: SearchStore) => store.search.pub_apcamount)
     const dispatch = useAppDispatch()
     return (
-        <DropdownCheckbox
+        <CheckboxFilter
             state={state}
-            toggle={() => dispatch(searchActions.publication_apc_toggle())}
+            action={() => dispatch(searchActions.publication_apc_toggle())}
             label={labelize("scpo:hasArticleProcessingCharge", labels)}
-        >
-            <SliderFilter
-                state={state}
-                value={amount}
-                setvalue={(n) => dispatch(searchActions.publication_apc_set(n))}
-                range={[0, 100, 200, 300, 400]}
-                unit="USD"
-            />
-        </DropdownCheckbox>
+        />
     )
 };
 
