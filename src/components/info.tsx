@@ -31,7 +31,7 @@ export const InfoDialog = ({property, text, icon}: InfoDialogProps) => {
                 <DialogTitle>{dialoglabel}</DialogTitle>
                 <DialogContent>
                     <DialogContentText component="div">
-                        <ReactMarkdown components={{"p": Typography, "a": Link}} linkTarget="_blank">
+                        <ReactMarkdown components={{"div": Typography, "a": Link}} linkTarget="_blank">
                             {Array.isArray(dialogtext) ? dialogtext.join("\n") : dialogtext}
                         </ReactMarkdown>
                     </DialogContentText>
