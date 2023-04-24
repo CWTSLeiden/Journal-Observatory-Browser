@@ -44,6 +44,7 @@
     "scpo:postPublicationCommentingOpen": "Open",
     "scpo:postPublicationCommentingOnInvitation": "On invitation",
     "scpo:postPublicationCommentingClosed": "Closed",
+    "scpo:publicationLocation": "Publication location",
     "scpo:isOpenAccess": "Open access",
     "scpo:hasArticleProcessingCharge": "Article processing charge",
     "scpo:hasCopyrightOwner": "Copyright owner",
