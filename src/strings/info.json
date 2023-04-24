@@ -1,6 +1,6 @@
 {
     "beta-warning":
-        "This product is a prototype, any bugs can be reported at our [GitHub repository](https://github.com/cwts-ict/JournalObservatory-Web/issues).",
+        "This is a prototype. Bugs can be reported in our [GitHub repository](https://github.com/cwts-ict/JournalObservatory-Web/issues). The data may not be fully complete and up-to-date.",
     "about-text": [
         "The Journal Observatory Browser is a proof-of-concept demonstrator showing the power of integrating journal information from diverse open data sources to support three use-case areas: open access publishing, preprinting and peer review procedures.",
         "",
