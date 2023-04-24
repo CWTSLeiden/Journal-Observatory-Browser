@@ -57,7 +57,7 @@ export const pub_embargo_filter = (search: SearchState) => {
             ?platform scpo:hasPolicy ?policy .
             ?policy a scpo:PublicationPolicy ;
                 fabio:hasEmbargoDuration ?pub_embargo .
-            filter(?pub_embargo <= "P${search.pub_embargoduration}M"^^xsd:duration)
+            filter(?pub_embargo = "P0D"^^xsd:duration)
         }
     `;
     return search.pub_embargo ? q : "";
@@ -74,7 +74,7 @@ export const pub_apc_filter = (search: SearchState) => {
             optional {
                 ?policy scpo:hasOpenAccessFee ?oafee .
             }
-            filter(?price > 0 || ?oafee)
+            filter(?price = 0 || ?oafee = "false")
         }
     `;
     return search.pub_apc ? q : "";
@@ -175,7 +175,7 @@ export const elsewhere_embargo_filter = (search: SearchState) => {
             ?platform scpo:hasPolicy ?policy .
             ?policy a scpo:PublicationElsewherePolicy ;
                 fabio:hasEmbargoDuration ?pub_embargo .
-            filter(?pub_embargo <= "P${search.elsewhere_embargoduration}M"^^xsd:duration)
+            filter(?pub_embargo = "P0D"^^xsd:duration)
         }
     `;
     return search.elsewhere_embargo ? q : "";
