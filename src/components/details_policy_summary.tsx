@@ -110,9 +110,9 @@ export const anonymized = (item: PolicyItem): PolicyItem => {
 export const accessible = (item: PolicyItem): PolicyItem => {
     switch(item.value) {
         case "scpo:Accessible":
-            return summarize(item, `${item.type} public`, "default", Visibility)
+            return summarize(item, item.type, "success", Visibility)
         case "scpo:NotAccessible":
-            return summarize(item, `${item.type} hidden`, "default", VisibilityOff)
+            return summarize(item, item.type, "default", VisibilityOff)
         default:
             return item
     }

@@ -53,7 +53,7 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
     const people_id = [authors_id, reviewers_id, editors_id]
         .filter(Boolean)
         .map(summary.accessible)
-    const anonymized = summary.anonymized(is_anonymized(id, reviewers, authors))
+    const anonymized = summary.anonymized(is_anonymized(id, authors, reviewers))
 
     const reports = documents.filter((p: object) => p["@type"] == "scpo:ReviewReport")
     const report_id = accessible(id, "scpo:ReviewReport", reports)
@@ -122,7 +122,7 @@ async function platform_evaluation_policies(store: Quadstore) {
                 optional { ?person scpo:interactsWith [ a ?interacts ] } .
                 optional { ?policy scpo:covers ?document . ?document a ?documenttype } .
                 optional { ?policy scpo:hasPostPublicationCommenting ?ppc . } .
-                optional { ?document scpo:publiclyAccessible ?documentpublic } .
+                optional { ?document scpo:workPubliclyAccessible ?documentpublic } .
             }
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
