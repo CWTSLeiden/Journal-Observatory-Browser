@@ -11,7 +11,7 @@ const AppHeader = () => {
                     <Link href="/" color="inherit" underline="none">
                         <LibraryBooks sx={{paddingRight: '10px'}}/>
                     </Link>
-                    <Typography href="/" component="a" variant="h6" sx={{color: 'inherit', textDecoration: 'none', flexGrow: 1}}>
+                    <Typography href="/" component="a" variant="h5" sx={{color: 'inherit', textDecoration: 'none', flexGrow: 1}}>
                         Journal Observatory Browser
                     </Typography>
                     <InfoDialog property="about-title" text="about-text" />
