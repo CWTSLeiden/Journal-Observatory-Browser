@@ -14,10 +14,9 @@ export const enabled = (toggles: Toggles, post_processing?: string) => {
 export const search_filter = (s?: string) => {
     const q = `
         ?platform ?searchprop ?search .
-        ?search onto:fts "${s}"
+        ?search onto:fts '${s.replace(/'/g, '"')}'
         filter(?searchprop in (schema:name) 
-            || ?searchprop in (dcterms:identifier)
-            && contains(?search, "${s}"))
+            || ?searchprop in (dcterms:identifier))
     `;
     return s ? q : "";
 };
