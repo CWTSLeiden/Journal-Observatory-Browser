@@ -52,7 +52,7 @@ async function pad_list(search: SearchState, offset=0) {
         }
         where {
             {
-                select ?pad ?assertion ?platform ?order where {
+                select ?pad ?assertion ?platform (${search.orderasc ? "min" : "max"}(?order) as ?order) where {
                     ?pad a pad:PAD ; pad:hasAssertion ?assertion .
                     graph ?assertion { ?platform a scpo:Platform } .
                     ${filter.search_filter(search.searchstring)}
@@ -76,6 +76,7 @@ async function pad_list(search: SearchState, offset=0) {
                     ${filter.evaluation_comment_filter(search)}
                     ${orderprop(search)}
                 }
+                group by ?pad ?assertion ?platform
                 ${order(search)}
                 ${limit(search, offset)}
             }
