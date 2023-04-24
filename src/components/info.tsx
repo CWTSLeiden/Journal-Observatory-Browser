@@ -1,5 +1,5 @@
 import { HelpOutlineTwoTone, Info } from "@mui/icons-material"
-import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton } from "@mui/material"
+import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Link, Typography } from "@mui/material"
 import { grey } from "@mui/material/colors"
 import React, { ReactElement, useContext, useState } from "react"
 import ReactMarkdown from "react-markdown"
@@ -31,7 +31,7 @@ export const InfoDialog = ({property, text, icon}: InfoDialogProps) => {
                 <DialogTitle>{dialoglabel}</DialogTitle>
                 <DialogContent>
                     <DialogContentText component="div">
-                        <ReactMarkdown>
+                        <ReactMarkdown components={{"p": Typography, "a": Link}} linkTarget="_blank">
                             {Array.isArray(dialogtext) ? dialogtext.join("\n") : dialogtext}
                         </ReactMarkdown>
                     </DialogContentText>

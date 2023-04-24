@@ -1,5 +1,5 @@
 import { Close } from "@mui/icons-material"
-import { Alert, Collapse, IconButton, Typography } from "@mui/material"
+import { Alert, Collapse, IconButton, Link, Typography } from "@mui/material"
 import { Box } from "@mui/system"
 import React, { useEffect, useState } from "react"
 import ReactMarkdown from "react-markdown"
@@ -21,7 +21,7 @@ export const BetaWarning = () => {
         <Box>
             <Collapse in={state === "open"}>
                 <Alert severity="warning" action={closebutton} >
-                    <ReactMarkdown components={{"p": Typography}} linkTarget="_blank">
+                    <ReactMarkdown components={{"p": Typography, "a": Link}} linkTarget="_blank">
                         {info["beta-warning"]}
                     </ReactMarkdown>
                 </Alert>
