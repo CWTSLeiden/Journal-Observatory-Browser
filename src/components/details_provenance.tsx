@@ -52,7 +52,7 @@ export const Provenance = ({pad_id}: {pad_id: string}) => {
         <Card variant="outlined">
             <CardContent>
                 <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ fontWeight: 600 }}>Provenance</Typography>
+                    <Typography sx={{ fontWeight: 600 }}>Linked data</Typography>
                     <AnnotationDialog property="provenance-title" text={info["provenance-text"]}/>
                 </Box>
             </CardContent>

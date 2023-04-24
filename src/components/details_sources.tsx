@@ -31,7 +31,7 @@ export const PadSources = () => {
         <Card variant="outlined">
             <CardContent>
                 <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ fontWeight: 600 }}>Sources</Typography>
+                    <Typography sx={{ fontWeight: 600 }}>Data sources</Typography>
                     <AnnotationDialog property="sources-title" text={info["sources-text"]}/>
                 </Box>
             </CardContent>
