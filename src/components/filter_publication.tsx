@@ -62,7 +62,7 @@ export const PubApcFilter = () => {
         <DropdownCheckbox
             state={state}
             toggle={() => dispatch(searchActions.publication_apc_toggle())}
-            label={labelize("scpo:hasArticlePublishingCharges", labels)}
+            label={labelize("scpo:hasArticleProcessingCharge", labels)}
         >
             <SliderFilter
                 state={state}

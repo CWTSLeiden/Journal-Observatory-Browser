@@ -69,7 +69,7 @@ export const pub_apc_filter = (search: SearchState) => {
         filter exists {
             ?platform scpo:hasPolicy ?policy .
             ?policy a scpo:PublicationPolicy ;
-                scpo:hasArticlePublishingCharges [
+                scpo:hasArticleProcessingCharge [
                     schema:price ?price ;
                     schema:priceCurrency "USD" ;
                 ] .

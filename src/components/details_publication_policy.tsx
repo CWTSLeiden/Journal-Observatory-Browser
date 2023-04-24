@@ -56,10 +56,10 @@ const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
     const embargo = zip("fabio:hasEmbargoDuration")
     const owner = zip("scpo:hasCopyrightOwner")
         .map(summary.copyright_owner)
-    const apc = (policy["scpo:hasArticlePublishingCharges"] || [])
+    const apc = (policy["scpo:hasArticleProcessingCharge"] || [])
         .map((apc: object) => ({
             id: ld_to_str(apc["@id"]),
-            type: "scpo:hasArticlePublishingCharges",
+            type: "scpo:hasArticleProcessingCharge",
             value: [
                 labelize(first(apc, "schema:price"), {"unknown": "Unknown amount"}) || "0",
                 first(apc, "schema:priceCurrency")
@@ -94,7 +94,7 @@ async function platform_publication_policies(store: Quadstore) {
             ?policy dcterms:license ?license .
             ?policy fabio:hasEmbargoDuration ?embargo .
             ?policy scpo:hasCopyrightOwner ?copyrightowner .
-            ?policy scpo:hasArticlePublishingCharges ?apc .
+            ?policy scpo:hasArticleProcessingCharge ?apc .
             ?apc a scpo:ArticlePublishingCharges .
             ?apc schema:price ?apcprice .
             ?apc schema:priceCurrency ?apccurrency .
@@ -111,7 +111,7 @@ async function platform_publication_policies(store: Quadstore) {
                 optional { ?policy ?haslicense ?license . ?haslicense rdfs:subPropertyOf* dcterms:license } .
                 optional { ?policy fabio:hasEmbargoDuration ?embargo } .
                 optional { ?policy scpo:hasCopyrightOwner [ a ?copyrightowner ] } .
-                optional { ?policy scpo:hasArticlePublishingCharges ?apc .
+                optional { ?policy scpo:hasArticleProcessingCharge ?apc .
                     optional { ?apc schema:price ?apcprice } .
                     optional { ?apc schema:priceCurrency ?apccurrency } .
                     optional { ?apc schema:url ?apcurl } .

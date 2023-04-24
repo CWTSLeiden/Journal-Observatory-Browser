@@ -45,7 +45,7 @@
     "scpo:postPublicationCommentingOnInvitation": "On invitation",
     "scpo:postPublicationCommentingClosed": "Closed",
     "scpo:isOpenAccess": "Open access",
-    "scpo:hasArticlePublishingCharges": "Article processing charges",
+    "scpo:hasArticleProcessingCharge": "Article processing charge",
     "scpo:hasCopyrightOwner": "Copyright owner",
     "scpo:hasPostPublicationCommenting": "Post-publication Commenting",
     "pro:peer-reviewer": "Peer reviewer",
