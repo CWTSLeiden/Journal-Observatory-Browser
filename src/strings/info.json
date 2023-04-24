@@ -19,5 +19,9 @@
     "scpo:PublicationElsewherePolicy":
         "Preprinting/self-archiving policies of the journal/platform.",
     "scpo:EvaluationPolicy":
-        "Evaluation policies of the journal/platform."
+        "Evaluation policies of the journal/platform.",
+    "sources-text":
+        "Sources of information about the journal/platform.",
+    "provenance-text":
+        "Show information about the journal/platform in linked data format."
 }

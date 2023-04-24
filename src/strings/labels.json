@@ -61,5 +61,7 @@
     "pso:published": "Published",
     "anonymized": "Anonymized",
     "reviewer-interacts-with": "Reviewer interacts with",
-    "review-information-published": "Review information published"
+    "review-information-published": "Review information published",
+    "sources-title": "Data sources",
+    "provenance-title": "Linked data"
 }
