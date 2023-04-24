@@ -2,13 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { includes, ld_cons_src } from "../query/jsonld_helpers";
+import { duration_to_str, includes, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
-import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
+import { linkify_policy_item, PolicyDetailsItem, PolicyItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
 import { AnnotationDialog } from "./info";
 import info from "../strings/info.json";
+import { Report } from "@mui/icons-material";
 
 const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
@@ -64,10 +65,20 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
     const license = zip("dcterms:license")
         .map(linkify_policy_item)
         .map(summary.license)
-    const embargo = zip("fabio:hasEmbargoDuration")
+    const embargo = embargo_translate(zip("fabio:hasEmbargoDuration"))
     const owner = zip("scpo:hasCopyrightOwner").map(summary.copyright_owner)
     const condition = zip("scpo:publicationCondition")
+    console.log(condition)
     const location = zip("scpo:publicationLocation")
+    const conditions_num = condition.length + location.length
+    const conditions_summary: PolicyItem = conditions_num > 0 ? {
+        id: ld_to_str(policy["@id"]),
+        type: "scpo:publicationCondition",
+        summary: `${conditions_num} Conditions`,
+        color: "warning",
+        Icon: Report
+    } : null
+    
 
     return (
         <SourceWrapper key={policy["@id"]} src={src}>
@@ -75,6 +86,7 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
                 id={policy["@id"]}
                 items={[
                     ...type,
+                    conditions_summary,
                     ...version,
                     ...license,
                     ...embargo,
@@ -109,6 +121,7 @@ async function platform_elsewhere_policies(store: Quadstore) {
                 optional { ?policy scpo:appliesToVersion ?version } .
                 optional { ?policy fabio:hasEmbargoDuration ?embargo } .
                 optional { ?policy scpo:publicationCondition ?condition } .
+                optional { ?policy scpo:condition ?condition } .
                 optional { ?policy ?haslicense ?license . ?haslicense rdfs:subPropertyOf* dcterms:license } .
                 optional { ?policy scpo:hasCopyrightOwner [ a ?copyrightowner ] } .
             }
@@ -122,3 +135,10 @@ async function platform_elsewhere_policies(store: Quadstore) {
     return await query_jsonld(query, store);
 }
 
+const embargo_translate = (embargoes: PolicyItem[]): PolicyItem[] => {
+    const embargo_to_str = (e: string) => {
+        const duration = duration_to_str(e)
+        return duration == "0" ? "No Embargo" : duration
+    }
+    return embargoes.map(e => ({...e, value: embargo_to_str(e.value)}))
+}

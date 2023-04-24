@@ -117,3 +117,11 @@ export const todate = (date: string) => {
     const parse = Date.parse(date)
     return isNaN(parse) ? date : (new Date(parse)).toISOString().substring(0, 10)
 }
+
+export const duration_to_str = (e: string) => {
+    const times = {"d": "Days", "m": "Months", "y": "Years"}
+    const duration = e.match(/^P([0-9]*)/)[1] || ""
+    const time = e.match(/([A-Z]$)/)[1] || ""
+    if (duration == "0") { return duration }
+    return `${duration} ${times[time.toLowerCase()]}`
+}

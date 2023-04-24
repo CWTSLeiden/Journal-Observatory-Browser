@@ -2,10 +2,10 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { first, includes, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
+import { duration_to_str, first, includes, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
-import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
+import { linkify_policy_item, PolicyDetailsItem, PolicyItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
 import { AnnotationDialog } from "./info";
 import { labelize } from "../query/labels";
@@ -54,7 +54,7 @@ const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
     const license = zip("dcterms:license")
         .map(linkify_policy_item)
         .map(summary.license)
-    const embargo = zip("fabio:hasEmbargoDuration")
+    const embargo = embargo_translate(zip("fabio:hasEmbargoDuration"))
     const owner = zip("scpo:hasCopyrightOwner")
         .map(summary.copyright_owner)
     const apc = (policy["scpo:hasArticleProcessingCharge"] || [])
@@ -131,3 +131,11 @@ async function platform_publication_policies(store: Quadstore) {
     return await query_jsonld(query, store);
 }
 
+
+const embargo_translate = (embargoes: PolicyItem[]): PolicyItem[] => {
+    const embargo_to_str = (e: string) => {
+        const duration = duration_to_str(e)
+        return duration == "0" ? "No Embargo" : duration
+    }
+    return embargoes.map(e => ({...e, value: embargo_to_str(e.value)}))
+}
