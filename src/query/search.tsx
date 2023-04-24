@@ -49,6 +49,7 @@ async function pad_list(search: SearchState, offset=0) {
                 ?policytype ?policy ;
                 scpo:isOpenAccess ?openaccess ;
                 dcterms:creator ?creator ;
+                scpo:_ord ?order .
         }
         where {
             {
