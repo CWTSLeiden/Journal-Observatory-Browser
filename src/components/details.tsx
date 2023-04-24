@@ -82,7 +82,7 @@ export const DetailsCard = ({title, children, loading, infodialog}: DetailsCardP
     const missing_component = [<DetailsListItem key="0" primary="No data" disabled />]
     return (
         <Card>
-            <CardHeader title={title} action={infodialog} />
+            <CardHeader title={title} action={infodialog} titleTypographyProps={{variant: 'h6'}} />
             <Divider />
             <CardContent>
                 <Stack direction="column" spacing={1}>
