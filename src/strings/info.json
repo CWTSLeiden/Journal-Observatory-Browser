@@ -1,12 +1,14 @@
 {
     "beta-warning":
         "This product is a prototype, any bugs can be reported at our [GitHub repository](https://github.com/cwts-ict/JournalObservatory-Web/issues).",
-    "about-title":
-        "About the Scholarly Communication Platform Browser",
     "about-text": [
-        "The Scholarly Communication Platform Browser has been developed by Bram van den Boomen and Nees Jan van Eck at the Centre for Science and Technology Studies (CWTS) at Leiden University.",
+        "The Journal Observatory Browser is a proof-of-concept demonstrator showing the power of integrating journal information from diverse open data sources to support three use-case areas: open access publishing, preprinting and peer review procedures.",
         "",
-        "This prototype has been developed to demonstrate the value of the Scholarly Communication Platform Framework developed in the Journal Observatory project funded by the Dutch Research Council (NWO)."
+        "The Journal Observatory Browser aggregates data from [DOAJ](https://doaj.org), [Sherpa Romeo](https://sherpa.ac.uk/romeo/), [OpenAlex](https://openalex.org), and [Wikidata](https://www.wikidata.org), as well as data provided by publishers.",
+        "",
+        "The Journal Observatory Browser uses the [Scholarly Communication Platform Framework](https://journalobservatory.org/framework/) developed in the [Journal Observatory](https://journalobservatory.org) project funded by the [Dutch Research Council (NWO)](https://www.nwo.nl/en).",
+        "",
+        "The Journal Observatory Browser has been developed by Bram van den Boomen and [Nees Jan van Eck](https://orcid.org/0000-0001-8448-4521) at the [Centre for Science and Technology Studies (CWTS)](https://www.cwts.nl) at [Leiden University](https://www.universiteitleiden.nl/en)."
     ],
     "publication-policy-filterbar":
         "Filter based on the publication policies of journals/platforms.",
