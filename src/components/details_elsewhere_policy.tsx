@@ -9,7 +9,7 @@ import { linkify_policy_item, PolicyDetailsItem, PolicyItem, zip_policy_prop } f
 import * as summary from "./details_policy_summary"
 import { AnnotationDialog } from "./info";
 import info from "../strings/info.json";
-import { Report } from "@mui/icons-material";
+import { HolidayVillage, Report } from "@mui/icons-material";
 
 const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
@@ -70,13 +70,19 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
     const condition = zip("scpo:publicationCondition")
     console.log(condition)
     const location = zip("scpo:publicationLocation")
-    const conditions_num = condition.length + location.length
-    const conditions_summary: PolicyItem = conditions_num > 0 ? {
+    const conditions_summary: PolicyItem = condition.length > 0 ? {
         id: ld_to_str(policy["@id"]),
         type: "scpo:publicationCondition",
-        summary: `${conditions_num} Conditions`,
+        summary: `${condition.length} Conditions`,
         color: "warning",
         Icon: Report
+    } : null
+    const locations_summary: PolicyItem = location.length > 0 ? {
+        id: ld_to_str(policy["@id"]),
+        type: "scpo:publicationLocation",
+        summary: `${location.length} Locations`,
+        color: "default",
+        Icon: HolidayVillage
     } : null
     
 
@@ -86,8 +92,9 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
                 id={policy["@id"]}
                 items={[
                     ...type,
-                    conditions_summary,
                     ...version,
+                    locations_summary,
+                    conditions_summary,
                     ...license,
                     ...embargo,
                     ...owner,
