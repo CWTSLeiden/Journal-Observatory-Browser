@@ -41,10 +41,10 @@ const AppHeader = () => {
                 <Grid item xs={12} sm={6} md={4}>
                     <List>
                         <Typography variant="h6">Source code</Typography>
-                        <Link href="https://github.com/orgs/CWTSLeiden/Journal-Observatory-Browser" text="Journal Observatory Browser" Icon={GitHub} />
-                        <Link href="https://github.com/orgs/CWTSLeiden/Journal-Observatory-backend" text="Journal Observatory Backend" Icon={GitHub} />
-                        <Link href="https://github.com/orgs/CWTSLeiden/Journal-Observatory-data" text="Journal Observatory Data" Icon={GitHub} />
-                        <Link href="https://github.com/orgs/CWTSLeiden/Journal-Observatory-framework" text="Scholarly Communication Platform Framework" Icon={GitHub} />
+                        <Link href="https://github.com/CWTSLeiden/Journal-Observatory-Browser" text="Journal Observatory Browser" Icon={GitHub} />
+                        <Link href="https://github.com/CWTSLeiden/Journal-Observatory-backend" text="Journal Observatory Backend" Icon={GitHub} />
+                        <Link href="https://github.com/CWTSLeiden/Journal-Observatory-data" text="Journal Observatory Data" Icon={GitHub} />
+                        <Link href="https://github.com/CWTSLeiden/Journal-Observatory-framework" text="Scholarly Communication Platform Framework" Icon={GitHub} />
                     </List>
                 </Grid>
                 <Grid item xs={12} sm={6} md={4}>
