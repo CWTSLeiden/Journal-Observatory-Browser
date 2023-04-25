@@ -1,0 +1,64 @@
+section {
+    font-size: 1.3em;
+    font-family: monospace;
+    margin: 2em;
+}
+
+h1 {
+    font-size: 1.5em;
+}
+
+h2 {
+    font-size: 1.1em;
+}
+
+title {
+    display: block;
+    font-size: 2em;
+    text-align: center;
+    padding-bottom: 1em;
+}
+
+dt {
+    display: inline-block;
+    width: 15em;
+    font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    position: absolute;
+}
+
+dd {
+    display: inline;
+    margin-left: 15em;
+}
+
+.src {
+    opacity: 0.5;
+    font-style: italic;
+}
+.src div {
+    margin-left: 1em
+}
+
+.id,
+.value {
+    display: inline;
+}
+
+#doc {
+    border: #aaa solid 1px;
+    padding: 0 2em;
+    font-size: 0.8em;
+    display: none;
+    height: 40em;
+    overflow: scroll;
+}
+
+#docinput {
+    display: none;
+}
+#docinput:checked + #doc {
+    display: block;
+    transition: 0.5s ease;
+}

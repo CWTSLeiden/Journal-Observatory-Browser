@@ -1,0 +1,29 @@
+{
+    "beta-warning":
+        "This is a prototype. Bugs can be reported in our [GitHub repository](https://github.com/CWTSLeiden/Journal-Observatory-Browser/issues). The data may not be fully complete and up-to-date.",
+    "about-text": [
+        "The Journal Observatory Browser is a proof-of-concept demonstrator showing the power of integrating journal information from diverse open data sources to support three use-case areas: open access publishing, preprinting and peer review procedures.",
+        "",
+        "The Journal Observatory Browser aggregates data from [DOAJ](https://doaj.org), [Sherpa Romeo](https://sherpa.ac.uk/romeo/), [OpenAlex](https://openalex.org), and [Wikidata](https://www.wikidata.org), as well as data provided by publishers.",
+        "",
+        "The Journal Observatory Browser uses the [Scholarly Communication Platform Framework](https://journalobservatory.org/framework/) developed in the [Journal Observatory](https://journalobservatory.org) project funded by the [Dutch Research Council (NWO)](https://www.nwo.nl/en).",
+        "",
+        "The Journal Observatory Browser has been developed by [Bram van den Boomen](https://orcid.org/0009-0005-5127-1200) and [Nees Jan van Eck](https://orcid.org/0000-0001-8448-4521) at the [Centre for Science and Technology Studies (CWTS)](https://www.cwts.nl) at [Leiden University](https://www.universiteitleiden.nl/en)."
+    ],
+    "publication-policy-filter-text":
+        "Filter based on the publication policies of journals/platforms.",
+    "elsewhere-policy-filter-text":
+        "Filter based on the preprinting/self-archiving policies of journals/platforms.",
+    "evaluation-policy-filter-text":
+        "Filter based on the evaluation policies of journals/platforms.",
+    "publication-policies-text":
+        "Publication policies of the journal/platform.",
+    "publication-elsewhere-policies-text":
+        "Preprinting/self-archiving policies of the journal/platform.",
+    "evaluation-policies-text":
+        "Evaluation policies of the journal/platform.",
+    "sources-text":
+        "Sources of information about the journal/platform.",
+    "provenance-text":
+        "Show information about the journal/platform in linked data format."
+}
