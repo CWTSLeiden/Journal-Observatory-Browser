@@ -1,5 +1,5 @@
 {
-    "name": "journal-observatory-web",
+    "name": "journal-observatory-browser",
     "version": "1.0.0",
     "private": true,
     "dependencies": {
