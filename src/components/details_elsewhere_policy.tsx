@@ -147,7 +147,7 @@ async function platform_elsewhere_policies(store: Quadstore) {
 const embargo_translate = (embargoes: PolicyItem[]): PolicyItem[] => {
     const embargo_to_str = (e: string) => {
         const duration = duration_to_str(e)
-        return duration == "0" ? "No Embargo" : duration
+        return duration == "0" ? "No embargo" : duration
     }
     return embargoes.map(e => ({...e, value: embargo_to_str(e.value)}))
 }

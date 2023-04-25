@@ -58,8 +58,8 @@ export const apc = (item: PolicyItem): PolicyItem => {
 }
 
 export const embargo = (item: PolicyItem): PolicyItem => {
-    if (item.value == "No Embargo") {
-        return summarize(item, "No APC", "success", GppGood)
+    if (item.value == "No embargo") {
+        return summarize(item, "No embargo", "success", GppGood)
     }
     else {
         return summarize(item, `Embargo: ${item.value}`, "error", GppMaybe)
