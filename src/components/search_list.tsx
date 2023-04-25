@@ -172,12 +172,12 @@ const PadCardPolicies = ({ pad }: PadCardProps) => {
         <>
             <Cond cond={open_access}>
                 <Grid item>
-                    <ChipIcon label="Open Access" color="success" Icon={LockOpen} />
+                    <ChipIcon label="Open access" color="success" Icon={LockOpen} />
                 </Grid>
             </Cond>
             <Cond cond={closed_access && !open_access}>
                 <Grid item>
-                    <ChipIcon label="Closed Access" color="error" Icon={Lock} />
+                    <ChipIcon label="Closed access" color="error" Icon={Lock} />
                 </Grid>
             </Cond>
             <Cond cond={pubpolicies > 0}>
