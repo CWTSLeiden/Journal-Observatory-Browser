@@ -22,6 +22,7 @@ module.exports = {
         "@typescript-eslint"
     ],
     "rules": {
-        "@typescript-eslint/no-explicit-any": ["error", { "ignoreRestArgs": true }]
+        "@typescript-eslint/no-explicit-any": ["error", { "ignoreRestArgs": true }],
+        "react/react-in-jsx-scope": "off"
     }
 }
