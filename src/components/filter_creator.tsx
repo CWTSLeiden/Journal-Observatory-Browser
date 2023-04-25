@@ -10,7 +10,7 @@ export const CreatorSelect = () => {
     const dispatch = useAppDispatch()
     return (
         <MultipleSelect
-            label="Sources"
+            label="Data sources"
             toggles={creatorstate}
             commit={(state: Toggles) => dispatch(searchActions.creators_set(state)) }
         />)

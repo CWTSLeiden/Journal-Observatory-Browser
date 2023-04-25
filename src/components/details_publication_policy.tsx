@@ -2,13 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { first, includes, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
+import { duration_to_str, first, includes, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
-import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
+import { linkify_policy_item, PolicyDetailsItem, PolicyItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
-import { InfoDialog } from "./info";
+import { AnnotationDialog } from "./info";
 import { labelize } from "../query/labels";
+import info from "../strings/info.json";
 
 const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
@@ -38,7 +39,7 @@ export const PlatformPubPolicies = () => {
         <DetailsCard
             title="Publication policies"
             loading={loading}
-            infodialog={<InfoDialog property="scpo:PublicationPolicy" />}
+            infodialog={<AnnotationDialog property="publication-policies-title" text={info["publication-policies-text"]} />}
         >
             {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>
@@ -53,13 +54,13 @@ const PlatformPubPolicy = ({policy, src}: {policy: object, src: string[]}) => {
     const license = zip("dcterms:license")
         .map(linkify_policy_item)
         .map(summary.license)
-    const embargo = zip("fabio:hasEmbargoDuration")
+    const embargo = embargo_translate(zip("fabio:hasEmbargoDuration"))
     const owner = zip("scpo:hasCopyrightOwner")
         .map(summary.copyright_owner)
-    const apc = (policy["scpo:hasArticlePublishingCharges"] || [])
+    const apc = (policy["scpo:hasArticleProcessingCharge"] || [])
         .map((apc: object) => ({
             id: ld_to_str(apc["@id"]),
-            type: "scpo:hasArticlePublishingCharges",
+            type: "scpo:hasArticleProcessingCharge",
             value: [
                 labelize(first(apc, "schema:price"), {"unknown": "Unknown amount"}) || "0",
                 first(apc, "schema:priceCurrency")
@@ -94,7 +95,7 @@ async function platform_publication_policies(store: Quadstore) {
             ?policy dcterms:license ?license .
             ?policy fabio:hasEmbargoDuration ?embargo .
             ?policy scpo:hasCopyrightOwner ?copyrightowner .
-            ?policy scpo:hasArticlePublishingCharges ?apc .
+            ?policy scpo:hasArticleProcessingCharge ?apc .
             ?apc a scpo:ArticlePublishingCharges .
             ?apc schema:price ?apcprice .
             ?apc schema:priceCurrency ?apccurrency .
@@ -111,8 +112,8 @@ async function platform_publication_policies(store: Quadstore) {
                 optional { ?policy ?haslicense ?license . ?haslicense rdfs:subPropertyOf* dcterms:license } .
                 optional { ?policy fabio:hasEmbargoDuration ?embargo } .
                 optional { ?policy scpo:hasCopyrightOwner [ a ?copyrightowner ] } .
-                optional { ?policy scpo:hasArticlePublishingCharges ?apc .
-                    optional { ?apc schema:price ?apcprice } .
+                optional { ?policy scpo:hasArticleProcessingCharge ?apc .
+                    ?apc schema:price ?apcprice .
                     optional { ?apc schema:priceCurrency ?apccurrency } .
                     optional { ?apc schema:url ?apcurl } .
                 }
@@ -130,3 +131,11 @@ async function platform_publication_policies(store: Quadstore) {
     return await query_jsonld(query, store);
 }
 
+
+const embargo_translate = (embargoes: PolicyItem[]): PolicyItem[] => {
+    const embargo_to_str = (e: string) => {
+        const duration = duration_to_str(e)
+        return duration == "0" ? "No embargo" : duration
+    }
+    return embargoes.map(e => ({...e, value: embargo_to_str(e.value)}))
+}

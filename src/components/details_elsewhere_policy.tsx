@@ -2,12 +2,14 @@ import React, { useState, useEffect, useContext } from "react";
 import { PadContext } from "../store";
 import { query_jsonld } from "../query/local";
 import { Quadstore } from "quadstore";
-import { includes, ld_cons_src } from "../query/jsonld_helpers";
+import { duration_to_str, includes, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
 import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
-import { linkify_policy_item, PolicyDetailsItem, zip_policy_prop } from "./details_policy";
+import { linkify_policy_item, PolicyDetailsItem, PolicyItem, zip_policy_prop } from "./details_policy";
 import * as summary from "./details_policy_summary"
-import { InfoDialog } from "./info";
+import { AnnotationDialog } from "./info";
+import info from "../strings/info.json";
+import { HolidayVillage, Report } from "@mui/icons-material";
 
 const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     const compare = (p1: object, p2: object, fun: (policy: object) => boolean) => fun(p1) && !fun(p2)
@@ -46,7 +48,7 @@ export const PlatformElsewherePolicies = () => {
         <DetailsCard
             title="Preprinting/self-archiving policies"
             loading={loading}
-            infodialog={<InfoDialog property="scpo:PublicationElsewherePolicy" />}
+            infodialog={<AnnotationDialog property="publication-elsewhere-policies-title" text={info["publication-elsewhere-policies-text"]} />}
         >
             {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>
@@ -63,10 +65,28 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
     const license = zip("dcterms:license")
         .map(linkify_policy_item)
         .map(summary.license)
-    const embargo = zip("fabio:hasEmbargoDuration")
-    const owner = zip("scpo:hasCopyrightOwner").map(summary.copyright_owner)
+    const embargo = embargo_translate(zip("fabio:hasEmbargoDuration"))
+        .map(summary.embargo)
+    const owner = zip("scpo:hasCopyrightOwner")
+        .map(summary.copyright_owner)
     const condition = zip("scpo:publicationCondition")
+    console.log(condition)
     const location = zip("scpo:publicationLocation")
+    const conditions_summary: PolicyItem = condition.length > 0 ? {
+        id: ld_to_str(policy["@id"]),
+        type: "scpo:publicationCondition",
+        summary: `${condition.length} Conditions`,
+        color: "warning",
+        Icon: Report
+    } : null
+    const locations_summary: PolicyItem = location.length > 0 ? {
+        id: ld_to_str(policy["@id"]),
+        type: "scpo:publicationLocation",
+        summary: `${location.length} Locations`,
+        color: "default",
+        Icon: HolidayVillage
+    } : null
+    
 
     return (
         <SourceWrapper key={policy["@id"]} src={src}>
@@ -75,6 +95,8 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
                 items={[
                     ...type,
                     ...version,
+                    locations_summary,
+                    conditions_summary,
                     ...license,
                     ...embargo,
                     ...owner,
@@ -108,6 +130,7 @@ async function platform_elsewhere_policies(store: Quadstore) {
                 optional { ?policy scpo:appliesToVersion ?version } .
                 optional { ?policy fabio:hasEmbargoDuration ?embargo } .
                 optional { ?policy scpo:publicationCondition ?condition } .
+                optional { ?policy scpo:condition ?condition } .
                 optional { ?policy ?haslicense ?license . ?haslicense rdfs:subPropertyOf* dcterms:license } .
                 optional { ?policy scpo:hasCopyrightOwner [ a ?copyrightowner ] } .
             }
@@ -121,3 +144,10 @@ async function platform_elsewhere_policies(store: Quadstore) {
     return await query_jsonld(query, store);
 }
 
+const embargo_translate = (embargoes: PolicyItem[]): PolicyItem[] => {
+    const embargo_to_str = (e: string) => {
+        const duration = duration_to_str(e)
+        return duration == "0" ? "No embargo" : duration
+    }
+    return embargoes.map(e => ({...e, value: embargo_to_str(e.value)}))
+}

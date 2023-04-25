@@ -77,21 +77,12 @@ export const ElsewhereCopyrightownerFilter = () => {
 export const ElsewhereEmbargoFilter = () => {
     const labels = useContext(LabelContext)
     const state = useAppSelector((store: SearchStore) => store.search.elsewhere_embargo)
-    const amount = useAppSelector((store: SearchStore) => store.search.elsewhere_embargoduration)
     const dispatch = useAppDispatch()
     return (
-        <DropdownCheckbox
+        <CheckboxFilter
             state={state}
-            toggle={() => dispatch(searchActions.elsewhere_embargo_toggle())}
-            label={labelize("fabio:hasEmbargoDuration", labels)}
-        >
-            <SliderFilter
-                state={state}
-                value={amount}
-                setvalue={(n) => dispatch(searchActions.elsewhere_embargo_set(n))}
-                range={[0, 6, 12, 18, 24]}
-                unit="Months"
-            />
-        </DropdownCheckbox>
+            action={() => dispatch(searchActions.elsewhere_embargo_toggle())}
+            label={labelize("has-no-embargo-duration", labels)}
+        />
     )
 };

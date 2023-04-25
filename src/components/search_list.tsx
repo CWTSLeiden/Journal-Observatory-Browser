@@ -1,4 +1,4 @@
-import { Card, CardActionArea, CardContent, Chip, Grid, Skeleton, TablePagination, TableSortLabel, Typography } from "@mui/material";
+import { Box, Card, CardActionArea, CardContent, Chip, Grid, IconButton, Skeleton, TablePagination, TableSortLabel, Typography } from "@mui/material";
 import { ArrowForward, LockOpen, Lock } from "@mui/icons-material";
 import React, { ReactElement } from "react";
 import { useNavigate } from "react-router-dom";
@@ -64,7 +64,7 @@ export const PadCardSkeleton = ({n}: {n?: number}) => (
     <>
         {Array.from(Array(n == undefined ? 1 : n).keys()).map(n => (
             <Grid key={n} item>
-                <Skeleton variant="rounded" height={125} sx={{padding: 2}} />
+                <Skeleton variant="rounded" height={135} sx={{padding: 2}} />
             </Grid>
         )
         )}
@@ -136,13 +136,13 @@ const PadCard = ({ pad }: PadCardProps) => {
     const name = propToString(pad["schema:name"], true) || "<none>"
     const issn = propToString(pad["prism:issn"], true)
     return (
-        <Card key={pad_id} onClick={handleClick} sx={{padding: 0, cursor: "pointer", minHeight: '125px'}}>
+        <Card key={pad_id} onClick={handleClick} sx={{padding: 0, cursor: "pointer", minHeight: '160px'}}>
             <CardActionArea>
                 <CardContent>
                     <Grid container spacing={2} alignItems="flex-start">
                         <Grid item xs={8}><Typography variant="subtitle1" component="div" sx={{fontWeight: 'bold'}}>{name}</Typography></Grid>
                         <Grid item xs={3}>{ issn ? <Typography>ISSN: {issn}</Typography> : null }</Grid>
-                        <Grid item xs={1}><ArrowForward fontSize="small"/></Grid>
+                        <Grid item xs={1}><IconButton sx={{float: "right"}}><ArrowForward fontSize="small"/></IconButton></Grid>
                         <Grid item xs={12} container spacing={2} alignItems="center">
                             <Grid item xs={1} sx={{minWidth: 80}}><Typography>Policies:</Typography></Grid>
                             <PadCardPolicies pad={pad} />

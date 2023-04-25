@@ -1,7 +1,7 @@
 import React from "react"
 import { Box, Card, CardContent, Divider, List, ListItemButton, ListItemIcon, ListItemText, Typography } from "@mui/material"
 import { OpenInNew } from "@mui/icons-material"
-import { InfoDialog } from "./info"
+import { AnnotationDialog } from "./info"
 import context from "../strings/context.json";
 import info from "../strings/info.json";
 import { compact_id, expand_id } from "../query/jsonld_helpers";
@@ -10,6 +10,7 @@ const pad_assertion_sparqurl = (pad_id: string) => {
     const query = `
 PREFIX pad: <${context["pad"]}>
 PREFIX scpo: <${context["scpo"]}>
+PREFIX jobid: <${context["jobid"]}>
 CONSTRUCT {
     ?s ?p ?o
 }
@@ -52,8 +53,8 @@ export const Provenance = ({pad_id}: {pad_id: string}) => {
         <Card variant="outlined">
             <CardContent>
                 <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ fontWeight: 600 }}>Provenance</Typography>
-                    <InfoDialog property="provenance-title" text={info["provenance-text"]}/>
+                    <Typography sx={{ fontWeight: 600 }}>Linked data</Typography>
+                    <AnnotationDialog property="provenance-title" text={info["provenance-text"]}/>
                 </Box>
             </CardContent>
             <Divider />

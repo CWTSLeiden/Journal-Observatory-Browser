@@ -7,7 +7,7 @@ import { ExpandMore } from "@mui/icons-material";
 import { EvaluationAnonymizedFilter, EvaluationCommentsFilter, EvaluationInformationFilter, EvaluationInteractionsFilter, EvaluationPolicyFilter } from "./filter_evaluation";
 import { LabelContext, useAppDispatch } from "../store";
 import * as searchActions from "../store/search";
-import { InfoDialog } from "./info";
+import { AnnotationDialog } from "./info";
 import info from "../strings/info.json";
 import { labelize } from "../query/labels";
 
@@ -57,7 +57,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
             <FilterBarSection
                 id="filter-panel-publication-policy"
                 title={labelize("scpo:PublicationPolicy", labels)}
-                infodialog={<InfoDialog property="scpo:PublicationPolicy" text={info["publication-policy-filterbar"]}/>}
+                infodialog={<AnnotationDialog property="scpo:PublicationPolicy" text={info["publication-policy-filter-text"]}/>}
             >
                 <PubPolicyFilter />
                 <OpenAccessFilter />
@@ -70,7 +70,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
             <FilterBarSection
                 id="filter-panel-publication-elsewhere-policy"
                 title={labelize("scpo:PublicationElsewherePolicy", labels)}
-                infodialog={<InfoDialog property="scpo:PublicationElsewherePolicy" text={info["elsewhere-policy-filterbar"]}/>}
+                infodialog={<AnnotationDialog property="scpo:PublicationElsewherePolicy" text={info["elsewhere-policy-filter-text"]}/>}
             >
                 <ElsewherePolicyFilter />
                 <ElsewhereVersionFilter />
@@ -83,7 +83,7 @@ const FilterBar = ({ handleSubmit }: FilterBarProps) => {
             <FilterBarSection
                 id="filter-panel-evaluation-policy"
                 title={labelize("scpo:EvaluationPolicy", labels)}
-                infodialog={<InfoDialog property="scpo:EvaluationPolicy" text={info["evaluation-policy-filterbar"]}/>}
+                infodialog={<AnnotationDialog property="scpo:EvaluationPolicy" text={info["evaluation-policy-filter-text"]}/>}
             >
                 <EvaluationPolicyFilter />
                 <EvaluationAnonymizedFilter />

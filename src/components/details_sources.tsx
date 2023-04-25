@@ -8,7 +8,7 @@ import { Source } from "@mui/icons-material"
 import { useAppDispatch, useAppSelector } from "../store"
 import * as actions from "../store/details"
 import { expand_id } from "../query/jsonld_helpers"
-import { InfoDialog } from "./info"
+import { AnnotationDialog } from "./info"
 import info from "../strings/info.json";
 
 export const sort_sources_keys = (sources: object) => {
@@ -31,8 +31,8 @@ export const PadSources = () => {
         <Card variant="outlined">
             <CardContent>
                 <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
-                    <Typography sx={{ fontWeight: 600 }}>Sources</Typography>
-                    <InfoDialog property="sources-title" text={info["sources-text"]}/>
+                    <Typography sx={{ fontWeight: 600 }}>Data sources</Typography>
+                    <AnnotationDialog property="sources-title" text={info["sources-text"]}/>
                 </Box>
             </CardContent>
             <Divider />

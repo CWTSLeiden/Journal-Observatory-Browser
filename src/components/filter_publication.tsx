@@ -34,44 +34,26 @@ export const OpenAccessFilter = () => {
 export const PubEmbargoFilter = () => {
     const labels = useContext(LabelContext)
     const state = useAppSelector((store: SearchStore) => store.search.pub_embargo)
-    const amount = useAppSelector((store: SearchStore) => store.search.pub_embargoduration)
     const dispatch = useAppDispatch()
     return (
-        <DropdownCheckbox
+        <CheckboxFilter
             state={state}
-            toggle={() => dispatch(searchActions.publication_embargo_toggle())}
-            label={labelize("fabio:hasEmbargoDuration", labels)}
-        >
-            <SliderFilter
-                state={state}
-                value={amount}
-                setvalue={(n) => dispatch(searchActions.publication_embargo_set(n))}
-                range={[0, 6, 12, 18, 24]}
-                unit="Months"
-            />
-        </DropdownCheckbox>
+            action={() => dispatch(searchActions.publication_embargo_toggle())}
+            label={labelize("has-no-embargo-duration", labels)}
+        />
     )
 };
 
 export const PubApcFilter = () => {
     const labels = useContext(LabelContext)
     const state = useAppSelector((store: SearchStore) => store.search.pub_apc)
-    const amount = useAppSelector((store: SearchStore) => store.search.pub_apcamount)
     const dispatch = useAppDispatch()
     return (
-        <DropdownCheckbox
+        <CheckboxFilter
             state={state}
-            toggle={() => dispatch(searchActions.publication_apc_toggle())}
-            label={labelize("scpo:hasArticlePublishingCharges", labels)}
-        >
-            <SliderFilter
-                state={state}
-                value={amount}
-                setvalue={(n) => dispatch(searchActions.publication_apc_set(n))}
-                range={[0, 100, 200, 300, 400]}
-                unit="USD"
-            />
-        </DropdownCheckbox>
+            action={() => dispatch(searchActions.publication_apc_toggle())}
+            label={labelize("has-no-article-processing-charge", labels)}
+        />
     )
 };
 

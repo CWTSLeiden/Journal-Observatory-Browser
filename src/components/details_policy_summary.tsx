@@ -1,4 +1,4 @@
-import { AttachMoney, Attribution, CheckCircle, Copyright, Error, Lock, LockOpen, MoneyOff, RemoveCircle, Visibility, VisibilityOff } from "@mui/icons-material"
+import { AttachMoney, Attribution, CheckCircle, Copyright, Error, GppGood, GppMaybe, Lock, LockOpen, Message, MoneyOff, RemoveCircle, Reviews, SpeakerNotesOff, Visibility, VisibilityOff } from "@mui/icons-material"
 import { IconTypeMap } from "@mui/material/Icon"
 import { OverridableComponent } from "@mui/material/OverridableComponent"
 import { PolicyItem } from "./details_policy";
@@ -14,9 +14,9 @@ export const summarize = (
 export const openaccess = (item: PolicyItem): PolicyItem => {
     switch(item.value) {
         case "true":
-            return summarize(item, "Open Access", "success", LockOpen)
+            return summarize(item, "Open access", "success", LockOpen)
         case "false":
-            return summarize(item, "Closed Access", "error", Lock)
+            return summarize(item, "Closed access", "error", Lock)
         default:
             return item
     }
@@ -54,6 +54,15 @@ export const apc = (item: PolicyItem): PolicyItem => {
     }
     else {
         return summarize(item, `APC: ${amount}`, "warning", AttachMoney)
+    }
+}
+
+export const embargo = (item: PolicyItem): PolicyItem => {
+    if (item.value == "No embargo") {
+        return summarize(item, "No embargo", "success", GppGood)
+    }
+    else {
+        return summarize(item, `Embargo: ${item.value}`, "error", GppMaybe)
     }
 }
 
@@ -95,13 +104,27 @@ export const elsewhere_type = (item: PolicyItem): PolicyItem => {
 export const anonymized = (item: PolicyItem): PolicyItem => {
     switch(item.value) {
         case "Single":
-            return summarize(item, "Single Anonymized", "primary", VisibilityOff)
+            return summarize(item, "Single anonymized", "primary", VisibilityOff)
         case "Double":
-            return summarize(item, "Double Anonymized", "primary", VisibilityOff)
+            return summarize(item, "Double anonymized", "primary", VisibilityOff)
         case "Triple":
-            return summarize(item, "Triple Anonymized", "primary", VisibilityOff)
+            return summarize(item, "Triple anonymized", "primary", VisibilityOff)
         case "All Identities Visible":
-            return summarize(item, "All Identities Visible", "success", Visibility)
+            return summarize(item, "All identities visible", "success", Visibility)
+        default:
+            return item
+    }
+}
+
+export const ppc = (item: PolicyItem): PolicyItem => {
+    console.log(item)
+    switch(item.value) {
+        case "scpo:PostPublicationCommentingClosed":
+            return summarize(item, item.value, "error", SpeakerNotesOff)
+        case "scpo:PostPublicationCommentingOpen":
+            return summarize(item, item.value, "success", Message)
+        case "scpo:PostPublicationCommentingOnInvitation":
+            return summarize(item, item.value, "primary", Reviews)
         default:
             return item
     }
@@ -110,9 +133,7 @@ export const anonymized = (item: PolicyItem): PolicyItem => {
 export const accessible = (item: PolicyItem): PolicyItem => {
     switch(item.value) {
         case "scpo:Accessible":
-            return summarize(item, `${item.type} public`, "default", Visibility)
-        case "scpo:NotAccessible":
-            return summarize(item, `${item.type} hidden`, "default", VisibilityOff)
+            return summarize(item, item.type, "success", Visibility)
         default:
             return item
     }
@@ -121,5 +142,6 @@ export const no_accessible = (id: string, value: string): PolicyItem => {
     const item = {id: id, type: "scpo:Accessible"}
     return summarize(item, value, "error", VisibilityOff)
 }
+
 
 export default summarize

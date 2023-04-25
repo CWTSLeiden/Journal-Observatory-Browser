@@ -33,14 +33,13 @@ export const linkify_policy_item = (item: PolicyItem): PolicyItem => {
 }
 
 export const policy_item_ordering = (a: PolicyItem, b: PolicyItem) => {
-    if (b.type == null) { return 1 }
-    if (a.type == null) { return -1 }
-    if (a.type.toLowerCase() > b.type.toLowerCase()) { return 1 }
-    if (a.type.toLowerCase() < b.type.toLowerCase()) { return -1 }
-    if (b.value == null) { return 1 }
-    if (a.value == null) { return -1 }
-    if (a.value.toLowerCase() > b.value.toLowerCase()) { return 1 }
-    if (a.value.toLowerCase() < b.value.toLowerCase()) { return -1 }
+    const compare = (a: string, b: string) => {
+        return (a == null && b != null) ? true : a.toLowerCase() > b.toLowerCase() ? true : false
+    }
+    if (compare(a.type, b.type)) { return 1 }
+    if (compare(b.type, a.type)) { return -1 }
+    if (compare(a.value, b.value)) { return 1 }
+    if (compare(b.value, a.value)) { return -1 }
     return 0
 }
 

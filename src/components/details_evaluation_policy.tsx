@@ -7,7 +7,8 @@ import { DetailsCard, SourceWrapper } from "./details";
 import { fold_graph } from "../query/fold";
 import { PolicyDetailsItem, PolicyItem } from "./details_policy";
 import * as summary from "./details_policy_summary"
-import { InfoDialog } from "./info";
+import { AnnotationDialog } from "./info";
+import info from "../strings/info.json";
 
 export const PlatformEvaluationPolicies = () => {
     const padStore = useContext(PadContext)
@@ -27,7 +28,7 @@ export const PlatformEvaluationPolicies = () => {
         <DetailsCard
             title="Evaluation policies"
             loading={loading}
-            infodialog={<InfoDialog property="scpo:EvaluationPolicy" />}
+            infodialog={<AnnotationDialog property="evaluation-policies-title" text={info["evaluation-policies-text"]} />}
         >
             {policies.map(([p, s]) => (
                 <PlatformEvaluationPolicy key={p["@id"]} policy={p} src={s} />
@@ -40,6 +41,7 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
     const id = ld_to_str(policy["@id"])
     const people = policy["scpo:involves"] || []
     const documents = policy["scpo:covers"] || []
+    const commenting = policy["scpo:hasPostPublicationCommenting"]
 
     const authors = people.filter((p: object) => p["@type"] == "pro:author")
     const authors_id = accessible(id, "Author identity", authors)
@@ -51,7 +53,7 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
     const people_id = [authors_id, reviewers_id, editors_id]
         .filter(Boolean)
         .map(summary.accessible)
-    const anonymized = summary.anonymized(is_anonymized(id, reviewers, authors))
+    const anonymized = summary.anonymized(is_anonymized(id, authors, reviewers))
 
     const reports = documents.filter((p: object) => p["@type"] == "scpo:ReviewReport")
     const report_id = accessible(id, "scpo:ReviewReport", reports)
@@ -65,8 +67,8 @@ const PlatformEvaluationPolicy = ({policy, src}: {policy: object, src: string[]}
         .filter(Boolean)
         .map(summary.accessible)
 
-    const commenting = documents.filter((p: object) => p["@type"] == "scpo:postPublicationCommenting")
     const commenting_id = ppc(id, commenting)
+        .map(summary.ppc)
 
     if (people_id.length == 0) {
         people_id.push(summary.no_accessible(id, "No identities published"))
@@ -98,6 +100,7 @@ async function platform_evaluation_policies(store: Quadstore) {
             ?policy scpo:_src ?source .
             ?policy scpo:involves ?person .
             ?policy scpo:covers ?document .
+            ?policy scpo:hasPostPublicationCommenting ?ppc .
 
             ?person a ?persontype .
             ?person scpo:publiclyAccessible ?personpublic .
@@ -119,7 +122,8 @@ async function platform_evaluation_policies(store: Quadstore) {
                 optional { ?person scpo:identifiedTo [ a ?otherpersonid ] } .
                 optional { ?person scpo:interactsWith [ a ?interacts ] } .
                 optional { ?policy scpo:covers ?document . ?document a ?documenttype } .
-                optional { ?document scpo:publiclyAccessible ?documentpublic } .
+                optional { ?policy scpo:hasPostPublicationCommenting ?ppc . } .
+                optional { ?document scpo:workPubliclyAccessible ?documentpublic } .
             }
             optional { 
                 ?assertion pad:hasSourceAssertion ?source
@@ -174,7 +178,7 @@ const accessible = (id: string, type: string, obj: object[]): PolicyItem => {
 }
 
 const ppc = (id: string, obj: object[]): PolicyItem[] => {
-    const item: PolicyItem = {id: id, type: "Commenting"}
+    const item: PolicyItem = {id: id, type: "scpo:hasPostPublicationCommenting"}
     return obj.map(o => ({...item, value: ld_to_str(o["@id"])})).filter(item => item.value)
 }
 

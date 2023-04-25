@@ -14,10 +14,9 @@ export const enabled = (toggles: Toggles, post_processing?: string) => {
 export const search_filter = (s?: string) => {
     const q = `
         ?platform ?searchprop ?search .
-        ?search onto:fts "${s}"
+        ?search onto:fts '${s.replace(/'/g, '"')}'
         filter(?searchprop in (schema:name) 
-            || ?searchprop in (dcterms:identifier)
-            && contains(?search, "${s}"))
+            || ?searchprop in (dcterms:identifier))
     `;
     return s ? q : "";
 };
@@ -58,7 +57,7 @@ export const pub_embargo_filter = (search: SearchState) => {
             ?platform scpo:hasPolicy ?policy .
             ?policy a scpo:PublicationPolicy ;
                 fabio:hasEmbargoDuration ?pub_embargo .
-            filter(?pub_embargo <= "P${search.pub_embargoduration}M"^^xsd:duration)
+            filter(?pub_embargo = "P0D"^^xsd:duration)
         }
     `;
     return search.pub_embargo ? q : "";
@@ -68,12 +67,14 @@ export const pub_apc_filter = (search: SearchState) => {
     const q = `
         filter exists {
             ?platform scpo:hasPolicy ?policy .
-            ?policy a scpo:PublicationPolicy ;
-                scpo:hasArticlePublishingCharges [
-                    schema:price ?price ;
-                    schema:priceCurrency "USD" ;
-                ] .
-            filter(?price <= ${search.pub_apcamount})
+            ?policy a scpo:PublicationPolicy .
+            optional {
+                ?policy scpo:hasArticleProcessingCharge [ schema:price ?price ] .
+            }
+            optional {
+                ?policy scpo:hasOpenAccessFee ?oafee .
+            }
+            filter(?price = 0 || ?oafee = "false")
         }
     `;
     return search.pub_apc ? q : "";
@@ -174,7 +175,7 @@ export const elsewhere_embargo_filter = (search: SearchState) => {
             ?platform scpo:hasPolicy ?policy .
             ?policy a scpo:PublicationElsewherePolicy ;
                 fabio:hasEmbargoDuration ?pub_embargo .
-            filter(?pub_embargo <= "P${search.elsewhere_embargoduration}M"^^xsd:duration)
+            filter(?pub_embargo = "P0D"^^xsd:duration)
         }
     `;
     return search.elsewhere_embargo ? q : "";
@@ -283,8 +284,7 @@ export const evaluation_comment_filter = (search: SearchState) => {
         filter exists {
             ?platform scpo:hasPolicy ?policy .
             ?policy a scpo:EvaluationPolicy ;
-                scpo:covers ?ppc .
-            ?ppc a scpo:postPublicationCommenting .
+                scpo:hasPostPublicationCommenting ?ppc .
             filter(?ppc in (${filtered.join(', ')}))
         }
     `;
