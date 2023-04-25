@@ -14,9 +14,9 @@ export const summarize = (
 export const openaccess = (item: PolicyItem): PolicyItem => {
     switch(item.value) {
         case "true":
-            return summarize(item, "Open Access", "success", LockOpen)
+            return summarize(item, "Open access", "success", LockOpen)
         case "false":
-            return summarize(item, "Closed Access", "error", Lock)
+            return summarize(item, "Closed access", "error", Lock)
         default:
             return item
     }
@@ -104,13 +104,13 @@ export const elsewhere_type = (item: PolicyItem): PolicyItem => {
 export const anonymized = (item: PolicyItem): PolicyItem => {
     switch(item.value) {
         case "Single":
-            return summarize(item, "Single Anonymized", "primary", VisibilityOff)
+            return summarize(item, "Single anonymized", "primary", VisibilityOff)
         case "Double":
-            return summarize(item, "Double Anonymized", "primary", VisibilityOff)
+            return summarize(item, "Double anonymized", "primary", VisibilityOff)
         case "Triple":
-            return summarize(item, "Triple Anonymized", "primary", VisibilityOff)
+            return summarize(item, "Triple anonymized", "primary", VisibilityOff)
         case "All Identities Visible":
-            return summarize(item, "All Identities Visible", "success", Visibility)
+            return summarize(item, "All identities visible", "success", Visibility)
         default:
             return item
     }
