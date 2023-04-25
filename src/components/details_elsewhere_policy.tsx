@@ -70,7 +70,6 @@ const PlatformElsewherePolicy = ({policy, src}: {policy: object, src: string[]})
     const owner = zip("scpo:hasCopyrightOwner")
         .map(summary.copyright_owner)
     const condition = zip("scpo:publicationCondition")
-    console.log(condition)
     const location = zip("scpo:publicationLocation")
     const conditions_summary: PolicyItem = condition.length > 0 ? {
         id: ld_to_str(policy["@id"]),

@@ -30,7 +30,7 @@ function SearchComponent() {
             dispatch(padsActions.pads_set({page: page, pads: order_pads(padlist, orderasc)}));
             dispatch(padsActions.total_set(num));
         } catch(err) {
-            console.log(err)
+            // console.log(err)
             dispatch(padsActions.pads_clear());
             dispatch(padsActions.total_set(0));
             setStatus(500)

@@ -117,7 +117,6 @@ export const anonymized = (item: PolicyItem): PolicyItem => {
 }
 
 export const ppc = (item: PolicyItem): PolicyItem => {
-    console.log(item)
     switch(item.value) {
         case "scpo:PostPublicationCommentingClosed":
             return summarize(item, item.value, "error", SpeakerNotesOff)
