@@ -10,7 +10,7 @@ import * as summary from "./details_policy_summary"
 import { AnnotationDialog } from "./info";
 import info from "../strings/info.json";
 
-export const PlatformEvaluationPolicies = () => {
+export const PlatformEvaluationPolicies = ({ expanded }: { expanded?: boolean }) => {
     const padStore = useContext(PadContext)
     const [policies, setPolicies] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -29,6 +29,7 @@ export const PlatformEvaluationPolicies = () => {
             title="Evaluation policies"
             loading={loading}
             infodialog={<AnnotationDialog property="evaluation-policies-title" text={info["evaluation-policies-text"]} />}
+            defaultExpanded={expanded}
         >
             {policies.map(([p, s]) => (
                 <PlatformEvaluationPolicy key={p["@id"]} policy={p} src={s} />

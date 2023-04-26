@@ -14,7 +14,7 @@ const links = {
     "fabio:hasIssnL": "https://portal.issn.org/resource/ISSN/"
 }
 
-export const PlatformIdentifiers = () => {
+export const PlatformIdentifiers = ({ expanded }: { expanded?: boolean }) => {
     const labels = useContext(LabelContext)
     const padStore = useContext(PadContext)
     const [identifiers, setIdentifiers] = useState([]);
@@ -37,7 +37,7 @@ export const PlatformIdentifiers = () => {
     }
 
     return (
-        <DetailsCard title="Identifiers" loading={loading}>
+        <DetailsCard title="Identifiers" loading={loading} defaultExpanded={expanded}>
             {identifiers.map(([p, n, s]) => (
                 <SourceWrapper key={p + n} src={s}>
                     <DetailsListItem

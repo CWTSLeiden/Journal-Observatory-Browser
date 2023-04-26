@@ -7,7 +7,7 @@ import { DetailsCard, DetailsListItem, SourceWrapper } from "./details";
 import { labelize } from "../query/labels";
 import { CorporateFare } from "@mui/icons-material";
 
-export const PlatformPublishers = () => {
+export const PlatformPublishers = ({ expanded }: { expanded?: boolean }) => {
     const labels = useContext(LabelContext)
     const padStore = useContext(PadContext)
     const [publishers, setPublishers] = useState([]);
@@ -23,7 +23,7 @@ export const PlatformPublishers = () => {
     }, [padStore]);
 
     return (
-        <DetailsCard title="Publishers" loading={loading}>
+        <DetailsCard title="Publishers" loading={loading} defaultExpanded={expanded}>
             {publishers.map(([p, s]) => (
                 <SourceWrapper key={p["@id"]} src={s}>
                     <DetailsListItem

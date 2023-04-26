@@ -1,9 +1,9 @@
-import React, { ReactElement } from "react";
-import { Avatar, Badge, Card, CardContent, CardHeader, Chip, Divider, Grid, IconButton, Link, ListItem, ListItemAvatar, ListItemText, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
+import React, { ReactElement, useState } from "react";
+import { Accordion, AccordionDetails, AccordionSummary, Avatar, Badge, Box, Card, CardContent, CardHeader, Chip, Divider, Grid, IconButton, Link, ListItem, ListItemAvatar, ListItemText, Skeleton, Stack, Tooltip, Typography, useTheme } from "@mui/material";
 import { ld_to_str } from "../query/jsonld_helpers";
 import { labelize } from "../query/labels";
 import { colorize } from "./theme";
-import { Link as LinkIcon } from "@mui/icons-material";
+import { ExpandMore, Link as LinkIcon } from "@mui/icons-material";
 import { useAppSelector } from "../store";
 import { sort_sources_keys } from "./details_sources";
 
@@ -74,28 +74,43 @@ type DetailsCardProps = {
     children?: React.ReactElement | React.ReactElement[];
     loading?: boolean
     infodialog?: React.ReactElement;
+    defaultExpanded?: boolean
 }
-export const DetailsCard = ({title, children, loading, infodialog}: DetailsCardProps) => {
+export const DetailsCard = ({title, children, loading, infodialog, defaultExpanded}: DetailsCardProps) => {
+    const [state, setState] = useState(defaultExpanded == null ? true : defaultExpanded)
+    const toggle = () => setState(!state)
     const sources_disabled = useAppSelector(s => s.details.sources_disabled)
     const loading_component = [<DetailsListItemSkeleton key="0" />]
     const hidden_component = [<DetailsListItem key="0" primary="Hidden" secondary="Expand source filter" disabled />]
     const missing_component = [<DetailsListItem key="0" primary="No data" disabled />]
     return (
         <Card>
-            <CardHeader title={title} action={infodialog} titleTypographyProps={{variant: 'h6'}} />
-            <Divider />
-            <CardContent>
-                <Stack direction="column" spacing={1}>
-                    <DetailsSwitch
-                        items={children}
-                        filter={filter_children_src(sources_disabled)}
-                        loading={loading}
-                        loading_component={loading_component}
-                        missing_component={missing_component}
-                        hidden_component={hidden_component}
-                    />
-                </Stack>
-            </CardContent>
+            <Accordion expanded={state} disableGutters>
+                <CardContent sx={{p: 0}}>
+                    <AccordionSummary expandIcon={<ExpandMore onClick={toggle} />}>
+                        <Box sx={{ width: "100%", display: "flex", alignItems: "center" }}>
+                            <Typography variant="h6" onClick={toggle} >{title}</Typography>
+                            {infodialog}
+                            <Box sx={{ flex: 1 }} onClick={toggle} >&nbsp;</Box>
+                        </Box>
+                    </AccordionSummary>
+                </CardContent>
+                <Divider />
+                <CardContent>
+                    <AccordionDetails sx={{m: 0, p: 0}}>
+                        <Stack direction="column" spacing={1}>
+                            <DetailsSwitch
+                                items={children}
+                                filter={filter_children_src(sources_disabled)}
+                                loading={loading}
+                                loading_component={loading_component}
+                                missing_component={missing_component}
+                                hidden_component={hidden_component}
+                            />
+                        </Stack>
+                    </AccordionDetails>
+                </CardContent>
+            </Accordion>
         </Card>
 )}
 

@@ -28,7 +28,7 @@ const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     return Math.sign(Object.keys(policy1).length - Object.keys(policy2).length)
 }
 
-export const PlatformElsewherePolicies = () => {
+export const PlatformElsewherePolicies = ({ expanded }: { expanded?: boolean }) => {
     const padStore = useContext(PadContext)
     const [policies, setPolicies] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -49,6 +49,7 @@ export const PlatformElsewherePolicies = () => {
             title="Preprinting/self-archiving policies"
             loading={loading}
             infodialog={<AnnotationDialog property="publication-elsewhere-policies-title" text={info["publication-elsewhere-policies-text"]} />}
+            defaultExpanded={expanded}
         >
             {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>

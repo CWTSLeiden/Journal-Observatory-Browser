@@ -63,8 +63,8 @@ function DetailsComponent() {
                     </Grid>
                     <Grid item xs={12} sm={12} md={8} lg={9} component="main" container spacing={2} sx={{pb: 2}}>
                         <Grid item xs={12}><PlatformKeywords /></Grid>
-                        <Grid item xs={12}><PlatformNames /></Grid>
-                        <Grid item xs={12}><PlatformIdentifiers /></Grid>
+                        <Grid item xs={12}><PlatformNames expanded={false} /></Grid>
+                        <Grid item xs={12}><PlatformIdentifiers expanded={false} /></Grid>
                         <Grid item xs={12}><PlatformPublishers /></Grid>
                         <Grid item xs={12}><PlatformPubPolicies /></Grid>
                         <Grid item xs={12}><PlatformElsewherePolicies /></Grid>
