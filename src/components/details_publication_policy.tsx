@@ -19,7 +19,7 @@ const policy_ordering = ([policy1,]: [object], [policy2,]: [object]) => {
     return Math.sign(Object.keys(policy1).length - Object.keys(policy2).length)
 }
 
-export const PlatformPubPolicies = () => {
+export const PlatformPubPolicies = ({ expanded }: { expanded?: boolean }) => {
     const padStore = useContext(PadContext)
     const [policies, setPolicies] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -40,6 +40,7 @@ export const PlatformPubPolicies = () => {
             title="Publication policies"
             loading={loading}
             infodialog={<AnnotationDialog property="publication-policies-title" text={info["publication-policies-text"]} />}
+            defaultExpanded={expanded}
         >
             {policies.sort(policy_ordering).map(render_policy)}
         </DetailsCard>

@@ -5,7 +5,7 @@ import { Quadstore } from "quadstore";
 import { first, ld_cons_src, ld_to_str } from "../query/jsonld_helpers";
 import { DetailsCard, DetailsListItem, SourceWrapper } from "./details";
 
-export const PlatformNames = () => {
+export const PlatformNames = ({ expanded }: { expanded?: boolean }) => {
     const padStore = useContext(PadContext)
     const [names, setNames] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -18,7 +18,7 @@ export const PlatformNames = () => {
         padStore ? render() : null
     }, [padStore]);
     return (
-        <DetailsCard title="Names" loading={loading}>
+        <DetailsCard title="Names" loading={loading} defaultExpanded={expanded}>
             {names.map(([n, s]) => (
                 <SourceWrapper key={ld_to_str(n["@id"])} src={s} >
                     <DetailsListItem
